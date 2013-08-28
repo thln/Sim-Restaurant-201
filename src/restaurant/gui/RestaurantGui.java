@@ -3,6 +3,7 @@ package restaurant.gui;
 import restaurant.CustomerAgent;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 /**
@@ -26,6 +27,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
     /* infoPanel holds information about the clicked customer, if there is one*/
     private JPanel infoPanel;
     private JLabel infoLabel; //part of infoPanel
+    private JPanel personalPanel; //info panel
     private JCheckBox stateCB;//part of infoLabel
 
     private Object currentPerson;/* Holds the agent that the info is about.
@@ -46,14 +48,18 @@ public class RestaurantGui extends JFrame implements ActionListener {
     	
     	setBounds(50, 50, WINDOWX, WINDOWY);
 
-        setLayout(new BoxLayout((Container) getContentPane(), 
-        		BoxLayout.Y_AXIS));
+        //setLayout(new BoxLayout((Container) getContentPane(), 
+        //		BoxLayout.X_AXIS));
+        //		BoxLayout.Y_AXIS));
+        //FlowLayout testlayout = new FlowLayout();
+        setLayout(new BorderLayout());
+        //testlayout.setAlignment(FlowLayout.TRAILING);
 
         Dimension restDim = new Dimension(WINDOWX, (int) (WINDOWY * .6));
         restPanel.setPreferredSize(restDim);
         restPanel.setMinimumSize(restDim);
         restPanel.setMaximumSize(restDim);
-        add(restPanel);
+        add(restPanel, BorderLayout.CENTER);
         
         // Now, setup the info panel
         Dimension infoDim = new Dimension(WINDOWX, (int) (WINDOWY * .25));
@@ -63,6 +69,19 @@ public class RestaurantGui extends JFrame implements ActionListener {
         infoPanel.setMaximumSize(infoDim);
         infoPanel.setBorder(BorderFactory.createTitledBorder("Information"));
 
+        
+        //personal info
+        Dimension personalDim = new Dimension(WINDOWX, (int) (WINDOWY* .15));
+        personalPanel = new JPanel();
+        JLabel nameLabel = new JLabel();
+        nameLabel.setText("Henry Nguyen");
+        personalPanel.add(nameLabel);
+        ImageIcon image = new ImageIcon("C:/Users/Alan/Pictures/2012 - 2013 College Freshmen/ID/dog.jpg");
+        JLabel imagelabel = new JLabel(image);
+        //personalPanel.add(imagelabel);
+        add(personalPanel, BorderLayout.PAGE_END); 
+        
+        
         stateCB = new JCheckBox();
         stateCB.setVisible(false);
         stateCB.addActionListener(this);
@@ -73,7 +92,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
         infoPanel.add(infoLabel);
         infoPanel.add(stateCB);
-        add(infoPanel);
+        add(infoPanel, BorderLayout.PAGE_START);
     }
     /**
      * updateInfoPanel() takes the given customer (or, for v3, Host) object and
