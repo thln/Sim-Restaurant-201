@@ -14,7 +14,7 @@ public class CustomerGui implements Gui{
 	//private HostAgent host;
 	RestaurantGui gui;
 
-	private int xPos, yPos;
+	private static int xCordOffscreen, yCordOffscreen, height, width;
 	private int xDestination, yDestination;
 	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
@@ -24,8 +24,10 @@ public class CustomerGui implements Gui{
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
 		agent = c;
-		xPos = -40;
-		yPos = -40;
+		xCordOffscreen = -40;
+		yCordOffscreen = -40;
+		height = 20;
+		width = 20;
 		xDestination = -40;
 		yDestination = -40;
 		//maitreD = m;
@@ -33,17 +35,17 @@ public class CustomerGui implements Gui{
 	}
 
 	public void updatePosition() {
-		if (xPos < xDestination)
-			xPos++;
-		else if (xPos > xDestination)
-			xPos--;
+		if (xCordOffscreen < xDestination)
+			xCordOffscreen++;
+		else if (xCordOffscreen > xDestination)
+			xCordOffscreen--;
 
-		if (yPos < yDestination)
-			yPos++;
-		else if (yPos > yDestination)
-			yPos--;
+		if (yCordOffscreen < yDestination)
+			yCordOffscreen++;
+		else if (yCordOffscreen > yDestination)
+			yCordOffscreen--;
 
-		if (xPos == xDestination && yPos == yDestination) {
+		if (xCordOffscreen == xDestination && yCordOffscreen == yDestination) {
 			if (command==Command.GoToSeat) agent.msgAnimationFinishedGoToSeat();
 			else if (command==Command.LeaveRestaurant) {
 				agent.msgAnimationFinishedLeaveRestaurant();
@@ -57,7 +59,7 @@ public class CustomerGui implements Gui{
 
 	public void draw(Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.fillRect(xPos, yPos, 20, 20);
+		g.fillRect(xCordOffscreen, yCordOffscreen, height, width);
 	}
 
 	public boolean isPresent() {
@@ -83,8 +85,8 @@ public class CustomerGui implements Gui{
 	}
 
 	public void DoExitRestaurant() {
-		xDestination = -40;
-		yDestination = -40;
+		xDestination = xCordOffscreen;
+		yDestination = yCordOffscreen;
 		command = Command.LeaveRestaurant;
 	}
 }

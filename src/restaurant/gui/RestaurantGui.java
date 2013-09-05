@@ -1,6 +1,7 @@
 package restaurant.gui;
 
 import restaurant.CustomerAgent;
+import javax.swing.JTextField;
 
 import javax.swing.*;
 
@@ -40,13 +41,15 @@ public class RestaurantGui extends JFrame implements ActionListener {
     public RestaurantGui() {
         int WINDOWX = 450;
         int WINDOWY = 350;
+        int height = 50;
+        int width = 50;
 
         animationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         animationFrame.setBounds(100+WINDOWX, 50 , WINDOWX+100, WINDOWY+100);
         animationFrame.setVisible(true);
     	animationFrame.add(animationPanel); 
     	
-    	setBounds(50, 50, WINDOWX, WINDOWY);
+    	setBounds(height, width, WINDOWX, WINDOWY);
 
         //setLayout(new BoxLayout((Container) getContentPane(), 
         //		BoxLayout.X_AXIS));
@@ -78,7 +81,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         personalPanel.add(nameLabel);
         ImageIcon image = new ImageIcon("C:/Users/Alan/Pictures/2012 - 2013 College Freshmen/ID/dog.jpg");
         JLabel imagelabel = new JLabel(image);
-        //personalPanel.add(imagelabel);
+        personalPanel.add(imagelabel);
         add(personalPanel, BorderLayout.PAGE_END); 
         
         
@@ -90,7 +93,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
         
         infoLabel = new JLabel(); 
         infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
-        infoPanel.add(infoLabel);
+        infoPanel.add(infoLabel); 
+        //JTextField NameEnter = new JTextField("Enter Name Here", 20);
+        //infoPanel.add(NameEnter);
         infoPanel.add(stateCB);
         add(infoPanel, BorderLayout.PAGE_START);
     }
@@ -151,7 +156,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      */
     public static void main(String[] args) {
         RestaurantGui gui = new RestaurantGui();
-        gui.setTitle("csci201 Restaurant");
+        gui.setTitle("Henry's csci201 Restaurant");
         gui.setVisible(true);
         gui.setResizable(false);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

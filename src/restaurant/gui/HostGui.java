@@ -11,6 +11,7 @@ public class HostGui implements Gui {
     private HostAgent agent = null;
 
     private int xPos = -20, yPos = -20;//default waiter position
+    private int height = 20, width = 20;
     private int xDestination = -20, yDestination = -20;//default start position
 
     public static final int xTable = 200;
@@ -32,14 +33,14 @@ public class HostGui implements Gui {
             yPos--;
 
         if (xPos == xDestination && yPos == yDestination
-        		& (xDestination == xTable + 20) & (yDestination == yTable - 20)) {
+        		& (xDestination == xTable + width) & (yDestination == yTable - height)) {
            agent.msgAtTable();
         }
     }
 
     public void draw(Graphics2D g) {
         g.setColor(Color.MAGENTA);
-        g.fillRect(xPos, yPos, 20, 20);
+        g.fillRect(xPos, yPos, height, width);
     }
 
     public boolean isPresent() {
