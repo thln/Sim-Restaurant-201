@@ -171,6 +171,11 @@ public class CustomerAgent extends Agent {
 		currentTable = table;
 	}
 	
+	public int getCurrentTable()
+	{
+		return currentTable;
+	}
+	
 	public String toString() {
 		return "customer " + getName();
 	}

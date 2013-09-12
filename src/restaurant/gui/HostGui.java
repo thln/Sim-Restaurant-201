@@ -12,6 +12,9 @@ public class HostGui implements Gui {
 
     private int xPos = -20, yPos = -20;//default waiter position
     private int height = 20, width = 20;
+	private static final int xCordOffScreen = -20;
+	private static final int yCordOffScreen = -20;
+	private int tableNumber = 1;
     private int xDestination = -20, yDestination = -20;//default start position
 
     //static final
@@ -34,7 +37,7 @@ public class HostGui implements Gui {
             yPos--;
 
         if (xPos == xDestination && yPos == yDestination
-        		& (xDestination == xTable + width) & (yDestination == yTable - height)) {
+        		& (xDestination == xTable + (100*(tableNumber -1)) + width) & (yDestination == yTable - height)) {
            agent.msgAtTable();
         }
     }
@@ -49,14 +52,15 @@ public class HostGui implements Gui {
     }
 
     public void DoBringToTable(CustomerAgent customer) {
+    	tableNumber = customer.getCurrentTable();
     	//xTable = xTable + 100*(customer.currentTable-1);
-        xDestination = xTable + 20;
+        xDestination = xTable + (100*(tableNumber -1)) + 20;
         yDestination = yTable - 20;
     }
 
     public void DoLeaveCustomer() {
-        xDestination = -20;
-        yDestination = -20;
+        xDestination = xCordOffScreen;
+        yDestination = yCordOffScreen;
     }
 
     public int getXPos() {
