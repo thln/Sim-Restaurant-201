@@ -15,7 +15,8 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
-
+	public int currentTable;
+	
 	// agent correspondents
 	private HostAgent host;
 
@@ -118,7 +119,7 @@ public class CustomerAgent extends Agent {
 
 	private void SitDown() {
 		Do("Being seated. Going to table");
-		customerGui.DoGoToSeat(1);//hack; only one table
+		customerGui.DoGoToSeat(currentTable);//hack; only one table
 	}
 
 	private void EatFood() {

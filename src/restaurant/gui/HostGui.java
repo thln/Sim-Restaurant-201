@@ -14,8 +14,9 @@ public class HostGui implements Gui {
     private int height = 20, width = 20;
     private int xDestination = -20, yDestination = -20;//default start position
 
-    public static final int xTable = 200;
-    public static final int yTable = 250;
+    //static final
+    public int xTable = 200;
+    public int yTable = 250;
 
     public HostGui(HostAgent agent) {
         this.agent = agent;
@@ -48,6 +49,7 @@ public class HostGui implements Gui {
     }
 
     public void DoBringToTable(CustomerAgent customer) {
+    	xTable = xTable + 100*(customer.currentTable-1);
         xDestination = xTable + 20;
         yDestination = yTable - 20;
     }

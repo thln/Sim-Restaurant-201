@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class AnimationPanel extends JPanel implements ActionListener {
 
-    private final int WINDOWX = 450;
-    private final int WINDOWY = 350;
+    private final int WINDOWX = 600;
+    private final int WINDOWY = 500;
     private final int XCord = 200;
     private final int YCord = 250;
     private final int Height = 50;
@@ -46,7 +46,12 @@ public class AnimationPanel extends JPanel implements ActionListener {
         g2.setColor(Color.ORANGE);
         g2.fillRect(XCord, YCord, Width, Height);//200 and 250 need to be table params
 
+        g2.setColor(Color.ORANGE);
+        g2.fillRect(XCord +100, YCord, Width, Height);//200 and 250 need to be table params
 
+        g2.setColor(Color.ORANGE);
+        g2.fillRect(XCord +200, YCord, Width, Height);//200 and 250 need to be table params
+        
         for(Gui gui : guis) {
             if (gui.isPresent()) {
                 gui.updatePosition();

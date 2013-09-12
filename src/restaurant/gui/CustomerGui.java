@@ -14,7 +14,9 @@ public class CustomerGui implements Gui{
 	//private HostAgent host;
 	RestaurantGui gui;
 
-	private static int xCordOffscreen, yCordOffscreen, height, width;
+	private static int xCordCurrent, yCordCurrent, height, width;
+	private static final int xCordOffScreen = -40;
+	private static final int yCordOffScreen = -40;
 	private int xDestination, yDestination;
 	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
@@ -24,8 +26,8 @@ public class CustomerGui implements Gui{
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
 		agent = c;
-		xCordOffscreen = -40;
-		yCordOffscreen = -40;
+		xCordCurrent = xCordOffScreen;
+		yCordCurrent = yCordOffScreen;
 		height = 20;
 		width = 20;
 		xDestination = -40;
@@ -35,17 +37,19 @@ public class CustomerGui implements Gui{
 	}
 
 	public void updatePosition() {
-		if (xCordOffscreen < xDestination)
-			xCordOffscreen++;
-		else if (xCordOffscreen > xDestination)
-			xCordOffscreen--;
+		if (xCordCurrent < xDestination)
+			xCordCurrent++;
+		else if (xCordCurrent > xDestination)
+			xCordCurrent--;
 
-		if (yCordOffscreen < yDestination)
-			yCordOffscreen++;
-		else if (yCordOffscreen > yDestination)
-			yCordOffscreen--;
+		if (yCordCurrent < yDestination)
+			yCordCurrent++;
+		else if (yCordCurrent > yDestination)
+			yCordCurrent--;
 
-		if (xCordOffscreen == xDestination && yCordOffscreen == yDestination) {
+		
+		
+		if (xCordCurrent == xDestination && yCordCurrent == yDestination) {
 			if (command==Command.GoToSeat) agent.msgAnimationFinishedGoToSeat();
 			else if (command==Command.LeaveRestaurant) {
 				agent.msgAnimationFinishedLeaveRestaurant();
@@ -58,8 +62,13 @@ public class CustomerGui implements Gui{
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.GREEN);
-		g.fillRect(xCordOffscreen, yCordOffscreen, height, width);
+		if (agent.getCustomerName().equals("a")) {
+			g.setColor(Color.RED);
+			
+		} else {
+			g.setColor(Color.GREEN);
+		}
+		g.fillRect(xCordCurrent, yCordCurrent, height, width);
 	}
 
 	public boolean isPresent() {
@@ -79,14 +88,20 @@ public class CustomerGui implements Gui{
 	}
 
 	public void DoGoToSeat(int seatnumber) {//later you will map seatnumber to table coordinates.
-		xDestination = xTable;
+		xDestination = xTable + 100*(seatnumber-1);
 		yDestination = yTable;
 		command = Command.GoToSeat;
+		System.out.println("Moving to seat: " + seatnumber);
 	}
 
 	public void DoExitRestaurant() {
-		xDestination = xCordOffscreen;
-		yDestination = yCordOffscreen;
+		//xCordOffscreen = -40;
+		//yCordOffscreen = -40;
+		xDestination = xCordOffScreen;
+		yDestination = xCordOffScreen;
+		//System.out.println("XCord is " + xCordOffscreen + " YCord is " + yCordOffscreen);
+		//xDestination = xCordOffscreen;
+		//yDestination = yCordOffscreen;
 		command = Command.LeaveRestaurant;
 	}
 }

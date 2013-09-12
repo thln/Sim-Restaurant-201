@@ -14,7 +14,7 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
-	static final int NTABLES = 1;//a global for the number of tables.
+	static final int NTABLES = 3;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers
@@ -23,6 +23,8 @@ public class HostAgent extends Agent {
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 
+	//Checks for state, since there are only two states, boolean works
+	//private boolean bringingCustomer = false; 
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
 
@@ -64,7 +66,7 @@ public class HostAgent extends Agent {
 	public void msgLeavingTable(CustomerAgent cust) {
 		for (Table table : tables) {
 			if (table.getOccupant() == cust) {
-				print(cust + " leaving " + table);
+				print(cust + " leaving table " + table.tableNumber);
 				table.setUnoccupied();
 				stateChanged();
 			}
@@ -86,14 +88,17 @@ public class HostAgent extends Agent {
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		for (Table table : tables) {
-			if (!table.isOccupied()) {
-				if (!waitingCustomers.isEmpty()) {
-					seatCustomer(waitingCustomers.get(0), table);//the action
-					return true;//return true to the abstract agent to reinvoke the scheduler.
+		//if(!bringingCustomer)
+		//{
+			for (Table table : tables) {
+				if (!table.isOccupied()) {
+					if (!waitingCustomers.isEmpty() /*&& waiter is back at his initial position*/) {
+						seatCustomer(waitingCustomers.get(0), table);//the action
+						return true;//return true to the abstract agent to reinvoke the scheduler.
+					}
 				}
 			}
-		}
+		//}
 
 		return false;
 		//we have tried all our rules and found
@@ -104,6 +109,8 @@ public class HostAgent extends Agent {
 	// Actions
 
 	private void seatCustomer(CustomerAgent customer, Table table) {
+		//bringingCustomer = true;
+		customer.currentTable = table.tableNumber;
 		customer.msgSitAtTable();
 		DoSeatCustomer(customer, table);
 		try {
@@ -115,13 +122,15 @@ public class HostAgent extends Agent {
 		table.setOccupant(customer);
 		waitingCustomers.remove(customer);
 		hostGui.DoLeaveCustomer();
+		//bringingCustomer = false;
+		//stateChanged();
 	}
 
 	// The animation DoXYZ() routines
 	private void DoSeatCustomer(CustomerAgent customer, Table table) {
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
-		print("Seating " + customer + " at " + table);
+		print("Seating " + customer + " at table " + table.tableNumber);
 		hostGui.DoBringToTable(customer); 
 
 	}
