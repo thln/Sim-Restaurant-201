@@ -14,7 +14,8 @@ public class CustomerGui implements Gui{
 	//private HostAgent host;
 	RestaurantGui gui;
 
-	private static int xCordCurrent, yCordCurrent, height, width;
+	private int xCordCurrent, yCordCurrent;
+	private final int height = 20, width = 20;
 	private static final int xCordOffScreen = -40;
 	private static final int yCordOffScreen = -40;
 	private int xDestination, yDestination;
@@ -26,12 +27,13 @@ public class CustomerGui implements Gui{
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
 		agent = c;
+		//xCordOffScreen, yCordOffScreen
 		xCordCurrent = xCordOffScreen;
 		yCordCurrent = yCordOffScreen;
-		height = 20;
-		width = 20;
-		xDestination = -40;
-		yDestination = -40;
+		//height = 20;
+		//width = 20;
+		xDestination = xCordOffScreen;
+		yDestination = yCordOffScreen;
 		//maitreD = m;
 		this.gui = gui;
 	}
@@ -64,7 +66,6 @@ public class CustomerGui implements Gui{
 	public void draw(Graphics2D g) {
 		if (agent.getCustomerName().equals("a")) {
 			g.setColor(Color.RED);
-			
 		} else {
 			g.setColor(Color.GREEN);
 		}
@@ -98,7 +99,7 @@ public class CustomerGui implements Gui{
 		//xCordOffscreen = -40;
 		//yCordOffscreen = -40;
 		xDestination = xCordOffScreen;
-		yDestination = xCordOffScreen;
+		yDestination = yCordOffScreen;
 		//System.out.println("XCord is " + xCordOffscreen + " YCord is " + yCordOffscreen);
 		//xDestination = xCordOffscreen;
 		//yDestination = yCordOffscreen;

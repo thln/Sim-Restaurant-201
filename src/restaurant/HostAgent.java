@@ -110,16 +110,17 @@ public class HostAgent extends Agent {
 
 	private void seatCustomer(CustomerAgent customer, Table table) {
 		//bringingCustomer = true;
-		customer.currentTable = table.tableNumber;
+		//customer.currentTable = table.tableNumber;
+		customer.setCurrentTable(table.tableNumber);
 		customer.msgSitAtTable();
 		DoSeatCustomer(customer, table);
+		table.setOccupant(customer);
 		try {
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		table.setOccupant(customer);
 		waitingCustomers.remove(customer);
 		hostGui.DoLeaveCustomer();
 		//bringingCustomer = false;

@@ -15,7 +15,7 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
-	public int currentTable;
+	private int currentTable;
 	
 	// agent correspondents
 	private HostAgent host;
@@ -166,6 +166,11 @@ public class CustomerAgent extends Agent {
 		//need to eat until hunger lever is > 5?
 	}
 
+	public void setCurrentTable(int table)
+	{
+		currentTable = table;
+	}
+	
 	public String toString() {
 		return "customer " + getName();
 	}
