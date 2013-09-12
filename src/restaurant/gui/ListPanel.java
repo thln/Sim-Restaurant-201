@@ -23,6 +23,7 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     private JPanel view = new JPanel();
     private List<JButton> list = new ArrayList<JButton>();
     private JButton addPersonB = new JButton("Add");
+    private JButton additionalTables = new JButton("Add Table");
     private JPanel NewCustomer = new JPanel();
     private JCheckBox realStateCB;
     private JTextField NameEnter;
@@ -44,6 +45,9 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         setLayout(new BoxLayout((Container) this, BoxLayout.Y_AXIS));
         add(new JLabel("<html><pre> <u>" + type + "</u><br></pre></html>"));
 
+        additionalTables.addActionListener(this);
+        add(additionalTables);
+        
         addPersonB.addActionListener(this);
         addPersonB.setEnabled(false);
         add(addPersonB);
@@ -90,6 +94,10 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
             //addPerson(JOptionPane.showInputDialog("Please enter a name:"));
         	addPerson(NameEnter.getText());
         }
+    	else if (e.getSource() == additionalTables)
+    	{
+    		restPanel.getHost().addTables();	
+    	}
         else {
         	// Isn't the second for loop more beautiful?
             /*for (int i = 0; i < list.size(); i++) {

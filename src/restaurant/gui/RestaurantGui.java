@@ -49,6 +49,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
         animationFrame.setVisible(true);
     	animationFrame.add(animationPanel); 
     	
+    	animationPanel.setHost(restPanel.getHost());
+    	
     	setBounds(height, width, WINDOWX, WINDOWY);
 
         //setLayout(new BoxLayout((Container) getContentPane(), 

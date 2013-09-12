@@ -47,6 +47,13 @@ public class AnimationPanel extends JPanel implements ActionListener {
         g2.fillRect(0, 0, WINDOWX, WINDOWY );
 
         //Here is the table
+        
+        for(int i=1; i <= host.tables.size(); i++)
+        {
+        	g2.setColor(Color.darkGray);
+            g2.fillRect(XCord + 100*(i-1), YCord, Width, Height);
+        }
+        /*
         g2.setColor(Color.ORANGE);
         g2.fillRect(XCord, YCord, Width, Height);//200 and 250 need to be table params
 
@@ -55,7 +62,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
         g2.setColor(Color.ORANGE);
         g2.fillRect(XCord + 4*Width, YCord, Width, Height);//200 and 250 need to be table params
-        
+        */
         for(Gui gui : guis) {
             if (gui.isPresent()) {
                 gui.updatePosition();
@@ -77,7 +84,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
         guis.add(gui);
     }
     
-    public void getHost(HostAgent hostName)
+    public void setHost(HostAgent hostName)
     {
     	host = hostName;
     }

@@ -14,7 +14,8 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
-	static final int NTABLES = 3;//a global for the number of tables.
+	//static final int NTABLES = 3;//a global for the number of tables.
+	private int NTABLES = 1;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers
@@ -144,6 +145,15 @@ public class HostAgent extends Agent {
 
 	public HostGui getGui() {
 		return hostGui;
+	}
+	
+	public void addTables()
+	{
+		if(NTABLES < 4)
+		{
+			NTABLES++;
+			tables.add(new Table(NTABLES));
+		}
 	}
 
 	private class Table {

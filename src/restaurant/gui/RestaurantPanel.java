@@ -103,5 +103,10 @@ public class RestaurantPanel extends JPanel {
     		c.startThread();
     	}
     }
+    
+    public HostAgent getHost()
+    {
+    	return host;
+    }
 
 }
