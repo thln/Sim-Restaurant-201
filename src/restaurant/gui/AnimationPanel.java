@@ -1,6 +1,6 @@
 package restaurant.gui;
 
-import restaurant.HostAgent;
+import restaurant.WaiterAgent;
 
 import javax.swing.*;
 
@@ -23,7 +23,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
     private List<Gui> guis = new ArrayList<Gui>();
 
-    private HostAgent host;
+    private WaiterAgent host;
     
     public AnimationPanel() {
     	setSize(WINDOWX, WINDOWY);
@@ -80,11 +80,11 @@ public class AnimationPanel extends JPanel implements ActionListener {
         guis.add(gui);
     }
 
-    public void addGui(HostGui gui) {
+    public void addGui(WaiterGui gui) {
         guis.add(gui);
     }
     
-    public void setHost(HostAgent hostName)
+    public void setHost(WaiterAgent hostName)
     {
     	host = hostName;
     }

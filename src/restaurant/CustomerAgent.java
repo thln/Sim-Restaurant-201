@@ -18,7 +18,7 @@ public class CustomerAgent extends Agent {
 	private int currentTable;
 	
 	// agent correspondents
-	private HostAgent host;
+	private WaiterAgent waiter;
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
@@ -26,7 +26,7 @@ public class CustomerAgent extends Agent {
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
-	{none, gotHungry, followHost, seated, doneEating, doneLeaving};
+	{none, gotHungry, followMe, seated, doneEating, doneLeaving};
 	AgentEvent event = AgentEvent.none;
 
 	/**
@@ -41,10 +41,10 @@ public class CustomerAgent extends Agent {
 	}
 
 	/**
-	 * hack to establish connection to Host agent.
+	 * hack to establish connection to Waiter agent.
 	 */
-	public void setHost(HostAgent host) {
-		this.host = host;
+	public void setWaiter(WaiterAgent waiter) {
+		this.waiter = waiter;
 	}
 
 	public String getCustomerName() {
@@ -60,7 +60,7 @@ public class CustomerAgent extends Agent {
 
 	public void msgSitAtTable() {
 		print("Received msgSitAtTable");
-		event = AgentEvent.followHost;
+		event = AgentEvent.followMe;
 		stateChanged();
 	}
 
@@ -86,7 +86,7 @@ public class CustomerAgent extends Agent {
 			goToRestaurant();
 			return true;
 		}
-		if (state == AgentState.WaitingInRestaurant && event == AgentEvent.followHost ){
+		if (state == AgentState.WaitingInRestaurant && event == AgentEvent.followMe ){
 			state = AgentState.BeingSeated;
 			SitDown();
 			return true;
@@ -114,7 +114,7 @@ public class CustomerAgent extends Agent {
 
 	private void goToRestaurant() {
 		Do("Going to restaurant");
-		host.msgIWantFood(this);//send our instance, so he can respond to us
+		waiter.msgIWantFood(this);//send our instance, so he can respond to us
 	}
 
 	private void SitDown() {
@@ -146,7 +146,7 @@ public class CustomerAgent extends Agent {
 
 	private void leaveTable() {
 		Do("Leaving.");
-		host.msgLeavingTable(this);
+		waiter.msgLeavingTable(this);
 		customerGui.DoExitRestaurant();
 	}
 

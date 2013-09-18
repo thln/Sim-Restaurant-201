@@ -1,7 +1,7 @@
 package restaurant.gui;
 
 import restaurant.CustomerAgent;
-import restaurant.HostAgent;
+import restaurant.WaiterAgent;
 
 import java.awt.*;
 
@@ -25,7 +25,7 @@ public class CustomerGui implements Gui{
 	public static final int xTable = 200;
 	public static final int yTable = 250;
 
-	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
+	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //WaiterAgent m) {
 		agent = c;
 		//xCordOffScreen, yCordOffScreen
 		xCordCurrent = xCordOffScreen;
