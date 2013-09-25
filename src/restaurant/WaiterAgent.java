@@ -44,7 +44,7 @@ public class WaiterAgent extends Agent
 		public CustomerAgent c;
 		int table;
 		String choice;
-		private CustomerState state = CustomerState.Waiting;
+		private myCustomerState state = myCustomerState.Waiting;
 		public MyCustomer(CustomerAgent cust, int t)
 		{
 			c = cust;
@@ -106,9 +106,30 @@ public class WaiterAgent extends Agent
 	
 	public void ReadyToOrder(CustomerAgent c)
 	{
-		
+		for(MyCustomer mc : myCustomers)
+		{
+			if(mc.c == c)
+			{
+				mc.state = myCustomerState.readyToOrder;
+				stateChanged();
+			}
+		}
 	}
 
+	public void myChoiceIs(String TheOrder, CustomerAgent cust)
+	{
+		for(MyCustomer mc : myCustomers)
+		{
+			if(mc.c == cust)
+			{
+				mc.choice = TheOrder;
+				mc.state = myCustomerState.OrderReceived;
+				stateChanged();
+			}
+		}
+	
+	}
+	
 	public void msgLeavingTable(CustomerAgent cust) 
 	{
 		for (Table table : tables) 
@@ -121,7 +142,7 @@ public class WaiterAgent extends Agent
 				{
 					if(mc.c == cust)
 					{
-						mc.state = CustomerState.Left;
+						mc.state = myCustomerState.Leaving;
 					}
 				}
 				stateChanged();
@@ -149,22 +170,25 @@ public class WaiterAgent extends Agent
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		//if(!bringingCustomer)
-		//{
-			for (Table table : tables) {
-				if (!table.isOccupied()) {
-					//if (!myCustomers.isEmpty() /*&& waiter is back at his initial position*/) {
-					for(MyCustomer mc : myCustomers)
+		for(MyCustomer mc : myCustomers)
+		{
+			if(mc.state == myCustomerState.Waiting)
+			{
+				for (Table table : tables) 
+				{
+					if (!table.isOccupied())
 					{
-						if(mc.state == CustomerState.Waiting)
-						{
-						seatCustomer(myCustomers.get(0).c, table);//the action
-						return true;//return true to the abstract agent to reinvoke the scheduler.
-						}
+							seatCustomer(myCustomers.get(0).c, table);//the action
+							return true;//return true to the abstract agent to reinvoke the scheduler.
 					}
 				}
 			}
-		//}
+			
+			if(mc.state == myCustomerState.readyToOrder)
+			{
+				TakeOrder(mc);
+			}
+		}
 
 		return false;
 		//we have tried all our rules and found
@@ -208,6 +232,22 @@ public class WaiterAgent extends Agent
 
 	}
 
+	public void TakeOrder(MyCustomer mc)
+	{
+		
+		DoGoToTable(mc.table);
+		mc.c.WhatDoYouWant();
+
+		
+	}
+	
+	public void DoGoToTable(int table)
+	{
+		//REMEMBER TO DO THIS
+		//AFFECTS GUI!!!!!!!!!
+	}
+	
+	
 	//utilities
 
 	public void setGui(WaiterGui gui) {

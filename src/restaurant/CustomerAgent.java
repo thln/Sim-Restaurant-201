@@ -74,13 +74,21 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 
-	public void followMe(Menu m, WaiterAgent w, int t) {
+	public void followMe(Menu m, WaiterAgent w, int t) 
+	{
 		print("Message 3 Sent");
 		print("Following Waiter");
 		myMenu = m;
 		waiter = w;
 		currentTable = t;
 		event = AgentEvent.followMe;
+		stateChanged();
+	}
+	
+	public void WhatDoYouWant()
+	{
+		print("Message 5 Sent");
+		state = AgentState.Ordering;
 		stateChanged();
 	}
 
@@ -121,7 +129,11 @@ public class CustomerAgent extends Agent {
 			chooseOrder();
 			return true;
 		}
-		
+		if(state == AgentState.Ordering && event == AgentEvent.seated)
+		{
+			IWantToOrder(myOrder);
+			return true;
+		}
 		
 
 		//NEED TO GO THROUGH Seated, ChoosingOrder, Ordering, waitingforFood, then go to Eating
@@ -162,6 +174,13 @@ public class CustomerAgent extends Agent {
 		myOrder = myMenu.blindPick();
 		waiter.ReadyToOrder(this);
 		print("Message 4 Sent");
+	}
+	
+	private void IWantToOrder(String order)
+	{
+		waiter.myChoiceIs(order, this);
+		print("Message 6 Sent");
+		state = AgentState.WaitingForFood;
 	}
 
 	private void EatFood() {
