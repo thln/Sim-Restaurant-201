@@ -13,9 +13,9 @@ import java.util.ArrayList;
 
 public class AnimationPanel extends JPanel implements ActionListener {
 
-    private final int WINDOWX = 600;
-    private final int WINDOWY = 500;
-    private final int XCord = 200;
+    private final int WINDOWX = 550; //600; //hardcoded 1/2 the size of restaurant GUI WINDOWX
+    private final int WINDOWY = 600; //500;
+    private final int XCord = 200; //200;
     private final int YCord = 250;
     private final int Height = 50;
     private final int Width = 50;

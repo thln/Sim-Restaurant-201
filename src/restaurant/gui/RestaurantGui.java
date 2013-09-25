@@ -26,6 +26,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
     private RestaurantPanel restPanel = new RestaurantPanel(this);
     
     /* infoPanel holds information about the clicked customer, if there is one*/
+    private JPanel interfacePanel;
     private JPanel infoPanel;
     private JLabel infoLabel; //part of infoPanel
     private JPanel personalPanel; //info panel
@@ -40,16 +41,18 @@ public class RestaurantGui extends JFrame implements ActionListener {
      */
     public RestaurantGui() 
     {
-        int WINDOWX = 450;
-        int WINDOWY = 350;
+        int WINDOWX = 1100; //450; 1.8 multiplier
+        int WINDOWY = 600; //350; 1.8 multiplier
         int height = 50;
         int width = 50;
 
         //DELETE ALL OF animationFrame
+        /*
         animationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         animationFrame.setBounds(100+WINDOWX, 50 , WINDOWX+100, WINDOWY+100);
         animationFrame.setVisible(true);
     	animationFrame.add(animationPanel); 
+    	*/
     	
     	animationPanel.setHost(restPanel.getHost());
     	
@@ -58,22 +61,31 @@ public class RestaurantGui extends JFrame implements ActionListener {
         //setLayout(new BoxLayout((Container) getContentPane(), 
         //		BoxLayout.X_AXIS));
         //		BoxLayout.Y_AXIS));
-        //FlowLayout testlayout = new FlowLayout();
         setLayout(new BorderLayout());
-        //testlayout.setAlignment(FlowLayout.TRAILING);
-
-        Dimension restDim = new Dimension(WINDOWX, (int) (WINDOWY * .6));
+        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    	//Testing
+    	//Container contentPane = getContentPane();
+    	//contentPane.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    	//contentPane.add(listPane, BorderLayout.CENTER);
+    	//contentPane.add(buttonPane, BorderLayout.PAGE_END);
+    	
+    	//Testing #2
+        interfacePanel = new JPanel();
+        interfacePanel.setLayout(new BorderLayout());
+        interfacePanel.setBounds(height, width, WINDOWX/2, WINDOWY);
+        
+        Dimension restDim = new Dimension(WINDOWX/2, (int) (WINDOWY * .4)); //(WINDOWY * .6));
         restPanel.setPreferredSize(restDim);
         restPanel.setMinimumSize(restDim);
         restPanel.setMaximumSize(restDim);
-        add(restPanel, BorderLayout.CENTER);
+        interfacePanel.add(restPanel, BorderLayout.CENTER);
         //Add in animationPanel and and change the sizing (variable in AnimationPanel)
         //add(restPanel, BorderLayout.TOP);
         
         
         
         // Now, setup the info panel
-        Dimension infoDim = new Dimension(WINDOWX, (int) (WINDOWY * .25));
+        Dimension infoDim = new Dimension(WINDOWX/2, (int) (WINDOWY * .25));
         infoPanel = new JPanel();
         infoPanel.setPreferredSize(infoDim);
         infoPanel.setMinimumSize(infoDim);
@@ -82,7 +94,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
 
         
         //personal info
-        Dimension personalDim = new Dimension(WINDOWX, (int) (WINDOWY* .15));
+        Dimension personalDim = new Dimension(WINDOWX/2, (int) (WINDOWY* .15));
         personalPanel = new JPanel();
         JLabel nameLabel = new JLabel();
         nameLabel.setText("Henry Nguyen");
@@ -90,7 +102,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         ImageIcon image = new ImageIcon("C:/Users/Alan/Pictures/2012 - 2013 College Freshmen/ID/dog.jpg");
         JLabel imagelabel = new JLabel(image);
         personalPanel.add(imagelabel);
-        add(personalPanel, BorderLayout.PAGE_END); 
+        interfacePanel.add(personalPanel, BorderLayout.PAGE_END); 
         
         
         stateCB = new JCheckBox();
@@ -105,7 +117,13 @@ public class RestaurantGui extends JFrame implements ActionListener {
         //JTextField NameEnter = new JTextField("Enter Name Here", 20);
         //infoPanel.add(NameEnter);
         infoPanel.add(stateCB);
-        add(infoPanel, BorderLayout.PAGE_START);
+        interfacePanel.add(infoPanel, BorderLayout.PAGE_START);
+        
+        
+        //TESTING #2
+        add(interfacePanel, BorderLayout.WEST);
+        
+        add(animationPanel, BorderLayout.CENTER); //BorderLayout.EAST);
     }
     /**
      * updateInfoPanel() takes the given customer (or, for v3, Host) object and
