@@ -29,6 +29,11 @@ public class WaiterAgent extends Agent
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 
+	//Agent Correspondents
+	private HostAgent host;
+	private CookAgent cook;
+	
+	
 	//Checks for state, since there are only two states, boolean works
 	//private boolean bringingCustomer = false; 
 	private String name;
@@ -54,22 +59,28 @@ public class WaiterAgent extends Agent
 	
 	
 
-	public WaiterAgent(String name) {
+	public WaiterAgent(String name, HostAgent h, CookAgent c) 
+	{
 		super();
 
 		this.name = name;
+		this.host = h;
+		this.cook = c;
 		// make some tables
 		tables = new ArrayList<Table>(NTABLES);
-		for (int ix = 1; ix <= NTABLES; ix++) {
+		for (int ix = 1; ix <= NTABLES; ix++) 
+		{
 			tables.add(new Table(ix));//how you add to a collections
 		}
 	}
 
-	public String getMaitreDName() {
+	public String getMaitreDName() 
+	{
 		return name;
 	}
 
-	public String getName() {
+	public String getName() 
+	{
 		return name;
 	}
 
@@ -130,6 +141,18 @@ public class WaiterAgent extends Agent
 	
 	}
 	
+	public void OrderIsReady(String food, int table)
+	{
+		for(MyCustomer mc : myCustomers)
+		{
+			if(mc.table == table && mc.choice == food)
+			{
+				mc.state = myCustomerState.DeliveringMeal;
+			}
+			
+		}
+	}
+	
 	public void msgLeavingTable(CustomerAgent cust) 
 	{
 		for (Table table : tables) 
@@ -187,6 +210,12 @@ public class WaiterAgent extends Agent
 			if(mc.state == myCustomerState.readyToOrder)
 			{
 				TakeOrder(mc);
+				return true;
+			}
+			
+			if(mc.state == myCustomerState.OrderReceived)
+			{
+				SendOrder(mc);
 			}
 		}
 
@@ -241,10 +270,24 @@ public class WaiterAgent extends Agent
 		
 	}
 	
-	public void DoGoToTable(int table)
+	private void DoGoToTable(int table)
 	{
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!!!!
+	}
+	
+	public void SendOrder(MyCustomer mc)
+	{
+		DoGoToCook(); //REMEMBER TO PASS CHEF AS A PARAMETER
+		cook.pleaseCook(mc.choice, mc.table, this);
+		print("Message 7 Sent");
+		mc.state = myCustomerState.OrderSent;
+	}
+	
+	private void DoGoToCook() //REMEMBER TO PASS CHEF AS A PARAMETER
+	{
+		//REMEMBER TO DO THIS
+		//AFFECTS GUI!!!!!!
 	}
 	
 	

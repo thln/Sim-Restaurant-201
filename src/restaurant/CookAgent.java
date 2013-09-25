@@ -30,19 +30,47 @@ public class CookAgent extends Agent {
 	public Timer CookTimer;
 	public List <Order> orders = new ArrayList<Order>();
 	public Map<String, Integer> RecipeBook;
+	private String name;
+	
+	public CookAgent(String name)
+	{
+		super();
+		this.name = name;
+	}
+	
 	
 	
 	/***** MESSAGES *****/
 	public void pleaseCook(String food, int table, WaiterAgent w)
 	{
 		/////FILL IN
+		orders.add(new Order(food, table, w));
+		stateChanged();
+	}
+	
+	public void OrderIsFinished(Order o)
+	{
+		o.state = FoodState.Ready;
+		stateChanged();
 	}
 	
 	/***** SCHEDULER *****/
 	
 	protected boolean pickAndExecuteAnAction() {
 		//////FILL IN HERE
-
+		for( Order order : orders)
+		{
+			if(order.state == FoodState.Ready)
+			{
+				PlateIt(order);
+			}
+			
+			if(order.state == FoodState.Pending)
+			{
+				CookIt(order);
+			}
+		}
+		
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
@@ -54,11 +82,30 @@ public class CookAgent extends Agent {
 	public void PlateIt(Order o)
 	{
 		/////FILL IN HERE
+		DoPlate(o);
+		o.w.OrderIsReady(o.food, o.table);
+		print("Message 8 Sent " + name);
+		/////Why is the print coming from a "CookAgent address"
+		o.state = FoodState.Finished;
+	}
+	
+	private void DoPlate(Order o)
+	{
+		////Animate plate?
 	}
 	
 	public void CookIt(Order o)
 	{
 		/////FILL IN HERE
+		DoCooking(o);
+		o.state = FoodState.Cooking;
+		/////COOOKING TIMER
+		OrderIsFinished(o);
+	}
+	
+	private void DoCooking(Order o)
+	{
+		
 	}
 	
 }

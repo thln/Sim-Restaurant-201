@@ -34,10 +34,10 @@ public class HostAgent extends Agent
 	{
 		public WaiterAgent w1;
 		public int NumberOfCustomers;
-		public MyWaiter(String name)
-		{
-			w1 = new WaiterAgent(name);
-		}
+//		public MyWaiter(String name)
+//		{
+//			w1 = new WaiterAgent(name);
+//		}
 		public MyWaiter(WaiterAgent w)
 		{
 			w1 = w;

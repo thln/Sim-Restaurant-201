@@ -3,6 +3,7 @@ package restaurant.gui;
 import restaurant.CustomerAgent;
 import restaurant.WaiterAgent;
 import restaurant.HostAgent;
+import restaurant.CookAgent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +17,9 @@ import java.util.Vector;
 public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
-    private WaiterAgent testWaiter = new WaiterAgent("test");
     private HostAgent host = new HostAgent("Sarah");
+    private CookAgent cook = new CookAgent("Jesse");
+    private WaiterAgent testWaiter = new WaiterAgent("Danny", host, cook);
 	private WaiterGui WaiterGui = new WaiterGui(testWaiter);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
@@ -34,9 +36,12 @@ public class RestaurantPanel extends JPanel {
         testWaiter.setGui(WaiterGui);
         host.addWaiter(testWaiter);
 
+        //Remember to add a spot to dynamically create waiters
+        
         gui.animationPanel.addGui(WaiterGui);
         host.startThread();
         testWaiter.startThread();
+        cook.startThread();
         
         setLayout(new GridLayout(1, 2, 20, 20));
         group.setLayout(new GridLayout(1, 2, 10, 10));
