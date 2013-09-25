@@ -218,7 +218,8 @@ public class CustomerAgent extends Agent {
 
 	private void leaveTable() {
 		Do("Leaving.");
-		waiter.msgLeavingTable(this);
+		waiter.iAmLeavingTable(this);
+		print("Mesage 10 Sent");
 		customerGui.DoExitRestaurant();
 	}
 

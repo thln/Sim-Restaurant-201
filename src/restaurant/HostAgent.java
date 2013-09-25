@@ -8,6 +8,8 @@ import java.util.concurrent.Semaphore;
 
 import restaurant.CustomerAgent.AgentState;
 //import restaurant.WaiterAgent.Table;
+//import restaurant.WaiterAgent.MyCustomer;
+import restaurant.WaiterAgent.myCustomerState;
 
 /** 
  * Restaurant HostAgent
@@ -144,10 +146,28 @@ public class HostAgent extends Agent
 		stateChanged();
 	}
 	
-	public void TableIsFree(Table t)
+	public void TableIsFree(int t)
 	{
 		///////FILL IN HERE
+		for(Table table : tables)
+		{
+			if(table.tableNumber == t)
+			{
+				for(MyCustomer mc : MyCustomers)
+				{
+					if(mc.c == table.getOccupant())
+					{
+						mc.state = CustomerState.Left;
+						table.setUnoccupied();
+						stateChanged();
+					}
+					
+				}
+			}
+		}
 	}
+	
+	
 	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.

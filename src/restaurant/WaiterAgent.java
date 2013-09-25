@@ -42,7 +42,7 @@ public class WaiterAgent extends Agent
 	public WaiterGui waiterGui = null;
 	
 	public enum myCustomerState 
-	{Waiting, readyToOrder, TakingOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving};
+	{Waiting, readyToOrder, TakingOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving, Left};
 	
 	private class MyCustomer
 	{
@@ -154,25 +154,16 @@ public class WaiterAgent extends Agent
 		}
 	}
 	
-	public void msgLeavingTable(CustomerAgent cust) 
+	public void iAmLeavingTable(CustomerAgent cust) 
 	{
-		for (Table table : tables) 
+		for(MyCustomer mc : myCustomers)
 		{
-			if (table.getOccupant() == cust) 
+			if(mc.c == cust)
 			{
-				print(cust + " leaving table " + table.tableNumber);
-				table.setUnoccupied();
-				for(MyCustomer mc : myCustomers)
-				{
-					if(mc.c == cust)
-					{
-						mc.state = myCustomerState.Leaving;
-					}
-				}
-				stateChanged();
+				mc.state = myCustomerState.Leaving;
 			}
 		}
-		
+	stateChanged();		
 	}
 
 	public void msgAtTable() {//from animation
@@ -226,6 +217,12 @@ public class WaiterAgent extends Agent
 				DeliverMeal(mc);
 				return true;
 			}
+			
+			if(mc.state == myCustomerState.Leaving)
+			{
+				clearTable(mc);
+				return true;
+			}
 		}
 
 		return false;
@@ -241,7 +238,8 @@ public class WaiterAgent extends Agent
 	
 	///// Actions
 
-	private void seatCustomer(CustomerAgent customer, Table table) {
+	private void seatCustomer(CustomerAgent customer, Table table) 
+	{
 
 		//customer.setCurrentTable(table.tableNumber);
 		Menu menuforCust = new Menu();
@@ -275,9 +273,7 @@ public class WaiterAgent extends Agent
 		
 		DoGoToTable(mc.table);
 		mc.c.WhatDoYouWant();
-		mc.state = myCustomerState.TakingOrder;
-
-		
+		mc.state = myCustomerState.TakingOrder;	
 	}
 	
 	private void DoGoToTable(int table)
@@ -300,7 +296,7 @@ public class WaiterAgent extends Agent
 		//AFFECTS GUI!!!!!!
 	}
 	
-	private void DeliverMeal(MyCustomer mc)
+	public void DeliverMeal(MyCustomer mc)
 	{
 		///Do we need to carry the order
 		DoGoToTable(mc.table);
@@ -310,14 +306,33 @@ public class WaiterAgent extends Agent
 		mc.state = myCustomerState.Eating;
 	}
 	
+	public void clearTable(MyCustomer mc)
+	{
+		for (Table table : tables) 
+		{
+			if (table.getOccupant() == mc.c) 
+			{
+				print(mc.c + " leaving table " + table.tableNumber);
+				table.setUnoccupied();
+				mc.state = myCustomerState.Left;
+				host.TableIsFree(table.tableNumber);
+				print("Message 11 Sent");
+			}
+			
+		}
+		
+	}
+	
 	
 	//utilities
 
-	public void setGui(WaiterGui gui) {
+	public void setGui(WaiterGui gui) 
+	{
 		waiterGui = gui;
 	}
 
-	public WaiterGui getGui() {
+	public WaiterGui getGui() 
+	{
 		return waiterGui;
 	}
 	
@@ -330,31 +345,38 @@ public class WaiterAgent extends Agent
 		}
 	}
 
-	private class Table {
+	private class Table 
+	{
 		CustomerAgent occupiedBy;
 		int tableNumber;
 
-		Table(int tableNumber) {
+		Table(int tableNumber) 
+		{
 			this.tableNumber = tableNumber;
 		}
 
-		void setOccupant(CustomerAgent cust) {
+		void setOccupant(CustomerAgent cust) 
+		{
 			occupiedBy = cust;
 		}
 
-		void setUnoccupied() {
+		void setUnoccupied() 
+		{
 			occupiedBy = null;
 		}
 
-		CustomerAgent getOccupant() {
+		CustomerAgent getOccupant() 
+		{
 			return occupiedBy;
 		}
 
-		boolean isOccupied() {
+		boolean isOccupied() 
+		{
 			return occupiedBy != null;
 		}
 
-		public String toString() {
+		public String toString() 
+		{
 			return "table " + tableNumber;
 		}
 	}
