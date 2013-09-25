@@ -1,6 +1,7 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.HostAgent.CustomerState;
 import restaurant.gui.WaiterGui;
 
 import java.util.*;
@@ -15,13 +16,14 @@ import java.util.concurrent.Semaphore;
 //is proceeded as he wishes.
 
 //This is now a Waiter Agent. We are implementing the Host separately. 9/18/13
-public class WaiterAgent extends Agent {
+public class WaiterAgent extends Agent 
+{
 	//static final int NTABLES = 3;//a global for the number of tables.
 	private int NTABLES = 1;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
-	public List<CustomerAgent> waitingCustomers
-	= new ArrayList<CustomerAgent>();
+	public List<MyCustomer> myCustomers
+	= new ArrayList<MyCustomer>();
 	public Collection<Table> tables;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
@@ -32,6 +34,24 @@ public class WaiterAgent extends Agent {
 	private Semaphore atTable = new Semaphore(0,true);
 
 	public WaiterGui waiterGui = null;
+	
+	public enum myCustomerState 
+	{Waiting, readyToOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving};
+	
+	private class MyCustomer
+	{
+		public CustomerAgent c;
+		int table;
+		String choice;
+		private CustomerState state = CustomerState.Waiting;
+		public MyCustomer(CustomerAgent cust, int t)
+		{
+			c = cust;
+			table = t;
+		}
+	}
+	
+	
 
 	public WaiterAgent(String name) {
 		super();
@@ -52,28 +72,50 @@ public class WaiterAgent extends Agent {
 		return name;
 	}
 
-	public List getWaitingCustomers() {
-		return waitingCustomers;
+	public List getWaitingCustomers() 
+	{
+		return myCustomers;
 	}
 
-	public Collection getTables() {
+	public Collection getTables() 
+	{
 		return tables;
 	}
 	// Messages
 
-	public void msgIWantFood(CustomerAgent cust) {
-		waitingCustomers.add(cust);
+	public void msgIWantFood(CustomerAgent cust)
+	{
+		//necessary anymore?
+		//myCustomers.add(cust);
+		//stateChanged();
+	}
+	
+	public void pleaseSeatCustomer(CustomerAgent cust, int table)
+	{
+		myCustomers.add(new MyCustomer(cust,table));
+		cust.setWaiter(this);
 		stateChanged();
 	}
 
-	public void msgLeavingTable(CustomerAgent cust) {
-		for (Table table : tables) {
-			if (table.getOccupant() == cust) {
+	public void msgLeavingTable(CustomerAgent cust) 
+	{
+		for (Table table : tables) 
+		{
+			if (table.getOccupant() == cust) 
+			{
 				print(cust + " leaving table " + table.tableNumber);
 				table.setUnoccupied();
+				for(MyCustomer mc : myCustomers)
+				{
+					if(mc.c == cust)
+					{
+						mc.state = CustomerState.Left;
+					}
+				}
 				stateChanged();
 			}
 		}
+		
 	}
 
 	public void msgAtTable() {//from animation
@@ -95,9 +137,14 @@ public class WaiterAgent extends Agent {
 		//{
 			for (Table table : tables) {
 				if (!table.isOccupied()) {
-					if (!waitingCustomers.isEmpty() /*&& waiter is back at his initial position*/) {
-						seatCustomer(waitingCustomers.get(0), table);//the action
+					//if (!myCustomers.isEmpty() /*&& waiter is back at his initial position*/) {
+					for(MyCustomer mc : myCustomers)
+					{
+						if(mc.state == CustomerState.Waiting)
+						{
+						seatCustomer(myCustomers.get(0).c, table);//the action
 						return true;//return true to the abstract agent to reinvoke the scheduler.
+						}
 					}
 				}
 			}
@@ -124,7 +171,7 @@ public class WaiterAgent extends Agent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		waitingCustomers.remove(customer);
+		myCustomers.remove(customer);
 		waiterGui.DoLeaveCustomer();
 		//bringingCustomer = false;
 		//stateChanged();

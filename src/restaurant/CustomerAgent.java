@@ -19,6 +19,7 @@ public class CustomerAgent extends Agent {
 	
 	// agent correspondents
 	private WaiterAgent waiter;
+	private HostAgent host;
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
@@ -43,16 +44,24 @@ public class CustomerAgent extends Agent {
 	/**
 	 * hack to establish connection to Waiter agent.
 	 */
-	public void setWaiter(WaiterAgent waiter) {
+	public void setWaiter(WaiterAgent waiter) 
+	{
 		this.waiter = waiter;
 	}
+	
+	public void setHost(HostAgent host)
+	{
+		this.host = host;
+	}
 
-	public String getCustomerName() {
+	public String getCustomerName() 
+	{
 		return name;
 	}
 	// Messages
 
-	public void gotHungry() {//from animation
+	public void gotHungry() 
+	{//from animation
 		print("I'm hungry");
 		event = AgentEvent.gotHungry;
 		stateChanged();
@@ -114,7 +123,9 @@ public class CustomerAgent extends Agent {
 
 	private void goToRestaurant() {
 		Do("Going to restaurant");
-		waiter.msgIWantFood(this);//send our instance, so he can respond to us
+		//waiter.msgIWantFood(this);//send our instance, so he can respond to us
+		host.IWantFood(this);
+		print("Message 1 Sent");
 	}
 
 	private void SitDown() {
