@@ -3,6 +3,7 @@ package restaurant;
 import agent.Agent;
 import restaurant.HostAgent.CustomerState;
 import restaurant.gui.WaiterGui;
+import agent.Menu;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -81,7 +82,13 @@ public class WaiterAgent extends Agent
 	{
 		return tables;
 	}
-	// Messages
+	
+
+	
+	
+	
+	
+	///// Messages
 
 	public void msgIWantFood(CustomerAgent cust)
 	{
@@ -93,8 +100,13 @@ public class WaiterAgent extends Agent
 	public void pleaseSeatCustomer(CustomerAgent cust, int table)
 	{
 		myCustomers.add(new MyCustomer(cust,table));
-		cust.setWaiter(this);
+		//cust.setWaiter(this);
 		stateChanged();
+	}
+	
+	public void ReadyToOrder(CustomerAgent c)
+	{
+		
 	}
 
 	public void msgLeavingTable(CustomerAgent cust) 
@@ -124,6 +136,10 @@ public class WaiterAgent extends Agent
 		stateChanged();
 	}
 
+	
+	
+	
+	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
@@ -156,25 +172,31 @@ public class WaiterAgent extends Agent
 		//and wait.
 	}
 
-	// Actions
+	
+	
+	
+	
+	
+	///// Actions
 
 	private void seatCustomer(CustomerAgent customer, Table table) {
-		//bringingCustomer = true;
-		//customer.currentTable = table.tableNumber;
-		customer.setCurrentTable(table.tableNumber);
-		customer.msgSitAtTable();
+
+		//customer.setCurrentTable(table.tableNumber);
+		Menu menuforCust = new Menu();
+		customer.followMe(menuforCust, this, table.tableNumber);
 		DoSeatCustomer(customer, table);
 		table.setOccupant(customer);
-		try {
+		try 
+		{
 			atTable.acquire();
-		} catch (InterruptedException e) {
+		} catch (InterruptedException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		myCustomers.remove(customer);
 		waiterGui.DoLeaveCustomer();
-		//bringingCustomer = false;
-		//stateChanged();
+
 	}
 
 	// The animation DoXYZ() routines

@@ -3,6 +3,7 @@ package restaurant;
 import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
 import agent.Agent;
+import agent.Menu;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +17,8 @@ public class CustomerAgent extends Agent {
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
 	private int currentTable;
+	private Menu myMenu;
+	private String myOrder;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -23,7 +26,7 @@ public class CustomerAgent extends Agent {
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, Eating, DoneEating, Leaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, Ordering, WaitingForFood, Eating, DoneEating, Leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
@@ -58,7 +61,11 @@ public class CustomerAgent extends Agent {
 	{
 		return name;
 	}
-	// Messages
+	
+	
+	
+	
+	///// Messages
 
 	public void gotHungry() 
 	{//from animation
@@ -67,8 +74,12 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 
-	public void msgSitAtTable() {
-		print("Received msgSitAtTable");
+	public void followMe(Menu m, WaiterAgent w, int t) {
+		print("Message 3 Sent");
+		print("Following Waiter");
+		myMenu = m;
+		waiter = w;
+		currentTable = t;
 		event = AgentEvent.followMe;
 		stateChanged();
 	}
@@ -84,6 +95,11 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 
+	
+	
+	
+	
+	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
@@ -101,11 +117,15 @@ public class CustomerAgent extends Agent {
 			return true;
 		}
 		if (state == AgentState.BeingSeated && event == AgentEvent.seated){
-			state = AgentState.Eating;
-			EatFood();
+			state = AgentState.ChoosingOrder;
+			chooseOrder();
 			return true;
 		}
+		
+		
 
+		//NEED TO GO THROUGH Seated, ChoosingOrder, Ordering, waitingforFood, then go to Eating
+		
 		if (state == AgentState.Eating && event == AgentEvent.doneEating){
 			state = AgentState.Leaving;
 			leaveTable();
@@ -119,7 +139,11 @@ public class CustomerAgent extends Agent {
 		return false;
 	}
 
-	// Actions
+	
+	
+	
+	
+	///// Actions
 
 	private void goToRestaurant() {
 		Do("Going to restaurant");
@@ -131,6 +155,13 @@ public class CustomerAgent extends Agent {
 	private void SitDown() {
 		Do("Being seated. Going to table");
 		customerGui.DoGoToSeat(currentTable);//hack; only one table
+	}
+	
+	private void chooseOrder()
+	{
+		myOrder = myMenu.blindPick();
+		waiter.ReadyToOrder(this);
+		print("Message 4 Sent");
 	}
 
 	private void EatFood() {
