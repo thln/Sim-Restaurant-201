@@ -42,7 +42,7 @@ public class WaiterAgent extends Agent
 	public WaiterGui waiterGui = null;
 	
 	public enum myCustomerState 
-	{Waiting, readyToOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving};
+	{Waiting, readyToOrder, TakingOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving};
 	
 	private class MyCustomer
 	{
@@ -148,6 +148,7 @@ public class WaiterAgent extends Agent
 			if(mc.table == table && mc.choice == food)
 			{
 				mc.state = myCustomerState.DeliveringMeal;
+				stateChanged();
 			}
 			
 		}
@@ -187,7 +188,8 @@ public class WaiterAgent extends Agent
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	protected boolean pickAndExecuteAnAction() 
+	{
 		/* Think of this next rule as:
             Does there exist a table and customer,
             so that table is unoccupied and customer is waiting.
@@ -273,6 +275,7 @@ public class WaiterAgent extends Agent
 		
 		DoGoToTable(mc.table);
 		mc.c.WhatDoYouWant();
+		mc.state = myCustomerState.TakingOrder;
 
 		
 	}
