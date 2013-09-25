@@ -38,12 +38,14 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
-    public RestaurantGui() {
+    public RestaurantGui() 
+    {
         int WINDOWX = 450;
         int WINDOWY = 350;
         int height = 50;
         int width = 50;
 
+        //DELETE ALL OF animationFrame
         animationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         animationFrame.setBounds(100+WINDOWX, 50 , WINDOWX+100, WINDOWY+100);
         animationFrame.setVisible(true);
@@ -65,6 +67,10 @@ public class RestaurantGui extends JFrame implements ActionListener {
         restPanel.setMinimumSize(restDim);
         restPanel.setMaximumSize(restDim);
         add(restPanel, BorderLayout.CENTER);
+        //Add in animationPanel and and change the sizing (variable in AnimationPanel)
+        //add(restPanel, BorderLayout.TOP);
+        
+        
         
         // Now, setup the info panel
         Dimension infoDim = new Dimension(WINDOWX, (int) (WINDOWY * .25));

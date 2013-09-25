@@ -126,6 +126,7 @@ public class HostAgent extends Agent
 	
 	public void addTables()
 	{
+		//ONLY 3 TABLES ALLOWED ATM
 		if(NTABLES < 4)
 		{
 			NTABLES++;
@@ -139,6 +140,7 @@ public class HostAgent extends Agent
 	{
 		///////FILL IN HERE
 		MyCustomers.add(new MyCustomer(cust));
+		print("Message 1 Sent");
 		stateChanged();
 	}
 	
@@ -166,6 +168,7 @@ public class HostAgent extends Agent
 					{
 						//if there is an empty table and waiting customer, seat customer
 						seatCustomer(mc, table);
+						return true;
 					}
 				}
 			}
@@ -185,8 +188,8 @@ public class HostAgent extends Agent
 		//Add in way to look through waiter list
 		
 		MyWaiters.get(0).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
-		print("Message 2 Sent");
 		mc.state = CustomerState.Seated;
+		print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
 	}
 	
 }

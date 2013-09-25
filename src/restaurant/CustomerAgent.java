@@ -26,7 +26,7 @@ public class CustomerAgent extends Agent {
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, Ordering, WaitingForFood, Eating, DoneEating, Leaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, Ordering, WaitingForFood, FoodReceived, Eating, DoneEating, Leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
@@ -92,6 +92,12 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 
+	public void HereIsYourOrder(String o)
+	{
+		state = AgentState.FoodReceived;
+		stateChanged();
+	}
+	
 	public void msgAnimationFinishedGoToSeat() {
 		//from animation
 		event = AgentEvent.seated;
@@ -135,6 +141,12 @@ public class CustomerAgent extends Agent {
 			return true;
 		}
 		
+		if(state == AgentState.FoodReceived && event == AgentEvent.seated)
+		{
+			state = AgentState.Eating;
+			EatFood();
+			return true;
+		}
 
 		//NEED TO GO THROUGH Seated, ChoosingOrder, Ordering, waitingforFood, then go to Eating
 		
@@ -161,7 +173,6 @@ public class CustomerAgent extends Agent {
 		Do("Going to restaurant");
 		//waiter.msgIWantFood(this);//send our instance, so he can respond to us
 		host.IWantFood(this);
-		print("Message 1 Sent");
 	}
 
 	private void SitDown() {

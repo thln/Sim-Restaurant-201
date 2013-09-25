@@ -63,11 +63,13 @@ public class CookAgent extends Agent {
 			if(order.state == FoodState.Ready)
 			{
 				PlateIt(order);
+				return true;
 			}
 			
 			if(order.state == FoodState.Pending)
 			{
 				CookIt(order);
+				return true;
 			}
 		}
 		

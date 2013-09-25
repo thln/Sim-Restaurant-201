@@ -216,6 +216,13 @@ public class WaiterAgent extends Agent
 			if(mc.state == myCustomerState.OrderReceived)
 			{
 				SendOrder(mc);
+				return true;
+			}
+			
+			if(mc.state == myCustomerState.DeliveringMeal)
+			{
+				DeliverMeal(mc);
+				return true;
 			}
 		}
 
@@ -288,6 +295,16 @@ public class WaiterAgent extends Agent
 	{
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!
+	}
+	
+	private void DeliverMeal(MyCustomer mc)
+	{
+		///Do we need to carry the order
+		DoGoToTable(mc.table);
+		//Do we need to pass in a "food" item
+		mc.c.HereIsYourOrder(mc.choice);
+		print("Message 9 Sent");
+		mc.state = myCustomerState.Eating;
 	}
 	
 	
