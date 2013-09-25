@@ -206,9 +206,15 @@ public class HostAgent extends Agent
 	{
 		/////FILL IN HERE
 		//Add in way to look through waiter list
-		
-		MyWaiters.get(0).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
 		mc.state = CustomerState.Seated;
+		for( Table table : tables)
+		{
+			if(table == t)
+			{
+				table.setOccupant(mc.c);
+			}
+		}
+		MyWaiters.get(0).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
 		print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
 	}
 	

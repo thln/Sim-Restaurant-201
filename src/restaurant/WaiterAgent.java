@@ -42,7 +42,7 @@ public class WaiterAgent extends Agent
 	public WaiterGui waiterGui = null;
 	
 	public enum myCustomerState 
-	{Waiting, readyToOrder, TakingOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving, Left};
+	{Waiting, Seated, readyToOrder, TakingOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving, Left};
 	
 	private class MyCustomer
 	{
@@ -190,14 +190,8 @@ public class WaiterAgent extends Agent
 		{
 			if(mc.state == myCustomerState.Waiting)
 			{
-				for (Table table : tables) 
-				{
-					if (!table.isOccupied())
-					{
-							seatCustomer(myCustomers.get(0).c, table);//the action
-							return true;//return true to the abstract agent to reinvoke the scheduler.
-					}
-				}
+				seatCustomer(mc);//the action
+				return true;//return true to the abstract agent to reinvoke the scheduler.
 			}
 			
 			if(mc.state == myCustomerState.readyToOrder)
@@ -238,14 +232,14 @@ public class WaiterAgent extends Agent
 	
 	///// Actions
 
-	private void seatCustomer(CustomerAgent customer, Table table) 
+	private void seatCustomer(MyCustomer mc) 
 	{
 
 		//customer.setCurrentTable(table.tableNumber);
 		Menu menuforCust = new Menu();
-		customer.followMe(menuforCust, this, table.tableNumber);
-		DoSeatCustomer(customer, table);
-		table.setOccupant(customer);
+		mc.c.followMe(menuforCust, this, mc.table);
+		DoSeatCustomer(mc.c, mc.table);
+		//table.setOccupant(customer);
 		try 
 		{
 			atTable.acquire();
@@ -254,16 +248,17 @@ public class WaiterAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		myCustomers.remove(customer);
+		//myCustomers.remove(customer);
 		waiterGui.DoLeaveCustomer();
+		mc.state = myCustomerState.Seated;
 
 	}
 
 	// The animation DoXYZ() routines
-	private void DoSeatCustomer(CustomerAgent customer, Table table) {
+	private void DoSeatCustomer(CustomerAgent customer, int table) {
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
-		print("Seating " + customer + " at table " + table.tableNumber);
+		print("Seating " + customer + " at table " + table);
 		waiterGui.DoBringToTable(customer); 
 
 	}
@@ -308,19 +303,18 @@ public class WaiterAgent extends Agent
 	
 	public void clearTable(MyCustomer mc)
 	{
-		for (Table table : tables) 
-		{
-			if (table.getOccupant() == mc.c) 
-			{
-				print(mc.c + " leaving table " + table.tableNumber);
-				table.setUnoccupied();
+		//No longer using tables in Waiter Agent
+		//for (Table table : tables) 
+		//{
+			//if (table.getOccupant() == mc.c) 
+			//{
+				print(mc.c + " leaving table " + mc.table);
+				//table.setUnoccupied();
 				mc.state = myCustomerState.Left;
-				host.TableIsFree(table.tableNumber);
+				host.TableIsFree(mc.table);
 				print("Message 11 Sent");
-			}
-			
-		}
-		
+			//}
+		//}
 	}
 	
 	
