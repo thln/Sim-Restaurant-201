@@ -19,8 +19,8 @@ public class RestaurantPanel extends JPanel {
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent("Jesse");
-    private WaiterAgent testWaiter = new WaiterAgent("Danny", host, cook);
-	private WaiterGui WaiterGui = new WaiterGui(testWaiter);
+    //private WaiterAgent testWaiter = new WaiterAgent("Danny", host, cook);
+	//private WaiterGui WaiterGui = new WaiterGui(testWaiter);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
 
@@ -33,14 +33,14 @@ public class RestaurantPanel extends JPanel {
     public RestaurantPanel(RestaurantGui gui) 
     {
         this.gui = gui;
-        testWaiter.setGui(WaiterGui);
-        host.addWaiter(testWaiter);
+      //  testWaiter.setGui(WaiterGui);
+        //host.newWaiter(testWaiter);
 
         //Remember to add a spot to dynamically create waiters
         
-        gui.animationPanel.addGui(WaiterGui);
+        //gui.animationPanel.addGui(WaiterGui);
         host.startThread();
-        testWaiter.startThread();
+        //testWaiter.startThread();
         cook.startThread();
         
         
@@ -98,29 +98,44 @@ public class RestaurantPanel extends JPanel {
      * @param type indicates whether the person is a customer or waiter (later)
      * @param name name of person
      */
-    public void addPerson(String type, String name, boolean hungry) {
+    public void addPerson(String type, String name, boolean hungry) 
+    {
 
-    	if (type.equals("Customers")) {
-    		CustomerAgent c = new CustomerAgent(name);	
-    		CustomerGui g = new CustomerGui(c, gui);
+    	if (type.equals("Customers")) 
+    	{
+    		CustomerAgent ca = new CustomerAgent(name);	
+    		CustomerGui wg = new CustomerGui(ca, gui);
 
-    		gui.animationPanel.addGui(g);// dw
+    		gui.animationPanel.addGui(wg);// dw
     		//c.setWaiter(host);
-    		c.setHost(host);
-    		c.setGui(g);
-    		customers.add(c);
+    		ca.setHost(host);
+    		ca.setGui(wg);
+    		customers.add(ca);
     		if(hungry)
     		{
-    			c.getGui().setHungry();
+    			ca.getGui().setHungry();
     		}
-    		c.startThread();
+    		ca.startThread();
+    	}
+    	
+    	else if (type.equals("Waiters"))
+    	{
+    		WaiterAgent wa = new WaiterAgent(name,host, cook);
+    		WaiterGui wg = new WaiterGui(wa);
+    		
+    		gui.animationPanel.addGui(wg);
+    		wa.setGui(wg);
+    		
+    		host.newWaiter(wa);
+    	
+    		wa.startThread();
     	}
     }
     
-    public WaiterAgent getWaiter()
-    {
-    	return testWaiter;
-    }
+    //public WaiterAgent getWaiter()
+    //{
+    //	return testWaiter;
+    //}
     
     public HostAgent getHost()
     {

@@ -86,13 +86,8 @@ public class HostAgent extends Agent
 	public List<MyWaiter> MyWaiters = new ArrayList<MyWaiter>();
 	public Collection<Table> tables;
 	private int NTABLES = 1;
-	private int NWAITERS = 1;
+	//private int NWAITERS = 1;
 	private String name;
-	
-	public void addWaiter(WaiterAgent w1)
-	{
-		MyWaiters.add(new MyWaiter(w1));
-	}
 	
 	public HostAgent(String name) 
 	{
@@ -138,6 +133,13 @@ public class HostAgent extends Agent
 	
 	
 	/***** MESSAGES *****/
+	public void newWaiter(WaiterAgent wa)
+	{
+		MyWaiters.add(new MyWaiter(wa));
+		print(MyWaiters.size() + " Number of Waiters");
+		stateChanged();
+	}
+	
 	public void IWantFood(CustomerAgent cust)
 	{
 		///////FILL IN HERE
@@ -206,6 +208,13 @@ public class HostAgent extends Agent
 	{
 		/////FILL IN HERE
 		//Add in way to look through waiter list
+		if(MyWaiters.isEmpty())
+		{
+			print("We currently have no waiters available.");
+		}
+	
+		else 
+		{
 		mc.state = CustomerState.Seated;
 		for( Table table : tables)
 		{
@@ -216,6 +225,7 @@ public class HostAgent extends Agent
 		}
 		MyWaiters.get(0).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
 		print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
+		}
 	}
 	
 }

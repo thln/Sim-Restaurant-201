@@ -31,7 +31,8 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     private JPanel CustomerTab = new JPanel();
     private JPanel WaiterTab = new JPanel();
     private JTabbedPane tabbedPeopleMenu = new JTabbedPane();
-    private List<JButton> list = new ArrayList<JButton>();
+    private List<JButton> customerList = new ArrayList<JButton>();
+    private List<JButton> waiterList = new ArrayList<JButton>();
     private JButton addPerson = new JButton("Add Person");
     private JButton addTables = new JButton("Add Table");
     private JButton pauseButton = new JButton("Pause");
@@ -124,13 +125,22 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         waiterNameEnter = new JTextField("Enter Name Here", textFieldLength);
         waiterNameEnter.setMaximumSize(NameEnterDimensions);
         waiterNameEnter.addKeyListener((KeyListener) this);
+        waiterPane1.setViewportView(waiterNameEnter);
+        waiterPane1.setMaximumSize(NamePersonDimensions);
+        WaiterTab.add(waiterPane1);
+        
+        waiterView.setLayout(new BoxLayout((Container) waiterView, BoxLayout.Y_AXIS));
+        waiterPane2.setViewportView(waiterView);
+        waiterPane2.setPreferredSize(PeopleListDimensions);
+        WaiterTab.add(waiterPane2);
         
         
         
         //Tabbed Menu
         tabbedPeopleMenu.addTab("Customers", CustomerTab);
+        tabbedPeopleMenu.addTab("Waiters", WaiterTab);
         add(tabbedPeopleMenu);
-        
+        //tabbedPeopleMenu.getSelectedIndex()
         
         //Button Panel
         ButtonManager.setLayout(new BoxLayout((Container) ButtonManager, BoxLayout.X_AXIS));
@@ -156,7 +166,14 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     	if (e.getSource() == addPerson) {
         	// Chapter 2.19 describes showInputDialog()
             //addPerson(JOptionPane.showInputDialog("Please enter a name:"));
-        	addPerson(customerNameEnter.getText());
+    		if(tabbedPeopleMenu.getSelectedIndex() == 0)
+    		{
+    			addPerson(customerNameEnter.getText());
+    		}
+    		else if(tabbedPeopleMenu.getSelectedIndex() == 1)
+    		{
+    			addPerson(waiterNameEnter.getText());
+    		}
         }
     	else if (e.getSource() == addTables)
     	{
@@ -168,7 +185,7 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         	// Isn't the second for loop more beautiful?
             /*for (int i = 0; i < list.size(); i++) {
                 JButton temp = list.get(i);*/
-        	for (JButton temp:list){
+        	for (JButton temp:customerList){
                 if (e.getSource() == temp)
                     restPanel.showInfo(type, temp.getText());
             }
@@ -214,22 +231,48 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     {
         if (name != null) 
         {
-            JButton button = new JButton(name);
-            button.setBackground(Color.white);
-
-            Dimension paneSize = customerPane2.getSize();
-            Dimension buttonSize = new Dimension(paneSize.width - 20,
-                    (int) (paneSize.height / 4));
-            button.setPreferredSize(buttonSize);
-            button.setMinimumSize(buttonSize);
-            button.setMaximumSize(buttonSize);
-            button.addActionListener(this);
-            list.add(button);
-            customerView.add(button);
-            type = "Customers";
-            restPanel.addPerson(type, name, newCustomerHungerCB.isSelected());//puts customer on list
-            restPanel.showInfo(type, name);//puts hungry button on panel
-            validate();
+        	//Customer
+        	if(tabbedPeopleMenu.getSelectedIndex() == 0)
+        	{
+	            JButton button = new JButton(name);
+	            button.setBackground(Color.white);
+	
+	            Dimension paneSize = customerPane2.getSize();
+	            Dimension buttonSize = new Dimension(paneSize.width - 20,
+	                    (int) (paneSize.height / 4));
+	            button.setPreferredSize(buttonSize);
+	            button.setMinimumSize(buttonSize);
+	            button.setMaximumSize(buttonSize);
+	            button.addActionListener(this);
+	            customerList.add(button);
+	            customerView.add(button);
+	            //type = "Customers";
+	            //tabbedPeopleMenu.getTitleAt(tabbedPeopleMenu.getSelectedIndex())
+	            restPanel.addPerson(customersType, name, newCustomerHungerCB.isSelected());//puts customer on list
+	            restPanel.showInfo(customersType, name);//puts hungry button on panel
+	            validate();
+        	}
+        	//Waiter
+        	else if(tabbedPeopleMenu.getSelectedIndex() == 1)
+        	{
+	            JButton button = new JButton(name);
+	            button.setBackground(Color.white);
+	
+	            Dimension paneSize = waiterPane2.getSize();
+	            Dimension buttonSize = new Dimension(paneSize.width - 20,
+	                    (int) (paneSize.height / 4));
+	            button.setPreferredSize(buttonSize);
+	            button.setMinimumSize(buttonSize);
+	            button.setMaximumSize(buttonSize);
+	            button.addActionListener(this);
+	            waiterList.add(button);
+	            waiterView.add(button);
+	            //type = "Waiters";
+	            //tabbedPeopleMenu.getTitleAt(tabbedPeopleMenu.getSelectedIndex())
+	            restPanel.addPerson(waitersType, name, false);//puts customer on list
+	            restPanel.showInfo(waitersType, name);//puts hungry button on panel
+	            validate();
+        	}
         }
     }
 
