@@ -3,7 +3,6 @@ package restaurant;
 import agent.Agent;
 import restaurant.HostAgent.CustomerState;
 import restaurant.gui.WaiterGui;
-import agent.Menu;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;

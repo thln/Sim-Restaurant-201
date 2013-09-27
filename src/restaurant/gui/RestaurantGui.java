@@ -32,6 +32,12 @@ public class RestaurantGui extends JFrame implements ActionListener {
     private JPanel personalPanel; //info panel
     private JCheckBox stateCB;//part of infoLabel
 
+    //Numbers used
+    private int WINDOWX = 1100; //450; 1.8 multiplier
+    private int WINDOWY = 600; //350; 1.8 multiplier
+    private int height = 50;
+    private int width = 50;
+    
     private Object currentPerson;/* Holds the agent that the info is about.
     								Seems like a hack */
 
@@ -41,11 +47,13 @@ public class RestaurantGui extends JFrame implements ActionListener {
      */
     public RestaurantGui() 
     {
+    	/*
         int WINDOWX = 1100; //450; 1.8 multiplier
         int WINDOWY = 600; //350; 1.8 multiplier
         int height = 50;
         int width = 50;
-
+*/
+    	
         //DELETE ALL OF animationFrame
         /*
         animationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,7 +99,23 @@ public class RestaurantGui extends JFrame implements ActionListener {
         infoPanel.setMinimumSize(infoDim);
         infoPanel.setMaximumSize(infoDim);
         infoPanel.setBorder(BorderFactory.createTitledBorder("Information"));
+        
+        stateCB = new JCheckBox();
+        stateCB.setVisible(false);
+        stateCB.addActionListener(this);
 
+        //Fix Magic Numbers
+        infoPanel.setLayout(new GridLayout(1, 2, 30, 0));
+        
+        infoLabel = new JLabel(); 
+        infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
+        infoPanel.add(infoLabel); 
+        //JTextField NameEnter = new JTextField("Enter Name Here", 20);
+        //infoPanel.add(NameEnter);
+        infoPanel.add(stateCB);
+        interfacePanel.add(infoPanel, BorderLayout.PAGE_START);
+        
+        
         
         //personal info
         Dimension personalDim = new Dimension(WINDOWX/2, (int) (WINDOWY* .15));
@@ -105,25 +129,10 @@ public class RestaurantGui extends JFrame implements ActionListener {
         interfacePanel.add(personalPanel, BorderLayout.PAGE_END); 
         
         
-        stateCB = new JCheckBox();
-        stateCB.setVisible(false);
-        stateCB.addActionListener(this);
-
-        infoPanel.setLayout(new GridLayout(1, 2, 30, 0));
-        
-        infoLabel = new JLabel(); 
-        infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
-        infoPanel.add(infoLabel); 
-        //JTextField NameEnter = new JTextField("Enter Name Here", 20);
-        //infoPanel.add(NameEnter);
-        infoPanel.add(stateCB);
-        interfacePanel.add(infoPanel, BorderLayout.PAGE_START);
-        
-        
-        //TESTING #2
+        //Overall Window
         add(interfacePanel, BorderLayout.WEST);
         
-        add(animationPanel, BorderLayout.CENTER); //BorderLayout.EAST);
+        add(animationPanel, BorderLayout.CENTER); 
     }
     /**
      * updateInfoPanel() takes the given customer (or, for v3, Host) object and

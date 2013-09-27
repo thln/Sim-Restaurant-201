@@ -16,21 +16,39 @@ import java.util.ArrayList;
  */
 public class ListPanel extends JPanel implements ActionListener, KeyListener {
 
-    public JScrollPane pane =
+	public JScrollPane customerPane1 = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    public JScrollPane customerPane2 =
             new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    public JScrollPane pane2 = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    private JPanel view = new JPanel();
+    public JScrollPane waiterPane1 = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    public JScrollPane waiterPane2 =
+            new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    private JPanel customerView = new JPanel();
+    private JPanel waiterView = new JPanel();
+    private JPanel NewCustomerInfo = new JPanel();
+    private JPanel ButtonManager = new JPanel();
+    private JPanel CustomerTab = new JPanel();
+    private JPanel WaiterTab = new JPanel();
+    private JTabbedPane tabbedPeopleMenu = new JTabbedPane();
     private List<JButton> list = new ArrayList<JButton>();
-    private JButton addPersonB = new JButton("Add");
-    private JButton additionalTables = new JButton("Add Table");
-    private JPanel NewCustomer = new JPanel();
-    private JCheckBox realStateCB;
-    private JTextField NameEnter;
-    //private Dimension NewCustomerSize = new Dimension(100,100);
-
+    private JButton addPerson = new JButton("Add Person");
+    private JButton addTables = new JButton("Add Table");
+    private JButton pauseButton = new JButton("Pause");
+    private JCheckBox newCustomerHungerCB;
+    private JTextField waiterNameEnter;
+    private JTextField customerNameEnter;
+    
+    //Important Dimensions Used
+    Dimension NameEnterDimensions = new Dimension(250, 20);
+    Dimension NamePersonDimensions = new Dimension(250, 50);
+    Dimension PeopleListDimensions = new Dimension(250,300);
+    private int textFieldLength = 10;
+    
     private RestaurantPanel restPanel;
     private String type;
+    private String customersType = "Customers";
+    private String waitersType = "Waiters";
 
     /**
      * Constructor for ListPanel.  Sets up all the gui
@@ -43,45 +61,91 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         this.type = type;
 
         setLayout(new BoxLayout((Container) this, BoxLayout.Y_AXIS));
-        add(new JLabel("<html><pre> <u>" + type + "</u><br></pre></html>"));
+        //add(new JLabel(type)); //"<html><pre><u>" + type + "</u><br></pre></html>"));
 
+        
+        
+        /*
         additionalTables.addActionListener(this);
         add(additionalTables);
         
         addPersonB.addActionListener(this);
         addPersonB.setEnabled(false);
         add(addPersonB);
-        
+        */
         //~~
         
-        realStateCB = new JCheckBox();
-        realStateCB.setVisible(true);
-        realStateCB.setText("Hungry?");
-        realStateCB.setEnabled(false); 
-        realStateCB.addActionListener(this);
+        
+        
+        //For CustomerTab
+        CustomerTab.setLayout(new BoxLayout((Container) CustomerTab, BoxLayout.Y_AXIS));
+        
+        newCustomerHungerCB = new JCheckBox();
+        newCustomerHungerCB.setVisible(true);
+        newCustomerHungerCB.setText("Hungry?");
+        newCustomerHungerCB.setEnabled(false); 
+        newCustomerHungerCB.addActionListener(this);
 
+        /*
         Dimension paneSize = pane.getSize();
-        Dimension NewCustomerSize = new Dimension(paneSize.width,
-                (int) (paneSize.height / 2));
+        Dimension NameEnterDimensions = new Dimension(250, 20);
+        Dimension NamePersonDimensions = new Dimension(250, 50);
+        Dimension PeopleListDimensions = new Dimension(250,300);
+        //(paneSize.width, (int) (paneSize.height / 2));
+        */
         
         //add(NameEnter);
-        NewCustomer.setLayout(new BoxLayout((Container) NewCustomer, BoxLayout.X_AXIS));
-        NewCustomer.setPreferredSize(NewCustomerSize);
-        NewCustomer.setMinimumSize(NewCustomerSize);
-        NewCustomer.setMaximumSize(NewCustomerSize);        
-        NameEnter = new JTextField("Enter Name Here", 10);
-        NameEnter.addKeyListener((KeyListener) this);
+        NewCustomerInfo.setLayout(new BoxLayout((Container) NewCustomerInfo, BoxLayout.X_AXIS));
+        //NewCustomerInfo.setPreferredSize(NewCustomerSize);
+        //NewCustomerInfo.setMinimumSize(NewCustomerSize);
+        //NewCustomerInfo.setMaximumSize(NewCustomerSize);        
+        customerNameEnter = new JTextField("Enter Name Here", textFieldLength);
+        customerNameEnter.setMaximumSize(NameEnterDimensions);
+        customerNameEnter.addKeyListener((KeyListener) this);
         //NewCustomer.addKeyListener(this);
-        NewCustomer.add(NameEnter);
-        NewCustomer.add(realStateCB);
-        pane2.setViewportView(NewCustomer);
-        add(pane2);
-        //~~~
+        NewCustomerInfo.add(customerNameEnter);
+        NewCustomerInfo.add(newCustomerHungerCB);
+        customerPane1.setViewportView(NewCustomerInfo);
+        customerPane1.setMaximumSize(NamePersonDimensions);
+        CustomerTab.add(customerPane1);
         
         
-        view.setLayout(new BoxLayout((Container) view, BoxLayout.Y_AXIS));
-        pane.setViewportView(view);
-        add(pane);
+        customerView.setLayout(new BoxLayout((Container) customerView, BoxLayout.Y_AXIS));
+        customerPane2.setViewportView(customerView);
+        //pane.setMaximumSize(PeopleListDimensions);
+        customerPane2.setPreferredSize(PeopleListDimensions);
+        CustomerTab.add(customerPane2);
+        //add(CustomerTab);
+        
+        
+        
+        //Waiter Tab
+        WaiterTab.setLayout(new BoxLayout((Container) WaiterTab, BoxLayout.Y_AXIS));
+        waiterNameEnter = new JTextField("Enter Name Here", textFieldLength);
+        waiterNameEnter.setMaximumSize(NameEnterDimensions);
+        waiterNameEnter.addKeyListener((KeyListener) this);
+        
+        
+        
+        //Tabbed Menu
+        tabbedPeopleMenu.addTab("Customers", CustomerTab);
+        add(tabbedPeopleMenu);
+        
+        
+        //Button Panel
+        ButtonManager.setLayout(new BoxLayout((Container) ButtonManager, BoxLayout.X_AXIS));
+        addPerson.addActionListener(this);
+        addPerson.setEnabled(false);
+        ButtonManager.add(addPerson);
+        
+        addTables.addActionListener(this);
+        ButtonManager.add(addTables);
+        
+        pauseButton.addActionListener(this);
+        ButtonManager.add(pauseButton);
+        
+        add(ButtonManager);
+    
     }
 
     /**
@@ -89,15 +153,17 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
      * Handles the event of the add button being pressed
      */
     public void actionPerformed(ActionEvent e) {
-    	if (e.getSource() == addPersonB) {
+    	if (e.getSource() == addPerson) {
         	// Chapter 2.19 describes showInputDialog()
             //addPerson(JOptionPane.showInputDialog("Please enter a name:"));
-        	addPerson(NameEnter.getText());
+        	addPerson(customerNameEnter.getText());
         }
-    	else if (e.getSource() == additionalTables)
+    	else if (e.getSource() == addTables)
     	{
     		restPanel.getHost().addTables();	
     	}
+    	//Add in a PauseButton action here here*********
+    	
         else {
         	// Isn't the second for loop more beautiful?
             /*for (int i = 0; i < list.size(); i++) {
@@ -113,15 +179,15 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
-    	if(!(NameEnter.getText().isEmpty()))
+    	if(!(customerNameEnter.getText().isEmpty()))
     	{
-    		realStateCB.setEnabled(true);
-    		addPersonB.setEnabled(true);
+    		newCustomerHungerCB.setEnabled(true);
+    		addPerson.setEnabled(true);
     	}
     	else
     	{
-    		realStateCB.setEnabled(false);
-    		addPersonB.setEnabled(false);
+    		newCustomerHungerCB.setEnabled(false);
+    		addPerson.setEnabled(false);
     	}
 	}
 
@@ -144,12 +210,14 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
      *
      * @param name name of new person
      */
-    public void addPerson(String name) {
-        if (name != null) {
+    public void addPerson(String name) 
+    {
+        if (name != null) 
+        {
             JButton button = new JButton(name);
             button.setBackground(Color.white);
 
-            Dimension paneSize = pane.getSize();
+            Dimension paneSize = customerPane2.getSize();
             Dimension buttonSize = new Dimension(paneSize.width - 20,
                     (int) (paneSize.height / 4));
             button.setPreferredSize(buttonSize);
@@ -157,8 +225,9 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
             button.setMaximumSize(buttonSize);
             button.addActionListener(this);
             list.add(button);
-            view.add(button);
-            restPanel.addPerson(type, name, realStateCB.isSelected());//puts customer on list
+            customerView.add(button);
+            type = "Customers";
+            restPanel.addPerson(type, name, newCustomerHungerCB.isSelected());//puts customer on list
             restPanel.showInfo(type, name);//puts hungry button on panel
             validate();
         }

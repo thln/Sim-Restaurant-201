@@ -3,7 +3,6 @@ package restaurant;
 import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
 import agent.Agent;
-import agent.Menu;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -25,7 +25,7 @@ public class RestaurantPanel extends JPanel {
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
 
     private JPanel restLabel = new JPanel();
-    private ListPanel customerPanel = new ListPanel(this, "Customers");
+    private ListPanel peoplePanel = new ListPanel(this, "Customers And Waiters"); //previously customerPanel or only for Customers
     private JPanel group = new JPanel();
 
     private RestaurantGui gui; //reference to main gui
@@ -43,10 +43,12 @@ public class RestaurantPanel extends JPanel {
         testWaiter.startThread();
         cook.startThread();
         
+        
+        
         setLayout(new GridLayout(1, 2, 20, 20));
         group.setLayout(new GridLayout(1, 2, 10, 10));
 
-        group.add(customerPanel);
+        group.add(peoplePanel);
 
         initRestLabel();
         add(restLabel);
