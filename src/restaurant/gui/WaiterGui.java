@@ -20,14 +20,16 @@ public class WaiterGui implements Gui {
     private int xDestination = -20, yDestination = -20;//default start position
 
     //static final
-    public static final int xTable = 200;
-    public static final int yTable = 250;
+    public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
+    public static final int yTable[] = {0, 250, 250, 250, 350, 350, 350, 450, 450, 450};
 
-    public WaiterGui(WaiterAgent agent) {
+    public WaiterGui(WaiterAgent agent) 
+    {
         this.agent = agent;
     }
 
-    public void updatePosition() {
+    public void updatePosition() 
+    {
         if (xPos < xDestination)
             xPos++;
         else if (xPos > xDestination)
@@ -39,37 +41,43 @@ public class WaiterGui implements Gui {
             yPos--;
 
         if (xPos == xDestination && yPos == yDestination
-        		& (xDestination == xTable + (100*(tableNumber -1)) + width) & (yDestination == yTable - height)) {
+        		& (xDestination == xTable[tableNumber] + width) & (yDestination == yTable[tableNumber] - height)) {
            agent.msgAtTable();
         }
     }
 
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g) 
+    {
         g.setColor(Color.MAGENTA);
         g.fillRect(xPos, yPos, height, width);
     }
 
-    public boolean isPresent() {
+    public boolean isPresent() 
+    {
         return true;
     }
 
-    public void DoBringToTable(CustomerAgent customer) {
+    public void DoBringToTable(CustomerAgent customer) 
+    {
     	tableNumber = customer.getCurrentTable();
     	//xTable = xTable + 100*(customer.currentTable-1);
-        xDestination = xTable + (100*(tableNumber -1)) + 20;
-        yDestination = yTable - 20;
+        xDestination = xTable[tableNumber] + 20;
+        yDestination = yTable[tableNumber] - 20;
     }
 
-    public void DoLeaveCustomer() {
+    public void DoLeaveCustomer() 
+    {
         xDestination = xCordFrontDesk;
         yDestination = yCordFrontDesk;
     }
 
-    public int getXPos() {
+    public int getXPos() 
+    {
         return xPos;
     }
 
-    public int getYPos() {
+    public int getYPos() 
+    {
         return yPos;
     }
 }

@@ -176,7 +176,8 @@ public class HostAgent extends Agent
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	
-	protected boolean pickAndExecuteAnAction() {
+	protected boolean pickAndExecuteAnAction() 
+	{
 		//////FILL IN HERE
 		
 		for(MyCustomer mc : MyCustomers)

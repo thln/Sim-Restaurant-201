@@ -22,8 +22,8 @@ public class CustomerGui implements Gui{
 	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
 
-	public static final int xTable = 200;
-	public static final int yTable = 250;
+    public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
+    public static final int yTable[] = {0, 250, 250, 250, 350, 350, 350, 450, 450, 450};
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //WaiterAgent m) {
 		agent = c;
@@ -88,9 +88,10 @@ public class CustomerGui implements Gui{
 		isPresent = p;
 	}
 
-	public void DoGoToSeat(int seatnumber) {//later you will map seatnumber to table coordinates.
-		xDestination = xTable + 100*(seatnumber-1);
-		yDestination = yTable;
+	public void DoGoToSeat(int seatnumber) 
+	{//later you will map seatnumber to table coordinates.
+		xDestination = xTable[seatnumber];
+		yDestination = yTable[seatnumber];
 		command = Command.GoToSeat;
 		System.out.println("Moving to seat: " + seatnumber);
 	}
