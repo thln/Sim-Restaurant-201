@@ -124,10 +124,11 @@ public class HostAgent extends Agent
 	public void addTables()
 	{
 		//ONLY 3 TABLES ALLOWED ATM
-		if(NTABLES < 4)
+		if(NTABLES < 9)
 		{
 			NTABLES++;
 			tables.add(new Table(NTABLES));
+			print("Number of tables " + NTABLES);
 		}
 	}
 	

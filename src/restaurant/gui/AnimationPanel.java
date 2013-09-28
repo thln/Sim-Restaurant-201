@@ -17,8 +17,15 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private final int WINDOWY = 600; //500;
     private final int XCord = 200; //200;
     private final int YCord = 250;
+    private final int xCordCorner = 0;
+    private final int yCordCorner = 0;
     private final int Height = 50;
     private final int Width = 50;
+    private final int distanceBetweenTables = 100;
+    private final int numTablesPerRow = 3;
+    private final int firstRow = 0;
+    private final int secondRow = 1;
+    private final int thirdRow = 2;
     private Image bufferImage;
     private Dimension bufferSize;
 
@@ -26,7 +33,8 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
     private HostAgent host;
     
-    public AnimationPanel() {
+    public AnimationPanel() 
+    {
     	setSize(WINDOWX, WINDOWY);
         setVisible(true);
         
@@ -36,23 +44,38 @@ public class AnimationPanel extends JPanel implements ActionListener {
     	timer.start();
     }
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) 
+	{
 		repaint();  //Will have paintComponent called
 	}
 
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) 
+    {
         Graphics2D g2 = (Graphics2D)g;
 
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
-        g2.fillRect(0, 0, WINDOWX, WINDOWY );
+        g2.fillRect(xCordCorner, yCordCorner, WINDOWX, WINDOWY);
 
         //Here is the table
         
-        for(int i=1; i <= host.tables.size(); i++)
+        for(int i=0; i < host.tables.size(); i++)
         {
-        	g2.setColor(Color.darkGray);
-            g2.fillRect(XCord + 100*(i-1), YCord, Width, Height);
+        	if(i<(numTablesPerRow*1))
+        	{
+	        	g2.setColor(Color.darkGray);
+	            g2.fillRect(XCord + distanceBetweenTables*(i-(numTablesPerRow*firstRow)), YCord+(distanceBetweenTables*firstRow), Width, Height);
+        	}
+        	else if(i<(numTablesPerRow*2))
+        	{
+	        	g2.setColor(Color.darkGray);
+	            g2.fillRect(XCord + distanceBetweenTables*(i-(numTablesPerRow*secondRow)), YCord+(distanceBetweenTables*secondRow), Width, Height);        		
+        	}
+        	else if(i<(numTablesPerRow*3))
+        	{
+	        	g2.setColor(Color.darkGray);
+	            g2.fillRect(XCord + distanceBetweenTables*(i-(numTablesPerRow*thirdRow)), YCord+(distanceBetweenTables*thirdRow), Width, Height);
+        	}
         }
         /*
         g2.setColor(Color.ORANGE);
@@ -64,24 +87,30 @@ public class AnimationPanel extends JPanel implements ActionListener {
         g2.setColor(Color.ORANGE);
         g2.fillRect(XCord + 4*Width, YCord, Width, Height);//200 and 250 need to be table params
         */
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
+        for(Gui gui : guis) 
+        {
+            if (gui.isPresent()) 
+            {
                 gui.updatePosition();
             }
         }
 
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
+        for(Gui gui : guis) 
+        {
+            if (gui.isPresent()) 
+            {
                 gui.draw(g2);
             }
         }
     }
 
-    public void addGui(CustomerGui gui) {
+    public void addGui(CustomerGui gui) 
+    {
         guis.add(gui);
     }
 
-    public void addGui(WaiterGui gui) {
+    public void addGui(WaiterGui gui) 
+    {
         guis.add(gui);
     }
     

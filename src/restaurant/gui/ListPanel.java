@@ -162,8 +162,10 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
      * Method from the ActionListener interface.
      * Handles the event of the add button being pressed
      */
-    public void actionPerformed(ActionEvent e) {
-    	if (e.getSource() == addPerson) {
+    public void actionPerformed(ActionEvent e) 
+    {
+    	if (e.getSource() == addPerson) 
+    	{
         	// Chapter 2.19 describes showInputDialog()
             //addPerson(JOptionPane.showInputDialog("Please enter a name:"));
     		if(tabbedPeopleMenu.getSelectedIndex() == 0)
@@ -181,11 +183,13 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     	}
     	//Add in a PauseButton action here here*********
     	
-        else {
+        else 
+        {
         	// Isn't the second for loop more beautiful?
             /*for (int i = 0; i < list.size(); i++) {
                 JButton temp = list.get(i);*/
-        	for (JButton temp:customerList){
+        	for (JButton temp:customerList)
+        	{
                 if (e.getSource() == temp)
                     restPanel.showInfo(type, temp.getText());
             }

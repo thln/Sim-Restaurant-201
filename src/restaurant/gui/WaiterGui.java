@@ -12,8 +12,10 @@ public class WaiterGui implements Gui {
 
     private int xPos = -20, yPos = -20;//default waiter position
     private int height = 20, width = 20;
-	private static final int xCordOffScreen = -20;
-	private static final int yCordOffScreen = -20;
+	private static final int xCordFrontDesk = -20;
+	private static final int yCordFrontDesk = -20;
+	private static final int xCordKitchen = 540;
+	private static final int yCordKitchen = 600;
 	private int tableNumber = 1;
     private int xDestination = -20, yDestination = -20;//default start position
 
@@ -59,8 +61,8 @@ public class WaiterGui implements Gui {
     }
 
     public void DoLeaveCustomer() {
-        xDestination = xCordOffScreen;
-        yDestination = yCordOffScreen;
+        xDestination = xCordFrontDesk;
+        yDestination = yCordFrontDesk;
     }
 
     public int getXPos() {
