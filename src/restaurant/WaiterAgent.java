@@ -180,8 +180,11 @@ public class WaiterAgent extends Agent
 	
 	public void msgAtKitchen()
 	{
-		atKitchen.release();
-		stateChanged();
+		if(atKitchen.availablePermits() <1 )
+		{
+			atKitchen.release();
+			stateChanged();
+		}
 	}
 
 	
@@ -349,7 +352,7 @@ public class WaiterAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		print ("At Kitchen " + atTable.toString());
+		//print ("At Kitchen " + atTable.toString());
 		///Do we need to carry the order
 		DoGoToTable(mc.c);
 		try 
@@ -362,7 +365,7 @@ public class WaiterAgent extends Agent
 			e.printStackTrace();
 		}
 		//Do we need to pass in a "food" item
-		print ("At table " + atTable.toString());
+		//print ("At table " + atTable.toString());
 		mc.c.HereIsYourOrder(mc.choice);
 		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;

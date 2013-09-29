@@ -29,7 +29,7 @@ public class CustomerAgent extends Agent
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, ReadyToOrder, GivingOrder, Ordering, WaitingForFood, FoodReceived, Eating, DoneEating, Leaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, ReadyToOrder, GivingOrder, SayingOrder, Ordering, WaitingForFood, FoodReceived, Eating, DoneEating, Leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
@@ -92,7 +92,7 @@ public class CustomerAgent extends Agent
 	{
 		print("Message 5 Sent - Ordering Food");
 		waitingForWaiter.release();
-		state = AgentState.GivingOrder;
+		//state = AgentState.GivingOrder;
 		stateChanged();
 	}
 
@@ -153,6 +153,7 @@ public class CustomerAgent extends Agent
 		}
 		if(state == AgentState.GivingOrder && event == AgentEvent.seated)
 		{
+			state = AgentState.SayingOrder;
 			givingOrderTime();
 			return true;
 		}
@@ -250,9 +251,10 @@ public class CustomerAgent extends Agent
 	
 	private void IWantToOrder(String order)
 	{
-	//			state = AgentState.WaitingForFood;
+				state = AgentState.WaitingForFood;
 				waiter.myChoiceIs(order, this);
 				print("Message 6 Sent - Gave Order");
+				stateChanged();
 	}
 
 	private void EatFood() 
