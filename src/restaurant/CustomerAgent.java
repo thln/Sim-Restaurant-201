@@ -126,7 +126,6 @@ public class CustomerAgent extends Agent
 	protected boolean pickAndExecuteAnAction() 
 	{
 		//	CustomerAgent is a finite state machine
-
 		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry )
 		{
 			state = AgentState.WaitingInRestaurant;
@@ -163,16 +162,13 @@ public class CustomerAgent extends Agent
 			IWantToOrder(myOrder);
 			return true;
 		}
-		
 		if(state == AgentState.FoodReceived && event == AgentEvent.seated)
 		{
 			state = AgentState.Eating;
 			EatFood();
 			return true;
 		}
-
 		//NEED TO GO THROUGH Seated, ChoosingOrder, Ordering, waitingforFood, then go to Eating
-		
 		if (state == AgentState.Eating && event == AgentEvent.doneEating)
 		{
 			state = AgentState.Leaving;
@@ -253,7 +249,7 @@ public class CustomerAgent extends Agent
 	{
 				state = AgentState.WaitingForFood;
 				waiter.myChoiceIs(order, this);
-				print("Message 6 Sent - Gave Order");
+				print("Message 6 Sent - Gave Order: " + order);
 				stateChanged();
 	}
 

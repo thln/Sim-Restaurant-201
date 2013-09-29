@@ -11,7 +11,11 @@ public class CookAgent extends Agent {
 	
 	/***** DATA *****/
 	public enum FoodState 
-	{Pending, Cooking, Ready, Finished};
+	{Pending, Cooking, Finished};
+	
+	public enum state
+	{Cooking, Plating};
+	state S = state.Cooking;
 	
 	private class Order
 	{
@@ -27,15 +31,20 @@ public class CookAgent extends Agent {
 			table = tablenumber;
 		}
 	}
-	public Timer CookTimer;
+	public Timer CookTimer  = new Timer();
 	public List <Order> orders = new ArrayList<Order>();
-	public Map<String, Integer> RecipeBook;
+	public Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
 	private String name;
 	
 	public CookAgent(String name)
 	{
 		super();
 		this.name = name;
+		
+		RecipeBook.put("Salad", 3000);
+		RecipeBook.put("Pizza",5000);
+		RecipeBook.put("Chicken",7000);
+		RecipeBook.put("Steak",8000);	
 	}
 	
 	
@@ -48,19 +57,13 @@ public class CookAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void OrderIsFinished(Order o)
-	{
-		o.state = FoodState.Ready;
-		stateChanged();
-	}
-	
 	/***** SCHEDULER *****/
 	
 	protected boolean pickAndExecuteAnAction() {
 		//////FILL IN HERE
 		for( Order order : orders)
 		{
-			if(order.state == FoodState.Ready)
+			if(order.state == FoodState.Cooking && S == state.Plating)
 			{
 				PlateIt(order);
 				return true;
@@ -84,6 +87,7 @@ public class CookAgent extends Agent {
 	public void PlateIt(Order o)
 	{
 		/////FILL IN HERE
+		S = state.Cooking;
 		DoPlate(o);
 		o.w.OrderIsReady(o.food, o.table);
 		print("Message 8 Sent, Food is Ready" + name);
@@ -99,15 +103,20 @@ public class CookAgent extends Agent {
 	public void CookIt(Order o)
 	{
 		/////FILL IN HERE
-		DoCooking(o);
 		o.state = FoodState.Cooking;
+		CookTimer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				//o.state = FoodState.Ready;
+				S = state.Plating;
+				stateChanged();
+			}
+		},
+		RecipeBook.get(o.food));
 		/////COOOKING TIMER
-		OrderIsFinished(o);
-	}
-	
-	private void DoCooking(Order o)
-	{
-		
+		//o.state = FoodState.Ready;
+		//stateChanged();
 	}
 	
 }
