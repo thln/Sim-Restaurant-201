@@ -37,6 +37,8 @@ public class WaiterAgent extends Agent
 	//private boolean bringingCustomer = false; 
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
+	private Semaphore receivingOrder = new Semaphore(0, true);
+	private Semaphore atKitchen = new Semaphore(0, true);
 
 	public WaiterGui waiterGui = null;
 	
@@ -165,9 +167,16 @@ public class WaiterAgent extends Agent
 	stateChanged();		
 	}
 
-	public void msgAtTable() {//from animation
+	public void msgAtTable() 
+	{//from animation
 		//print("msgAtTable() called");
 		atTable.release();// = true;
+		stateChanged();
+	}
+	
+	public void msgAtKitchen()
+	{
+		atKitchen.release();
 		stateChanged();
 	}
 
@@ -216,6 +225,11 @@ public class WaiterAgent extends Agent
 				clearTable(mc);
 				return true;
 			}
+			else
+			{
+				relax();
+				return true;
+			}
 		}
 
 		return false;
@@ -258,29 +272,41 @@ public class WaiterAgent extends Agent
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		print("Seating " + customer + " at table " + table);
-		waiterGui.DoBringToTable(customer); 
+		waiterGui.GoToTable(customer); 
 
 	}
 
 	public void TakeOrder(MyCustomer mc)
 	{
 		
-		DoGoToTable(mc.table);
+		DoGoToTable(mc.c);
 		mc.c.WhatDoYouWant();
 		mc.state = myCustomerState.TakingOrder;	
 	}
 	
-	private void DoGoToTable(int table)
+	private void DoGoToTable(CustomerAgent cust)
 	{
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!!!!
+		print("Going to Table" + cust.getCurrentTable() + " Customer " + cust);
+		waiterGui.GoToTable(cust);
+		
 	}
 	
 	public void SendOrder(MyCustomer mc)
 	{
 		DoGoToCook(); //REMEMBER TO PASS CHEF AS A PARAMETER
+		try 
+		{
+			atKitchen.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		waiterGui.DoLeaveKitchen();
 		cook.pleaseCook(mc.choice, mc.table, this);
-		print("Message 7 Sent");
+		print("Message 7 - Sent Order");
 		mc.state = myCustomerState.OrderSent;
 	}
 	
@@ -288,15 +314,17 @@ public class WaiterAgent extends Agent
 	{
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!
+		print("Going to Kitchen");
+		waiterGui.GoToKitchen();
 	}
 	
 	public void DeliverMeal(MyCustomer mc)
 	{
 		///Do we need to carry the order
-		DoGoToTable(mc.table);
+		DoGoToTable(mc.c);
 		//Do we need to pass in a "food" item
 		mc.c.HereIsYourOrder(mc.choice);
-		print("Message 9 Sent");
+		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;
 	}
 	
@@ -311,9 +339,19 @@ public class WaiterAgent extends Agent
 				//table.setUnoccupied();
 				mc.state = myCustomerState.Left;
 				host.TableIsFree(mc.table);
-				print("Message 11 Sent");
+				print("Message 11 Sent, " + mc.c + " has left, " + mc.table + " is free");
 			//}
 		//}
+	}
+	
+	public void relax()
+	{
+		doRelax();
+	}
+	
+	public void doRelax()
+	{
+		waiterGui.DoRelax();
 	}
 	
 	

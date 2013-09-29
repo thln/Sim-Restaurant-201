@@ -75,8 +75,7 @@ public class CustomerAgent extends Agent {
 
 	public void followMe(Menu m, WaiterAgent w, int t) 
 	{
-		print("Message 3 Sent");
-		print("Following Waiter");
+		print("Message 3 Sent - Following Waiter");
 		myMenu = m;
 		waiter = w;
 		currentTable = t;
@@ -86,7 +85,7 @@ public class CustomerAgent extends Agent {
 	
 	public void WhatDoYouWant()
 	{
-		print("Message 5 Sent");
+		print("Message 5 Sent - Ordering Food");
 		state = AgentState.Ordering;
 		stateChanged();
 	}
@@ -183,13 +182,13 @@ public class CustomerAgent extends Agent {
 	{
 		myOrder = myMenu.blindPick();
 		waiter.ReadyToOrder(this);
-		print("Message 4 Sent");
+		print("Message 4 Sent - Chosen Order");
 	}
 	
 	private void IWantToOrder(String order)
 	{
 		waiter.myChoiceIs(order, this);
-		print("Message 6 Sent");
+		print("Message 6 Sent - Giving Order");
 		state = AgentState.WaitingForFood;
 	}
 
@@ -218,7 +217,7 @@ public class CustomerAgent extends Agent {
 	private void leaveTable() {
 		Do("Leaving.");
 		waiter.iAmLeavingTable(this);
-		print("Message 10 Sent");
+		print("Message 10 Sent - I am leaving");
 		customerGui.DoExitRestaurant();
 	}
 

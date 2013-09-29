@@ -41,8 +41,14 @@ public class WaiterGui implements Gui {
             yPos--;
 
         if (xPos == xDestination && yPos == yDestination
-        		& (xDestination == xTable[tableNumber] + width) & (yDestination == yTable[tableNumber] - height)) {
+        		& (xDestination == xTable[tableNumber] + width) & (yDestination == yTable[tableNumber] - height)) 
+        {
            agent.msgAtTable();
+        }
+        else if (xPos == xDestination && yPos == yDestination
+        		& (xDestination == xCordKitchen) & (yDestination == yCordKitchen))
+        {
+        	agent.msgAtKitchen();
         }
     }
 
@@ -57,18 +63,35 @@ public class WaiterGui implements Gui {
         return true;
     }
 
-    public void DoBringToTable(CustomerAgent customer) 
+    public void GoToTable(CustomerAgent customer) 
     {
     	tableNumber = customer.getCurrentTable();
     	//xTable = xTable + 100*(customer.currentTable-1);
-        xDestination = xTable[tableNumber] + 20;
-        yDestination = yTable[tableNumber] - 20;
+        xDestination = xTable[tableNumber] + width;
+        yDestination = yTable[tableNumber] - height;
     }
 
+    public void GoToKitchen()
+    {
+    	xDestination = xCordKitchen;
+    	yDestination = yCordKitchen;
+    }
+    
     public void DoLeaveCustomer() 
     {
         xDestination = xCordFrontDesk;
         yDestination = yCordFrontDesk;
+    }
+    
+    public void DoLeaveKitchen()
+    {
+        xDestination = xCordFrontDesk;
+        yDestination = yCordFrontDesk;    	
+    }
+    
+    public void DoRelax()
+    {
+    	
     }
 
     public int getXPos() 

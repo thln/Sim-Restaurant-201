@@ -86,7 +86,7 @@ public class CookAgent extends Agent {
 		/////FILL IN HERE
 		DoPlate(o);
 		o.w.OrderIsReady(o.food, o.table);
-		print("Message 8 Sent " + name);
+		print("Message 8 Sent, Food is Ready" + name);
 		/////Why is the print coming from a "CookAgent address"
 		o.state = FoodState.Finished;
 	}

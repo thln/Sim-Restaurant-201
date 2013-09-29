@@ -86,6 +86,7 @@ public class HostAgent extends Agent
 	public List<MyWaiter> MyWaiters = new ArrayList<MyWaiter>();
 	public Collection<Table> tables;
 	private int NTABLES = 1;
+	private int currentWaiter = 0;
 	//private int NWAITERS = 1;
 	private String name;
 	
@@ -145,7 +146,7 @@ public class HostAgent extends Agent
 	{
 		///////FILL IN HERE
 		MyCustomers.add(new MyCustomer(cust));
-		print("Message 1 Sent");
+		print("Message 1 Sent - Someone's hungry");
 		stateChanged();
 	}
 	
@@ -212,7 +213,7 @@ public class HostAgent extends Agent
 		//Add in way to look through waiter list
 		if(MyWaiters.isEmpty())
 		{
-			print("We currently have no waiters available.");
+			//print("We currently have no waiters available.");
 		}
 	
 		else 
@@ -225,7 +226,12 @@ public class HostAgent extends Agent
 				table.setOccupant(mc.c);
 			}
 		}
-		MyWaiters.get(0).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
+		MyWaiters.get(currentWaiter).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
+		currentWaiter++;
+		if(currentWaiter == MyWaiters.size())
+		{
+			currentWaiter = 0;
+		}
 		print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
 		}
 	}
