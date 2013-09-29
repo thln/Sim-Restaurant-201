@@ -191,7 +191,7 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         	for (JButton temp:customerList)
         	{
                 if (e.getSource() == temp)
-                    restPanel.showInfo(type, temp.getText());
+                    restPanel.showInfo("Customers", temp.getText());
             }
         }
     }
@@ -240,6 +240,7 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         	{
 	            JButton button = new JButton(name);
 	            button.setBackground(Color.white);
+	            customerList.add(button);
 	
 	            Dimension paneSize = customerPane2.getSize();
 	            Dimension buttonSize = new Dimension(paneSize.width - 20,

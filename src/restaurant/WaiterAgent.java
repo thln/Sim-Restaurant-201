@@ -25,6 +25,7 @@ public class WaiterAgent extends Agent
 	public List<MyCustomer> myCustomers
 	= new ArrayList<MyCustomer>();
 	public Collection<Table> tables;
+	private boolean AtFrontDesk = false;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 
@@ -39,7 +40,8 @@ public class WaiterAgent extends Agent
 	private Semaphore atTable = new Semaphore(0,true);
 	private Semaphore receivingOrder = new Semaphore(0, true);
 	private Semaphore atKitchen = new Semaphore(0, true);
-
+	//private Semaphore atFrontDesk = new Semaphore(0, true);
+	
 	public WaiterGui waiterGui = null;
 	
 	public enum myCustomerState 
@@ -186,6 +188,18 @@ public class WaiterAgent extends Agent
 			stateChanged();
 		}
 	}
+	
+	public void msgAtFrontDesk()
+	{
+			AtFrontDesk = true;
+			stateChanged();
+	}
+	
+	public void msgNotAtFrontDesk()
+	{
+		AtFrontDesk = false;
+		stateChanged();
+	}
 
 	
 	
@@ -254,22 +268,32 @@ public class WaiterAgent extends Agent
 
 	private void seatCustomer(MyCustomer mc) 
 	{
-
+		//AccompanyingCustomer = true;
+		//print("permits" + atFrontDesk.availablePermits());
+		//waiterGui.GoToFrontDesk();
+		//try 
+		//{
+		//	atFrontDesk.acquire();
+		//	atFrontDesk.acquire();
+		//} catch (InterruptedException e) 
+		//{
+		//	e.printStackTrace();
+		//}
+		//print("permits" + atFrontDesk.availablePermits());	
+		//AccompanyingCustomer = false;
 		//customer.setCurrentTable(table.tableNumber);
 		Menu menuforCust = new Menu();
 		mc.c.followMe(menuforCust, this, mc.table);
 		DoSeatCustomer(mc.c, mc.table);
-		//table.setOccupant(customer);
 		try 
 		{
 			atTable.acquire();
 		} catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//myCustomers.remove(customer);
-		waiterGui.DoLeaveCustomer();
+		//Leaving Customers
+		waiterGui.GoToFrontDesk();
 		mc.state = myCustomerState.Seated;
 
 	}
@@ -327,7 +351,7 @@ public class WaiterAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		waiterGui.DoLeaveKitchen();
+		waiterGui.GoToFrontDesk();
 		cook.pleaseCook(mc.choice, mc.table, this);
 		print("Message 7 - Sent Order");
 		mc.state = myCustomerState.OrderSent;
@@ -369,7 +393,7 @@ public class WaiterAgent extends Agent
 		mc.c.HereIsYourOrder(mc.choice);
 		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;
-		waiterGui.DoLeaveCustomer();
+		waiterGui.GoToFrontDesk();
 	}
 	
 	public void clearTable(MyCustomer mc)

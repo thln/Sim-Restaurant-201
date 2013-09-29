@@ -50,6 +50,11 @@ public class WaiterGui implements Gui {
         {
         	agent.msgAtKitchen();
         }
+        else if (xPos == xDestination && yPos == yDestination
+        		& (xDestination == xCordFrontDesk) & (yDestination == yCordFrontDesk))
+        {
+        	agent.msgAtFrontDesk();
+        }        
     }
 
     public void draw(Graphics2D g) 
@@ -77,16 +82,10 @@ public class WaiterGui implements Gui {
     	yDestination = yCordKitchen;
     }
     
-    public void DoLeaveCustomer() 
+    public void GoToFrontDesk() 
     {
         xDestination = xCordFrontDesk;
         yDestination = yCordFrontDesk;
-    }
-    
-    public void DoLeaveKitchen()
-    {
-        xDestination = xCordFrontDesk;
-        yDestination = yCordFrontDesk;    	
     }
     
     public void DoRelax()

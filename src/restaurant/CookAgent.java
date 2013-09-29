@@ -31,10 +31,10 @@ public class CookAgent extends Agent {
 			table = tablenumber;
 		}
 	}
-	public Timer CookTimer  = new Timer();
-	public List <Order> orders = new ArrayList<Order>();
-	public Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
-	private String name;
+	private Timer CookTimer  = new Timer();
+	private List <Order> orders = new ArrayList<Order>();
+	private Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
+	public String name;
 	
 	public CookAgent(String name)
 	{
