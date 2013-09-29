@@ -6,11 +6,14 @@ import agent.Agent;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
+
 
 /**
  * Restaurant customer agent.
  */
-public class CustomerAgent extends Agent {
+public class CustomerAgent extends Agent 
+{
 	private String name;
 	private int hungerLevel = 5;        // determines length of meal
 	Timer timer = new Timer();
@@ -18,6 +21,7 @@ public class CustomerAgent extends Agent {
 	private int currentTable;
 	private Menu myMenu;
 	private String myOrder;
+	private Semaphore waitingForWaiter = new Semaphore(0, true);
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -25,7 +29,7 @@ public class CustomerAgent extends Agent {
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, Ordering, WaitingForFood, FoodReceived, Eating, DoneEating, Leaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, ReadyToOrder, GivingOrder, Ordering, WaitingForFood, FoodReceived, Eating, DoneEating, Leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
@@ -38,7 +42,8 @@ public class CustomerAgent extends Agent {
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name){
+	public CustomerAgent(String name)
+	{
 		super();
 		this.name = name;
 	}
@@ -86,7 +91,8 @@ public class CustomerAgent extends Agent {
 	public void WhatDoYouWant()
 	{
 		print("Message 5 Sent - Ordering Food");
-		state = AgentState.Ordering;
+		waitingForWaiter.release();
+		state = AgentState.GivingOrder;
 		stateChanged();
 	}
 
@@ -96,12 +102,14 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void msgAnimationFinishedGoToSeat() {
+	public void msgAnimationFinishedGoToSeat() 
+	{
 		//from animation
 		event = AgentEvent.seated;
 		stateChanged();
 	}
-	public void msgAnimationFinishedLeaveRestaurant() {
+	public void msgAnimationFinishedLeaveRestaurant() 
+	{
 		//from animation
 		event = AgentEvent.doneLeaving;
 		stateChanged();
@@ -115,26 +123,42 @@ public class CustomerAgent extends Agent {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	protected boolean pickAndExecuteAnAction() 
+	{
 		//	CustomerAgent is a finite state machine
 
-		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry ){
+		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry )
+		{
 			state = AgentState.WaitingInRestaurant;
 			goToRestaurant();
 			return true;
 		}
-		if (state == AgentState.WaitingInRestaurant && event == AgentEvent.followMe ){
+		if (state == AgentState.WaitingInRestaurant && event == AgentEvent.followMe )
+		{
 			state = AgentState.BeingSeated;
 			SitDown();
 			return true;
 		}
-		if (state == AgentState.BeingSeated && event == AgentEvent.seated){
+		if (state == AgentState.BeingSeated && event == AgentEvent.seated)
+		{
 			state = AgentState.ChoosingOrder;
+			choosingOrderTime();
+			return true;
+		}
+		if(state == AgentState.ReadyToOrder && event == AgentEvent.seated)
+		{
+			state = AgentState.GivingOrder;
 			chooseOrder();
+			return true;
+		}
+		if(state == AgentState.GivingOrder && event == AgentEvent.seated)
+		{
+			givingOrderTime();
 			return true;
 		}
 		if(state == AgentState.Ordering && event == AgentEvent.seated)
 		{
+			state = AgentState.WaitingForFood;
 			IWantToOrder(myOrder);
 			return true;
 		}
@@ -148,12 +172,14 @@ public class CustomerAgent extends Agent {
 
 		//NEED TO GO THROUGH Seated, ChoosingOrder, Ordering, waitingforFood, then go to Eating
 		
-		if (state == AgentState.Eating && event == AgentEvent.doneEating){
+		if (state == AgentState.Eating && event == AgentEvent.doneEating)
+		{
 			state = AgentState.Leaving;
 			leaveTable();
 			return true;
 		}
-		if (state == AgentState.Leaving && event == AgentEvent.doneLeaving){
+		if (state == AgentState.Leaving && event == AgentEvent.doneLeaving)
+		{
 			state = AgentState.DoingNothing;
 			//no action
 			return true;
@@ -167,15 +193,31 @@ public class CustomerAgent extends Agent {
 	
 	///// Actions
 
-	private void goToRestaurant() {
+	private void goToRestaurant() 
+	{
 		Do("Going to restaurant");
 		//waiter.msgIWantFood(this);//send our instance, so he can respond to us
 		host.IWantFood(this);
 	}
 
-	private void SitDown() {
+	private void SitDown() 
+	{
 		Do("Being seated. Going to table");
 		customerGui.DoGoToSeat(currentTable);//hack; only one table
+	}
+	
+	private void choosingOrderTime()
+	{
+		timer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				state = AgentState.ReadyToOrder;
+				stateChanged();
+			}
+		},
+		3000);
+		
 	}
 	
 	private void chooseOrder()
@@ -183,16 +225,38 @@ public class CustomerAgent extends Agent {
 		myOrder = myMenu.blindPick();
 		waiter.ReadyToOrder(this);
 		print("Message 4 Sent - Chosen Order");
+		try 
+		{
+			waitingForWaiter.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void givingOrderTime()
+	{
+		timer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				state = AgentState.Ordering;
+				stateChanged();
+			}
+		},
+		2000);
 	}
 	
 	private void IWantToOrder(String order)
 	{
-		waiter.myChoiceIs(order, this);
-		print("Message 6 Sent - Giving Order");
-		state = AgentState.WaitingForFood;
+	//			state = AgentState.WaitingForFood;
+				waiter.myChoiceIs(order, this);
+				print("Message 6 Sent - Gave Order");
 	}
 
-	private void EatFood() {
+	private void EatFood() 
+	{
 		Do("Eating Food");
 		//This next complicated line creates and starts a timer thread.
 		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
@@ -202,9 +266,11 @@ public class CustomerAgent extends Agent {
 		//Since Java does not all us to pass functions, only objects.
 		//So, we use Java syntactic mechanism to create an
 		//anonymous inner class that has the public method run() in it.
-		timer.schedule(new TimerTask() {
+		timer.schedule(new TimerTask() 
+		{
 			Object cookie = 1;
-			public void run() {
+			public void run() 
+			{
 				print("Done eating, cookie=" + cookie);
 				event = AgentEvent.doneEating;
 				//isHungry = false;
@@ -214,7 +280,8 @@ public class CustomerAgent extends Agent {
 		5000);//getHungerLevel() * 1000);//how long to wait before running task
 	}
 
-	private void leaveTable() {
+	private void leaveTable() 
+	{
 		Do("Leaving.");
 		waiter.iAmLeavingTable(this);
 		print("Message 10 Sent - I am leaving");
@@ -223,15 +290,18 @@ public class CustomerAgent extends Agent {
 
 	// Accessors, etc.
 
-	public String getName() {
+	public String getName() 
+	{
 		return name;
 	}
 	
-	public int getHungerLevel() {
+	public int getHungerLevel() 
+	{
 		return hungerLevel;
 	}
 
-	public void setHungerLevel(int hungerLevel) {
+	public void setHungerLevel(int hungerLevel) 
+	{
 		this.hungerLevel = hungerLevel;
 		//could be a state change. Maybe you don't
 		//need to eat until hunger lever is > 5?
@@ -247,15 +317,18 @@ public class CustomerAgent extends Agent {
 		return currentTable;
 	}
 	
-	public String toString() {
+	public String toString() 
+	{
 		return "customer " + getName();
 	}
 
-	public void setGui(CustomerGui g) {
+	public void setGui(CustomerGui g) 
+	{
 		customerGui = g;
 	}
 
-	public CustomerGui getGui() {
+	public CustomerGui getGui() 
+	{
 		return customerGui;
 	}
 }

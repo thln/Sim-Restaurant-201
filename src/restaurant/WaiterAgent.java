@@ -136,10 +136,11 @@ public class WaiterAgent extends Agent
 			{
 				mc.choice = TheOrder;
 				mc.state = myCustomerState.OrderReceived;
+				receivingOrder.release();
 				stateChanged();
 			}
 		}
-	
+		
 	}
 	
 	public void OrderIsReady(String food, int table)
@@ -170,8 +171,11 @@ public class WaiterAgent extends Agent
 	public void msgAtTable() 
 	{//from animation
 		//print("msgAtTable() called");
+		if(atTable.availablePermits() <1 )
+		{
 		atTable.release();// = true;
-		stateChanged();
+		stateChanged();	
+		}
 	}
 	
 	public void msgAtKitchen()
@@ -280,8 +284,24 @@ public class WaiterAgent extends Agent
 	{
 		
 		DoGoToTable(mc.c);
+		try 
+		{
+			atTable.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		mc.c.WhatDoYouWant();
 		mc.state = myCustomerState.TakingOrder;	
+		try 
+		{
+			receivingOrder.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void DoGoToTable(CustomerAgent cust)
@@ -320,12 +340,33 @@ public class WaiterAgent extends Agent
 	
 	public void DeliverMeal(MyCustomer mc)
 	{
+		DoGoToCook();
+		try 
+		{
+			atKitchen.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		print ("At Kitchen " + atTable.toString());
 		///Do we need to carry the order
 		DoGoToTable(mc.c);
+		try 
+		{
+			atTable.acquire();
+			atTable.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//Do we need to pass in a "food" item
+		print ("At table " + atTable.toString());
 		mc.c.HereIsYourOrder(mc.choice);
 		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;
+		waiterGui.DoLeaveCustomer();
 	}
 	
 	public void clearTable(MyCustomer mc)
