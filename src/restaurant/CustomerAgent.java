@@ -249,12 +249,14 @@ public class CustomerAgent extends Agent
 	{
 				state = AgentState.WaitingForFood;
 				waiter.myChoiceIs(order, this);
+				customerGui.DoOrder(order+"?");
 				print("Message 6 Sent - Gave Order: " + order);
 				stateChanged();
 	}
 
 	private void EatFood() 
 	{
+		customerGui.DoOrder(myOrder);
 		Do("Eating Food");
 		//This next complicated line creates and starts a timer thread.
 		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
@@ -280,6 +282,7 @@ public class CustomerAgent extends Agent
 
 	private void leaveTable() 
 	{
+		customerGui.DoOrder("");
 		Do("Leaving.");
 		waiter.iAmLeavingTable(this);
 		print("Message 10 Sent - I am leaving");

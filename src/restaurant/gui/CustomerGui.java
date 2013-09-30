@@ -19,13 +19,17 @@ public class CustomerGui implements Gui{
 	private static final int xCordOffScreen = -40;
 	private static final int yCordOffScreen = -40;
 	private int xDestination, yDestination;
+	private int xCordPutOnTable = 20;
+	private int yCordPutOnTable = 20;
 	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
+	private String myOrder = "";
 
     public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
     public static final int yTable[] = {0, 250, 250, 250, 350, 350, 350, 450, 450, 450};
 
-	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //WaiterAgent m) {
+	public CustomerGui(CustomerAgent c, RestaurantGui gui)
+	{ //WaiterAgent m) {
 		agent = c;
 		//xCordOffScreen, yCordOffScreen
 		xCordCurrent = xCordOffScreen;
@@ -38,7 +42,8 @@ public class CustomerGui implements Gui{
 		this.gui = gui;
 	}
 
-	public void updatePosition() {
+	public void updatePosition() 
+	{
 		if (xCordCurrent < xDestination)
 			xCordCurrent++;
 		else if (xCordCurrent > xDestination)
@@ -51,9 +56,11 @@ public class CustomerGui implements Gui{
 
 		
 		
-		if (xCordCurrent == xDestination && yCordCurrent == yDestination) {
+		if (xCordCurrent == xDestination && yCordCurrent == yDestination) 
+		{
 			if (command==Command.GoToSeat) agent.msgAnimationFinishedGoToSeat();
-			else if (command==Command.LeaveRestaurant) {
+			else if (command==Command.LeaveRestaurant) 
+			{
 				agent.msgAnimationFinishedLeaveRestaurant();
 				System.out.println("about to call gui.setCustomerEnabled(agent);");
 				isHungry = false;
@@ -63,28 +70,32 @@ public class CustomerGui implements Gui{
 		}
 	}
 
-	public void draw(Graphics2D g) {
-		if (agent.getCustomerName().equals("a")) {
-			g.setColor(Color.RED);
-		} else {
+	public void draw(Graphics2D g) 
+	{
 			g.setColor(Color.GREEN);
-		}
-		g.fillRect(xCordCurrent, yCordCurrent, height, width);
+		//g.fillRect(xCordCurrent, yCordCurrent, height, width);
+		g.fillOval(xCordCurrent, yCordCurrent, height, width);
+		g.setColor(Color.RED);
+		g.drawString(myOrder, xCordCurrent + xCordPutOnTable, yCordCurrent + yCordPutOnTable);
 	}
 
-	public boolean isPresent() {
+	public boolean isPresent() 
+	{
 		return isPresent;
 	}
-	public void setHungry() {
+	public void setHungry() 
+	{
 		isHungry = true;
 		agent.gotHungry();
 		setPresent(true);
 	}
-	public boolean isHungry() {
+	public boolean isHungry() 
+	{
 		return isHungry;
 	}
 
-	public void setPresent(boolean p) {
+	public void setPresent(boolean p) 
+	{
 		isPresent = p;
 	}
 
@@ -96,7 +107,13 @@ public class CustomerGui implements Gui{
 		//System.out.println("Moving to seat: " + seatnumber);
 	}
 
-	public void DoExitRestaurant() {
+	public void DoOrder(String order)
+	{
+		myOrder = order;
+	}
+	
+	public void DoExitRestaurant() 
+	{
 		//xCordOffscreen = -40;
 		//yCordOffscreen = -40;
 		xDestination = xCordOffScreen;

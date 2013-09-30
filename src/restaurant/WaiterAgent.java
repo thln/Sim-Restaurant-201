@@ -224,7 +224,7 @@ public class WaiterAgent extends Agent
 
 		for(MyCustomer mc : myCustomers)
 		{
-			print("On Customer: "+ mc.c);
+			//print("On Customer: "+ mc.c);
 			if(mc.state == myCustomerState.Waiting)
 			{
 				print("I need to seat someone " + mc.c);
@@ -391,6 +391,7 @@ public class WaiterAgent extends Agent
 		}
 		//print ("At Kitchen " + atTable.toString());
 		///Do we need to carry the order
+		waiterGui.DoDeliver(mc.choice);
 		DoGoToTable(mc.c);
 		try 
 		{
@@ -404,6 +405,7 @@ public class WaiterAgent extends Agent
 		//Do we need to pass in a "food" item
 		//print ("At table " + atTable.toString());
 		mc.c.HereIsYourOrder(mc.choice);
+		waiterGui.DoDeliver("");
 		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;
 		waiterGui.GoToFrontDesk();

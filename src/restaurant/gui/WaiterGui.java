@@ -19,6 +19,7 @@ public class WaiterGui implements Gui {
 	private int tableNumber = 1;
     private int xDestination = -20, yDestination = -20;//default start position
     public boolean waiterIsFree = false;
+    private String TheOrder = "";
 
     //static final
     public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
@@ -69,7 +70,10 @@ public class WaiterGui implements Gui {
     public void draw(Graphics2D g) 
     {
         g.setColor(Color.MAGENTA);
-        g.fillRect(xPos, yPos, height, width);
+        g.fillOval(xPos, yPos, height, width);
+        //g.fillRect(xPos, yPos, height, width);
+        g.setColor(Color.BLUE);
+        g.drawString(TheOrder, xPos, yPos);
     }
 
     public boolean isPresent() 
@@ -85,6 +89,11 @@ public class WaiterGui implements Gui {
         yDestination = yTable[tableNumber] - height;
     }
 
+    public void DoDeliver(String order)
+    {
+    	TheOrder = order;
+    }
+    
     public void GoToKitchen()
     {
     	xDestination = xCordKitchen;

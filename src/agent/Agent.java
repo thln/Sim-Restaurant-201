@@ -7,20 +7,23 @@ import java.util.concurrent.*;
 /**
  * Base class for simple agents
  */
-public abstract class Agent {
+public abstract class Agent 
+{
     Semaphore stateChange = new Semaphore(1, true);//binary semaphore, fair
     Semaphore pauseSemaphore = new Semaphore(0, true);
     private boolean pauseBoolean = false;
     private AgentThread agentThread;
 
-    protected Agent() {
+    protected Agent() 
+    {
     }
 
     /**
      * This should be called whenever state has changed that might cause
      * the agent to do something.
      */
-    protected void stateChanged() {
+    protected void stateChanged() 
+    {
         stateChange.release();
     }
     
@@ -53,28 +56,32 @@ public abstract class Agent {
      * Return agent name for messages.  Default is to return java instance
      * name.
      */
-    protected String getName() {
+    protected String getName() 
+    {
         return StringUtil.shortName(this);
     }
 
     /**
      * The simulated action code
      */
-    protected void Do(String msg) {
+    protected void Do(String msg) 
+    {
         print(msg, null);
     }
 
     /**
      * Print message
      */
-    protected void print(String msg) {
+    protected void print(String msg) 
+    {
         print(msg, null);
     }
 
     /**
      * Print message with exception stack trace
      */
-    protected void print(String msg, Throwable e) {
+    protected void print(String msg, Throwable e) 
+    {
         StringBuffer sb = new StringBuffer();
         sb.append(getName());
         sb.append(": ");
@@ -89,8 +96,10 @@ public abstract class Agent {
     /**
      * Start agent scheduler thread.  Should be called once at init time.
      */
-    public synchronized void startThread() {
-        if (agentThread == null) {
+    public synchronized void startThread() 
+    {
+        if (agentThread == null) 
+        {
             agentThread = new AgentThread(getName());
             agentThread.start(); // causes the run method to execute in the AgentThread below
         } else {
@@ -103,8 +112,10 @@ public abstract class Agent {
      */
     //In this implementation, nothing calls stopThread().
     //When we have a user interface to agents, this can be called.
-    public void stopThread() {
-        if (agentThread != null) {
+    public void stopThread() 
+    {
+        if (agentThread != null) 
+        {
             agentThread.stopAgent();
             agentThread = null;
         }
@@ -114,18 +125,23 @@ public abstract class Agent {
      * Agent scheduler thread, calls respondToStateChange() whenever a state
      * change has been signalled.
      */
-    private class AgentThread extends Thread {
+    private class AgentThread extends Thread 
+    {
         private volatile boolean goOn = false;
 
-        private AgentThread(String name) {
+        private AgentThread(String name) 
+        {
             super(name);
         }
 
-        public void run() {
+        public void run() 
+        {
             goOn = true;
 
-            while (goOn) {
-                try {
+            while (goOn) 
+            {
+                try 
+                {
                 	if(pauseBoolean)
                 	{
                 		pauseSemaphore.acquire();
@@ -138,15 +154,18 @@ public abstract class Agent {
                     //repeatedly until it returns FALSE.
                     //You will see that pickAndExecuteAnAction() is the agent scheduler.
                     while (pickAndExecuteAnAction()) ;
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e) 
+                {
                     // no action - expected when stopping or when deadline changed
-                } catch (Exception e) {
+                } catch (Exception e) 
+                {
                     print("Unexpected exception caught in Agent thread:", e);
                 }
             }
         }
 
-        private void stopAgent() {
+        private void stopAgent() 
+        {
             goOn = false;
             this.interrupt();
         }
