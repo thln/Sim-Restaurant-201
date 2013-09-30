@@ -28,6 +28,11 @@ public class RestaurantPanel extends JPanel {
     private JPanel restLabel = new JPanel();
     private ListPanel peoplePanel = new ListPanel(this, "Customers And Waiters"); //previously customerPanel or only for Customers
     private JPanel group = new JPanel();
+    
+    private int numberOfRows = 1;
+    private int numberOfColumns = 2;
+    private int mainGap = 20;
+    private int subGap = 10;
 
     private RestaurantGui gui; //reference to main gui
 
@@ -46,8 +51,8 @@ public class RestaurantPanel extends JPanel {
         
         
         //magic numbers---
-        setLayout(new GridLayout(1, 2, 20, 20));
-        group.setLayout(new GridLayout(1, 2, 10, 10));
+        setLayout(new GridLayout(numberOfRows, numberOfColumns, mainGap, mainGap));
+        group.setLayout(new GridLayout(numberOfRows, numberOfColumns, subGap, subGap));
 
         group.add(peoplePanel);
 

@@ -35,6 +35,7 @@ public class HostAgent extends Agent
 	private class MyWaiter
 	{
 		public WaiterAgent w1;
+		//used possibly to go through the waiterlist and reorganize the customers
 		public int NumberOfCustomers;
 //		public MyWaiter(String name)
 //		{
@@ -86,6 +87,7 @@ public class HostAgent extends Agent
 	public List<MyWaiter> MyWaiters = new ArrayList<MyWaiter>();
 	public Collection<Table> tables;
 	private int NTABLES = 1;
+	private int MAXTABLES = 9;
 	private int currentWaiter = 0;
 	//private int NWAITERS = 1;
 	private String name;
@@ -125,7 +127,7 @@ public class HostAgent extends Agent
 	public void addTables()
 	{
 		//ONLY 9 TABLES ALLOWED ATM
-		if(NTABLES < 9)
+		if(NTABLES < MAXTABLES)
 		{
 			NTABLES++;
 			tables.add(new Table(NTABLES));

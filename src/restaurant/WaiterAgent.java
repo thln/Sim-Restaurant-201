@@ -20,6 +20,8 @@ public class WaiterAgent extends Agent
 {
 	//static final int NTABLES = 3;//a global for the number of tables.
 	private int NTABLES = 1;
+	private int xCordFrontDesk = -20;
+	private int yCordFrontDesk = -20;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<MyCustomer> myCustomers
@@ -268,7 +270,7 @@ public class WaiterAgent extends Agent
 		AtFrontDesk = false;
 		//AccompanyingCustomer = true;
 		//print("permits" + atFrontDesk.availablePermits());
-		if(waiterGui.getXPos() != -20 && waiterGui.getYPos() != -20)
+		if(waiterGui.getXPos() != xCordFrontDesk && waiterGui.getYPos() != yCordFrontDesk)
 		{
 			waiterGui.GoToFrontDesk();
 			try 

@@ -41,7 +41,7 @@ public class CookAgent extends Agent {
 		super();
 		this.name = name;
 		
-		RecipeBook.put("Salad", 3000);
+		RecipeBook.put("Salad",3000);
 		RecipeBook.put("Pizza",5000);
 		RecipeBook.put("Chicken",7000);
 		RecipeBook.put("Steak",8000);	

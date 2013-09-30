@@ -22,6 +22,9 @@ public class CustomerAgent extends Agent
 	private Menu myMenu;
 	private String myOrder;
 	private Semaphore waitingForWaiter = new Semaphore(0, true);
+	private int DecidingFoodTime = 8000;
+	private int SpeakingFoodTime = 2000;
+	private int EatingFoodTime = 5000;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -213,7 +216,7 @@ public class CustomerAgent extends Agent
 				stateChanged();
 			}
 		},
-		8000);
+		DecidingFoodTime);
 		
 	}
 	
@@ -242,7 +245,7 @@ public class CustomerAgent extends Agent
 				stateChanged();
 			}
 		},
-		2000);
+		SpeakingFoodTime);
 	}
 	
 	private void IWantToOrder(String order)
@@ -277,7 +280,7 @@ public class CustomerAgent extends Agent
 				stateChanged();
 			}
 		},
-		5000);//getHungerLevel() * 1000);//how long to wait before running task
+		EatingFoodTime);//getHungerLevel() * 1000);//how long to wait before running task
 	}
 
 	private void leaveTable() 

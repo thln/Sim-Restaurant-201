@@ -38,6 +38,11 @@ public class RestaurantGui extends JFrame implements ActionListener {
     private int height = 50;
     private int width = 50;
     
+    private int numberOfRows = 1;
+    private int numberOfColumns = 2;
+    private int horGap = 30;
+    private int verGap = 0;
+    
     private Object currentPerson;/* Holds the agent that the info is about.
     								Seems like a hack */
 
@@ -105,7 +110,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         stateCB.addActionListener(this);
 
         //Fix Magic Numbers
-        infoPanel.setLayout(new GridLayout(1, 2, 30, 0));
+        infoPanel.setLayout(new GridLayout(numberOfRows, numberOfColumns, horGap, verGap));
         
         infoLabel = new JLabel(); 
         infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
@@ -118,7 +123,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         
         
         //personal info
-        Dimension personalDim = new Dimension(WINDOWX/2, (int) (WINDOWY* .15));
+        //Dimension personalDim = new Dimension(WINDOWX/2, (int) (WINDOWY* .15));
         personalPanel = new JPanel();
         JLabel nameLabel = new JLabel();
         nameLabel.setText("Henry Nguyen");
@@ -140,11 +145,13 @@ public class RestaurantGui extends JFrame implements ActionListener {
      *
      * @param person customer (or waiter) object
      */
-    public void updateInfoPanel(Object person) {
+    public void updateInfoPanel(Object person) 
+    {
         stateCB.setVisible(true);
         currentPerson = person;
 
-        if (person instanceof CustomerAgent) {
+        if (person instanceof CustomerAgent) 
+        {
             CustomerAgent customer = (CustomerAgent) person;
             stateCB.setText("Hungry?");
           //Should checkmark be there? 
@@ -162,9 +169,12 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * If it's the customer's checkbox, it will make him hungry
      * For v3, it will propose a break for the waiter.
      */
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == stateCB) {
-            if (currentPerson instanceof CustomerAgent) {
+    public void actionPerformed(ActionEvent e) 
+    {
+        if (e.getSource() == stateCB) 
+        {
+            if (currentPerson instanceof CustomerAgent) 
+            {
                 CustomerAgent c = (CustomerAgent) currentPerson;
                 c.getGui().setHungry();
                 stateCB.setEnabled(false);
@@ -177,10 +187,13 @@ public class RestaurantGui extends JFrame implements ActionListener {
      *
      * @param c reference to the customer
      */
-    public void setCustomerEnabled(CustomerAgent c) {
-        if (currentPerson instanceof CustomerAgent) {
+    public void setCustomerEnabled(CustomerAgent c) 
+    {
+        if (currentPerson instanceof CustomerAgent) 
+        {
             CustomerAgent cust = (CustomerAgent) currentPerson;
-            if (c.equals(cust)) {
+            if (c.equals(cust)) 
+            {
                 stateCB.setEnabled(true);
                 stateCB.setSelected(false);
             }
@@ -189,7 +202,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
     /**
      * Main routine to get gui started
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         RestaurantGui gui = new RestaurantGui();
         gui.setTitle("Henry's csci201 Restaurant");
         gui.setVisible(true);
