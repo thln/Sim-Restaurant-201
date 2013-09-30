@@ -23,6 +23,7 @@ public class RestaurantPanel extends JPanel {
 	//private WaiterGui WaiterGui = new WaiterGui(testWaiter);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
+    private Vector<WaiterAgent> waiters = new Vector<WaiterAgent>();
 
     private JPanel restLabel = new JPanel();
     private ListPanel peoplePanel = new ListPanel(this, "Customers And Waiters"); //previously customerPanel or only for Customers
@@ -44,7 +45,7 @@ public class RestaurantPanel extends JPanel {
         cook.startThread();
         
         
-        
+        //magic numbers---
         setLayout(new GridLayout(1, 2, 20, 20));
         group.setLayout(new GridLayout(1, 2, 10, 10));
 
@@ -104,12 +105,12 @@ public class RestaurantPanel extends JPanel {
     	if (type.equals("Customers")) 
     	{
     		CustomerAgent ca = new CustomerAgent(name);	
-    		CustomerGui wg = new CustomerGui(ca, gui);
+    		CustomerGui cg = new CustomerGui(ca, gui);
 
-    		gui.animationPanel.addGui(wg);// dw
+    		gui.animationPanel.addGui(cg);// dw
     		//c.setWaiter(host);
     		ca.setHost(host);
-    		ca.setGui(wg);
+    		ca.setGui(cg);
     		customers.add(ca);
     		if(hungry)
     		{
@@ -125,6 +126,7 @@ public class RestaurantPanel extends JPanel {
     		
     		gui.animationPanel.addGui(wg);
     		wa.setGui(wg);
+    		waiters.add(wa);
     		
     		host.newWaiter(wa);
     	
@@ -132,6 +134,35 @@ public class RestaurantPanel extends JPanel {
     	}
     }
     
+    public void pauseAllAgents()
+    {
+    	host.pause();
+    	cook.pause();
+    	for(CustomerAgent cust : customers)
+    	{
+    		cust.pause();
+    	}
+    	for(WaiterAgent wait : waiters)
+    	{
+    		wait.pause();
+    	}
+    	
+    }
+    
+    public void restartAllAgents()
+    {
+    	host.restart();
+    	cook.restart();
+    	for(CustomerAgent cust : customers)
+    	{
+    		cust.restart();
+    	}
+    	for(WaiterAgent wait : waiters)
+    	{
+    		wait.restart();
+    	}
+    	
+    }
     //public WaiterAgent getWaiter()
     //{
     //	return testWaiter;

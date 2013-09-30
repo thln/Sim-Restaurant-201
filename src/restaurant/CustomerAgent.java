@@ -213,7 +213,7 @@ public class CustomerAgent extends Agent
 				stateChanged();
 			}
 		},
-		10000);
+		8000);
 		
 	}
 	

@@ -39,6 +39,7 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     private JCheckBox newCustomerHungerCB;
     private JTextField waiterNameEnter;
     private JTextField customerNameEnter;
+    private boolean pauseState = false;
     
     //Important Dimensions Used
     Dimension NameEnterDimensions = new Dimension(250, 20);
@@ -182,12 +183,24 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     		restPanel.getHost().addTables();	
     	}
     	//Add in a PauseButton action here here*********
-    	
+    	else if (e.getSource() == pauseButton)
+    	{
+    		if(!pauseState)
+    		{
+    			pauseState = true;
+    			restPanel.pauseAllAgents();
+    			pauseButton.setText("Restart");
+    		}
+    		else if(pauseState)
+    		{
+    			pauseState = false;
+    			restPanel.restartAllAgents();
+    			pauseButton.setText("Pause");
+    		}
+    	}
         else 
         {
-        	// Isn't the second for loop more beautiful?
-            /*for (int i = 0; i < list.size(); i++) {
-                JButton temp = list.get(i);*/
+        	// Add in waiterList here in the future
         	for (JButton temp:customerList)
         	{
                 if (e.getSource() == temp)

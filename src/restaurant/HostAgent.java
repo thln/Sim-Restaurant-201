@@ -124,7 +124,7 @@ public class HostAgent extends Agent
 	
 	public void addTables()
 	{
-		//ONLY 3 TABLES ALLOWED ATM
+		//ONLY 9 TABLES ALLOWED ATM
 		if(NTABLES < 9)
 		{
 			NTABLES++;
@@ -233,6 +233,8 @@ public class HostAgent extends Agent
 					}
 				}
 			}
+			//keeps track of current waiter, if currentwaiter is last waiter on list, resets to first waiter
+			//automatically divide the customers among the number of waiters
 			currentWaiter++;
 			if(currentWaiter == MyWaiters.size())
 			{
