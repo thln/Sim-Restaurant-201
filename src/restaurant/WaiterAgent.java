@@ -19,7 +19,7 @@ import java.util.concurrent.Semaphore;
 public class WaiterAgent extends Agent 
 {
 	//static final int NTABLES = 3;//a global for the number of tables.
-	private int NTABLES = 1;
+	//private int NTABLES = 1;
 	private int xCordFrontDesk = -20;
 	private int yCordFrontDesk = -20;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
@@ -104,11 +104,11 @@ public class WaiterAgent extends Agent
 	public void pleaseSeatCustomer(CustomerAgent cust, int table)
 	{
 		myCustomers.add(new MyCustomer(cust,table));
-		print("I have " + myCustomers.size() + " Customers");
-		for(MyCustomer mc: myCustomers)
-		{
-			print("Customer: " + mc.c + " State" + mc.state);
-		}
+		//print("I have " + myCustomers.size() + " Customers");
+		//for(MyCustomer mc: myCustomers)
+		//{
+		//	print("Customer: " + mc.c + " State" + mc.state);
+		//}
 		//cust.setWaiter(this);
 		stateChanged();
 	}
@@ -217,7 +217,7 @@ public class WaiterAgent extends Agent
 			//print("On Customer: "+ mc.c);
 			if(mc.state == myCustomerState.Waiting)
 			{
-				print("I need to seat someone " + mc.c);
+				//print("I need to seat someone " + mc.c);
 				seatCustomer(mc);//the action
 				return true;//return true to the abstract agent to reinvoke the scheduler.
 			}
@@ -296,6 +296,7 @@ public class WaiterAgent extends Agent
 			e.printStackTrace();
 		}
 		//Leaving Customers
+		atFrontDesk.tryAcquire();
 		waiterGui.GoToFrontDesk();
 		mc.state = myCustomerState.Seated;
 
@@ -306,6 +307,7 @@ public class WaiterAgent extends Agent
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		print("Seating " + customer + " at table " + table);
+		atFrontDesk.tryAcquire();
 		waiterGui.GoToTable(customer); 
 
 	}
@@ -339,6 +341,7 @@ public class WaiterAgent extends Agent
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!!!!
 		print("Going to Table" + cust.getCurrentTable() + " Customer " + cust);
+		atFrontDesk.tryAcquire();
 		waiterGui.GoToTable(cust);
 		
 	}
@@ -365,6 +368,7 @@ public class WaiterAgent extends Agent
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!
 		print("Going to Kitchen");
+		atFrontDesk.tryAcquire();
 		waiterGui.GoToKitchen();
 	}
 	
@@ -395,9 +399,11 @@ public class WaiterAgent extends Agent
 		//Do we need to pass in a "food" item
 		//print ("At table " + atTable.toString());
 		mc.c.HereIsYourOrder(mc.choice);
+		atFrontDesk.tryAcquire();
 		waiterGui.DoDeliver("");
 		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;
+		atFrontDesk.tryAcquire();
 		waiterGui.GoToFrontDesk();
 	}
 	
