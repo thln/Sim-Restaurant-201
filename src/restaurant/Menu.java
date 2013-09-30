@@ -14,7 +14,10 @@ public class Menu
 	
 	public String blindPick()
 	{	
-		return choices[(int)Math.random()%size];
+		Random randomizer = new Random();
+		int randomNumber = randomizer.nextInt(3);
+		//return choices[(int)Math.random()%size];
+		return choices[randomNumber];
 	}
 	
 }

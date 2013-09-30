@@ -24,7 +24,6 @@ public class WaiterAgent extends Agent
 	//with List semantics.
 	public List<MyCustomer> myCustomers
 	= new ArrayList<MyCustomer>();
-	public Collection<Table> tables;
 	public boolean AtFrontDesk = true;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
@@ -69,12 +68,6 @@ public class WaiterAgent extends Agent
 		this.name = name;
 		this.host = h;
 		this.cook = c;
-		// make some tables
-		tables = new ArrayList<Table>(NTABLES);
-		for (int ix = 1; ix <= NTABLES; ix++) 
-		{
-			tables.add(new Table(ix));//how you add to a collections
-		}
 	}
 
 	public String getMaitreDName() 
@@ -90,11 +83,6 @@ public class WaiterAgent extends Agent
 	public List getWaitingCustomers() 
 	{
 		return myCustomers;
-	}
-
-	public Collection getTables() 
-	{
-		return tables;
 	}
 	
 
@@ -449,50 +437,6 @@ public class WaiterAgent extends Agent
 	{
 		return waiterGui;
 	}
-	
-	public void addTables()
-	{
-		if(NTABLES < 4)
-		{
-			NTABLES++;
-			tables.add(new Table(NTABLES));
-		}
-	}
 
-	private class Table 
-	{
-		CustomerAgent occupiedBy;
-		int tableNumber;
-
-		Table(int tableNumber) 
-		{
-			this.tableNumber = tableNumber;
-		}
-
-		void setOccupant(CustomerAgent cust) 
-		{
-			occupiedBy = cust;
-		}
-
-		void setUnoccupied() 
-		{
-			occupiedBy = null;
-		}
-
-		CustomerAgent getOccupant() 
-		{
-			return occupiedBy;
-		}
-
-		boolean isOccupied() 
-		{
-			return occupiedBy != null;
-		}
-
-		public String toString() 
-		{
-			return "table " + tableNumber;
-		}
-	}
 }
 
