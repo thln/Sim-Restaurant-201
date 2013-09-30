@@ -8,6 +8,7 @@
 ###Resources
   + [Restaurant v1](http://www-scf.usc.edu/~csci201/readings/restaurant-v1.html)
   + [Agent Roadmap](http://www-scf.usc.edu/~csci201/readings/agent-roadmap.html)
+  + View Design Documents and Interaction Diagrams in my 'Design Documents' folder.
 
 ###How to Import File
   + Please have Java and Eclipse installed on your computer.
