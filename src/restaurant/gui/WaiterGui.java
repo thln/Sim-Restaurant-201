@@ -18,6 +18,7 @@ public class WaiterGui implements Gui {
 	private static final int yCordKitchen = 600;
 	private int tableNumber = 1;
     private int xDestination = -20, yDestination = -20;//default start position
+    public boolean waiterIsFree = false;
 
     //static final
     public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
@@ -30,6 +31,8 @@ public class WaiterGui implements Gui {
 
     public void updatePosition() 
     {
+    	//agent.msgNotAtFrontDesk();
+    	
         if (xPos < xDestination)
             xPos++;
         else if (xPos > xDestination)
@@ -44,16 +47,22 @@ public class WaiterGui implements Gui {
         		& (xDestination == xTable[tableNumber] + width) & (yDestination == yTable[tableNumber] - height)) 
         {
            agent.msgAtTable();
+           waiterIsFree = true;
+        //   agent.msgNotAtFrontDesk();
         }
         else if (xPos == xDestination && yPos == yDestination
         		& (xDestination == xCordKitchen) & (yDestination == yCordKitchen))
         {
         	agent.msgAtKitchen();
+            waiterIsFree = true;
+        //	agent.msgNotAtFrontDesk();
         }
         else if (xPos == xDestination && yPos == yDestination
-        		& (xDestination == xCordFrontDesk) & (yDestination == yCordFrontDesk))
+        		& (xDestination == xCordFrontDesk) & (yDestination == yCordFrontDesk) && waiterIsFree)
         {
+            waiterIsFree = false;
         	agent.msgAtFrontDesk();
+        	System.out.println("I am at front desk.");
         }        
     }
 

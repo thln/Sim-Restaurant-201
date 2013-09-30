@@ -93,7 +93,7 @@ public class CustomerGui implements Gui{
 		xDestination = xTable[seatnumber];
 		yDestination = yTable[seatnumber];
 		command = Command.GoToSeat;
-		System.out.println("Moving to seat: " + seatnumber);
+		//System.out.println("Moving to seat: " + seatnumber);
 	}
 
 	public void DoExitRestaurant() {

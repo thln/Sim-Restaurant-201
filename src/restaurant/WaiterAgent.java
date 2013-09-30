@@ -25,7 +25,7 @@ public class WaiterAgent extends Agent
 	public List<MyCustomer> myCustomers
 	= new ArrayList<MyCustomer>();
 	public Collection<Table> tables;
-	private boolean AtFrontDesk = false;
+	public boolean AtFrontDesk = true;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 
@@ -40,7 +40,7 @@ public class WaiterAgent extends Agent
 	private Semaphore atTable = new Semaphore(0,true);
 	private Semaphore receivingOrder = new Semaphore(0, true);
 	private Semaphore atKitchen = new Semaphore(0, true);
-	//private Semaphore atFrontDesk = new Semaphore(0, true);
+	private Semaphore atFrontDesk = new Semaphore(0, true);
 	
 	public WaiterGui waiterGui = null;
 	
@@ -114,6 +114,11 @@ public class WaiterAgent extends Agent
 	public void pleaseSeatCustomer(CustomerAgent cust, int table)
 	{
 		myCustomers.add(new MyCustomer(cust,table));
+		print("I have " + myCustomers.size() + " Customers");
+		for(MyCustomer mc: myCustomers)
+		{
+			print("Customer: " + mc.c + " State" + mc.state);
+		}
 		//cust.setWaiter(this);
 		stateChanged();
 	}
@@ -191,14 +196,15 @@ public class WaiterAgent extends Agent
 	
 	public void msgAtFrontDesk()
 	{
+			atFrontDesk.release();
 			AtFrontDesk = true;
 			stateChanged();
 	}
 	
 	public void msgNotAtFrontDesk()
 	{
-		AtFrontDesk = false;
-		stateChanged();
+		//AtFrontDesk = false;
+		//stateChanged();
 	}
 
 	
@@ -215,44 +221,47 @@ public class WaiterAgent extends Agent
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
+
 		for(MyCustomer mc : myCustomers)
 		{
+			print("On Customer: "+ mc.c);
 			if(mc.state == myCustomerState.Waiting)
 			{
+				print("I need to seat someone " + mc.c);
 				seatCustomer(mc);//the action
 				return true;//return true to the abstract agent to reinvoke the scheduler.
 			}
 			
-			if(mc.state == myCustomerState.readyToOrder)
-			{
-				TakeOrder(mc);
-				return true;
+				if(mc.state == myCustomerState.readyToOrder)
+				{
+					TakeOrder(mc);
+					return true;
+				}
+				
+				if(mc.state == myCustomerState.OrderReceived)
+				{
+					SendOrder(mc);
+					return true;
+				}
+				
+				if(mc.state == myCustomerState.DeliveringMeal)
+				{
+					DeliverMeal(mc);
+					return true;
+				}
+				
+				if(mc.state == myCustomerState.Leaving)
+				{
+					clearTable(mc);
+					return true;
+				}
+				//else
+				//{
+				//	relax();
+				//	return true;
+				//}
 			}
-			
-			if(mc.state == myCustomerState.OrderReceived)
-			{
-				SendOrder(mc);
-				return true;
-			}
-			
-			if(mc.state == myCustomerState.DeliveringMeal)
-			{
-				DeliverMeal(mc);
-				return true;
-			}
-			
-			if(mc.state == myCustomerState.Leaving)
-			{
-				clearTable(mc);
-				return true;
-			}
-			else
-			{
-				relax();
-				return true;
-			}
-		}
-
+		
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
@@ -268,17 +277,21 @@ public class WaiterAgent extends Agent
 
 	private void seatCustomer(MyCustomer mc) 
 	{
+		AtFrontDesk = false;
 		//AccompanyingCustomer = true;
 		//print("permits" + atFrontDesk.availablePermits());
-		//waiterGui.GoToFrontDesk();
-		//try 
-		//{
-		//	atFrontDesk.acquire();
-		//	atFrontDesk.acquire();
-		//} catch (InterruptedException e) 
-		//{
-		//	e.printStackTrace();
-		//}
+		if(waiterGui.getXPos() != -20 && waiterGui.getYPos() != -20)
+		{
+			waiterGui.GoToFrontDesk();
+			try 
+			{
+				atFrontDesk.acquire();
+				//atFrontDesk.acquire();
+			} catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+		}
 		//print("permits" + atFrontDesk.availablePermits());	
 		//AccompanyingCustomer = false;
 		//customer.setCurrentTable(table.tableNumber);

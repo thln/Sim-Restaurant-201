@@ -218,22 +218,28 @@ public class HostAgent extends Agent
 	
 		else 
 		{
-		mc.state = CustomerState.Seated;
-		for( Table table : tables)
-		{
-			if(table == t)
+			
+			if(MyWaiters.get(currentWaiter).w1.AtFrontDesk)
 			{
-				table.setOccupant(mc.c);
+			MyWaiters.get(currentWaiter).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
+			print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
+			//print("currentWaiter number : " + currentWaiter + " and size of waiterlist : " + MyWaiters.size());
+				mc.state = CustomerState.Seated;
+				for(Table table : tables)
+				{
+					if(table == t)
+					{
+						table.setOccupant(mc.c);
+					}
+				}
+			}
+			currentWaiter++;
+			if(currentWaiter == MyWaiters.size())
+			{
+				currentWaiter = 0;
 			}
 		}
-		MyWaiters.get(currentWaiter).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
-		currentWaiter++;
-		if(currentWaiter == MyWaiters.size())
-		{
-			currentWaiter = 0;
-		}
-		print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
-		}
-	}
 	
+		stateChanged();
+	}
 }
