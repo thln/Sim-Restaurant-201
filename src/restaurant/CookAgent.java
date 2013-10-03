@@ -31,10 +31,39 @@ public class CookAgent extends Agent {
 			table = tablenumber;
 		}
 	}
+	
+	private class Food
+	{
+		public int amount;
+		public int low;
+		public int cookingtimer;
+		public String type;
+		
+		public Food(String type1, int amount1, int low1, int cookingtimer1)
+		{
+			type = type1;
+			amount = amount1;
+			low = low1;
+			cookingtimer = cookingtimer1;
+		}
+		
+		public void UseFood()
+		{
+			amount--;
+		}
+		
+		public void AddFood(int number)
+		{
+			amount=+number;
+		}
+	}
+	
 	private Timer CookTimer  = new Timer();
 	private List <Order> orders = new ArrayList<Order>();
 	private Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
-	public String name;
+	private Map<String, Food> FoodInventory = new HashMap<String, Food>();
+	private String name;
+//	private String name;
 	
 	public CookAgent(String name)
 	{
@@ -44,7 +73,17 @@ public class CookAgent extends Agent {
 		RecipeBook.put("Salad",3000);
 		RecipeBook.put("Pizza",5000);
 		RecipeBook.put("Chicken",7000);
-		RecipeBook.put("Steak",8000);	
+		RecipeBook.put("Steak",8000);
+		
+		Food Salad = new Food("Salad", 1, 3, 3000);
+		Food Pizza = new Food("Pizza", 1, 3, 5000);
+		Food Chicken = new Food("Chicken", 1, 3, 7000);
+		Food Steak = new Food("Steak", 1, 3, 8000);
+		
+		FoodInventory.put("Salad", Salad);
+		FoodInventory.put("Pizza", Pizza);
+		FoodInventory.put("Chicken", Chicken);
+		FoodInventory.put("Steak", Steak);
 	}
 	
 	
@@ -103,6 +142,19 @@ public class CookAgent extends Agent {
 	public void CookIt(Order o)
 	{
 		/////FILL IN HERE
+		
+		//Out of Food
+		if(FoodInventory.get(o.food).amount == 0)
+		{
+			orders.remove(o);
+			print("We are out of " + o.food);
+			o.w.OutOfFood(o.table, o.food);
+			return;
+		}
+		
+		FoodInventory.get(o.food).UseFood();
+		print("Using " + o.food +", inventory is now " + FoodInventory.get(o.food).amount);
+		//Check Food Inventory for low
 		o.state = FoodState.Cooking;
 		CookTimer.schedule(new TimerTask() 
 		{
@@ -113,7 +165,8 @@ public class CookAgent extends Agent {
 				stateChanged();
 			}
 		},
-		RecipeBook.get(o.food));
+		//RecipeBook.get(o.food));
+		FoodInventory.get(o.food).cookingtimer);
 		/////COOOKING TIMER
 		//o.state = FoodState.Ready;
 		//stateChanged();

@@ -98,6 +98,16 @@ public class CustomerAgent extends Agent
 		//state = AgentState.GivingOrder;
 		stateChanged();
 	}
+	
+	public void OutOfChoice(String o)
+	{
+		print("Okay, I will leave.");
+		//Hack, should reorder
+		state = AgentState.Eating;
+		event = AgentEvent.doneEating;
+		stateChanged();		
+		
+	}
 
 	public void HereIsYourOrder(String o)
 	{
@@ -181,6 +191,7 @@ public class CustomerAgent extends Agent
 		if (state == AgentState.Leaving && event == AgentEvent.doneLeaving)
 		{
 			state = AgentState.DoingNothing;
+			event = AgentEvent.none;
 			//no action
 			return true;
 		}
@@ -224,6 +235,26 @@ public class CustomerAgent extends Agent
 	{
 		myOrder = myMenu.blindPick();
 		waiter.ReadyToOrder(this);
+		
+		
+		//Hack to Check different foods
+		if(name.equals("Salad"))
+		{
+			myOrder = "Salad";
+		}
+		if(name.equals("Pizza"))
+		{
+			myOrder = "Pizza";
+		}
+		if(name.equals("Chicken"))
+		{
+			myOrder = "Chicken";
+		}
+		if(name.equals("Steak"))
+		{
+			myOrder = "Steak";
+		}
+		
 		print("Message 4 Sent - Chosen Order");
 		try 
 		{
@@ -286,6 +317,9 @@ public class CustomerAgent extends Agent
 	private void leaveTable() 
 	{
 		customerGui.DoOrder("");
+		currentTable = 0;
+		myMenu = null;
+		myOrder = "";
 		Do("Leaving.");
 		waiter.iAmLeavingTable(this);
 		print("Message 10 Sent - I am leaving");

@@ -201,10 +201,22 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         else 
         {
         	// Add in waiterList here in the future
+        	for (JButton temp:waiterList)
+        	{
+        		if(e.getSource() == temp)
+        		{
+        			restPanel.showInfo("Waiters", temp.getText());
+        			return;
+        		}
+        	}
+        	
         	for (JButton temp:customerList)
         	{
                 if (e.getSource() == temp)
+                {
                     restPanel.showInfo("Customers", temp.getText());
+                    return;
+                }
             }
         }
     }
@@ -253,7 +265,7 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         	{
 	            JButton button = new JButton(name);
 	            button.setBackground(Color.white);
-	            customerList.add(button);
+	            customerList.add(button); //double?
 	
 	            Dimension paneSize = customerPane2.getSize();
 	            Dimension buttonSize = new Dimension(paneSize.width - 20,
@@ -275,6 +287,7 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         	{
 	            JButton button = new JButton(name);
 	            button.setBackground(Color.white);
+	            waiterList.add(button); //double?
 	
 	            Dimension paneSize = waiterPane2.getSize();
 	            Dimension buttonSize = new Dimension(paneSize.width - 20,

@@ -1,6 +1,8 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.CustomerAgent.AgentEvent;
+import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.CustomerState;
 import restaurant.gui.WaiterGui;
 
@@ -27,6 +29,7 @@ public class WaiterAgent extends Agent
 	public List<MyCustomer> myCustomers
 	= new ArrayList<MyCustomer>();
 	public boolean AtFrontDesk = true;
+	//public boolean OnBreak = false;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 
@@ -34,6 +37,7 @@ public class WaiterAgent extends Agent
 	private HostAgent host;
 	private CookAgent cook;
 	
+	Timer relaxTimer = new Timer();
 	
 	//Checks for state, since there are only two states, boolean works
 	//private boolean bringingCustomer = false; 
@@ -46,7 +50,12 @@ public class WaiterAgent extends Agent
 	public WaiterGui waiterGui = null;
 	
 	public enum myCustomerState 
-	{Waiting, Seated, readyToOrder, TakingOrder, OrderReceived, OrderSent, DeliveringMeal, Eating, Leaving, Left};
+	{Waiting, Seated, readyToOrder, TakingOrder, OrderReceived, OrderSent, OutOfOrder, DeliveringMeal, Eating, Leaving, Left};
+
+	//WAITER ON BREAK STUFF ******************************
+	public enum WaiterState 
+	{Working, WantToGoOnBreak, AskedHost, CannotGoOnBreak, OnWayToBreak, InBreakRoom, Relaxing, WantToGoOffBreak};
+	public WaiterState state = WaiterState.Working;
 	
 	private class MyCustomer
 	{
@@ -70,6 +79,13 @@ public class WaiterAgent extends Agent
 		this.name = name;
 		this.host = h;
 		this.cook = c;
+		
+		if(name.equals("OnBreak"))
+		{
+			//state = WaiterState.OnBreak;
+			state = WaiterState.WantToGoOnBreak;
+//			WantToGoOnBreak();
+		}
 	}
 
 	public String getMaitreDName() 
@@ -94,6 +110,37 @@ public class WaiterAgent extends Agent
 	
 	///// Messages
 
+	//WAITER ON BREAK STUFF ******************************
+	public void WantGoOnBreak() 
+	{//from animation
+		print("I want to go on break");
+		state = WaiterState.WantToGoOnBreak;
+		stateChanged();
+	}
+	
+	//WAITER ON BREAK STUFF ******************************
+	public void WantToGoOffBreak()
+	{
+		print("I want to go off break");
+		state = WaiterState.WantToGoOffBreak;
+		stateChanged();
+	}
+	
+	//WAITER ON BREAK STUFF ******************************
+	public void AllowedToGoOnBreak(boolean answer)
+	{
+		if(answer)
+		{
+			state = WaiterState.OnWayToBreak;
+			stateChanged();
+		}
+		else if (!answer)
+		{
+			state = WaiterState.CannotGoOnBreak;
+			stateChanged();
+		}
+	}
+	
 	public void msgIWantFood(CustomerAgent cust)
 	{
 		//necessary anymore?
@@ -165,6 +212,21 @@ public class WaiterAgent extends Agent
 	stateChanged();		
 	}
 
+	public void OutOfFood(int table, String food)
+	{
+		//Fill this in
+		for(MyCustomer mc : myCustomers)
+		{
+			if(mc.table == table && mc.choice == food)
+			{
+				mc.state = myCustomerState.OutOfOrder;
+				stateChanged();
+			}
+			
+		}
+	}
+	
+	//Semaphore release messages
 	public void msgAtTable() 
 	{//from animation
 		//print("msgAtTable() called");
@@ -196,6 +258,11 @@ public class WaiterAgent extends Agent
 		//AtFrontDesk = false;
 		//stateChanged();
 	}
+	
+	public void msgAtBreakRoom()
+	{
+		state = WaiterState.InBreakRoom;
+	}
 
 	
 	
@@ -211,11 +278,21 @@ public class WaiterAgent extends Agent
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
+		//WAITER ON BREAK STUFF ******************************
+		//Asking Host
+		if(state == WaiterState.WantToGoOnBreak)
+		{
+			AskHost();
+			return true;
+		}
 
+		
 		for(MyCustomer mc : myCustomers)
 		{
+			
 			//print("On Customer: "+ mc.c);
-			if(mc.state == myCustomerState.Waiting)
+			//WAITER ON BREAK STUFF ******************************
+			if(mc.state == myCustomerState.Waiting && state == WaiterState.Working)
 			{
 				//print("I need to seat someone " + mc.c);
 				seatCustomer(mc);//the action
@@ -231,6 +308,12 @@ public class WaiterAgent extends Agent
 				if(mc.state == myCustomerState.OrderReceived)
 				{
 					SendOrder(mc);
+					return true;
+				}
+				
+				if(mc.state == myCustomerState.OutOfOrder)
+				{
+					RejectCustomerOrder(mc);
 					return true;
 				}
 				
@@ -252,6 +335,36 @@ public class WaiterAgent extends Agent
 				//}
 			}
 		
+		if(state == WaiterState.InBreakRoom)
+		{
+			relax();
+			return true;
+		}
+		
+		//WAITER ON BREAK STUFF ******************************
+		//rejected
+		if(state == WaiterState.CannotGoOnBreak)
+		{
+			TellHost();
+			return true;
+		}
+		
+		//WAITER ON BREAK STUFF ******************************
+		////coming back from break
+		if(state == WaiterState.WantToGoOffBreak)
+		{
+			TellHost();
+			return true;
+		}
+		
+		//WAITER ON BREAK STUFF ******************************
+		//actually on break
+		if(state == WaiterState.OnWayToBreak)
+		{
+			GoOnBreak();
+			return true;
+		}
+		
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
@@ -264,7 +377,23 @@ public class WaiterAgent extends Agent
 	
 	
 	///// Actions
-
+	//WAITER ON BREAK STUFF ******************************
+	private void AskHost()
+	{
+		state = WaiterState.AskedHost;
+		host.CanIGoOnBreak(this);
+	}
+	
+	//WAITER ON BREAK STUFF ******************************
+	private void TellHost()
+	{
+		state = WaiterState.Working;
+		waiterGui.setOffBreakbool();
+		waiterGui.GoToFrontDesk();
+		host.BackToWork(this);
+		//stateChange
+	}
+	
 	private void seatCustomer(MyCustomer mc) 
 	{
 		AtFrontDesk = false;
@@ -372,6 +501,39 @@ public class WaiterAgent extends Agent
 		waiterGui.GoToKitchen();
 	}
 	
+	public void RejectCustomerOrder(MyCustomer mc)
+	{
+		DoGoToCook();
+		try 
+		{
+			atKitchen.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//print ("At Kitchen " + atTable.toString());
+		///Do we need to carry the order
+		waiterGui.DoDeliver(" :( ");
+		DoGoToTable(mc.c);
+		try 
+		{
+			atTable.acquire();
+			atTable.acquire();
+		} catch (InterruptedException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mc.c.OutOfChoice(mc.choice);
+		print("We are unfortunately out of " + mc.choice);
+		//atFrontDesk.tryAcquire();
+		waiterGui.DoDeliver("");
+		mc.state = myCustomerState.Leaving;
+		//atFrontDesk.tryAcquire();
+		waiterGui.GoToFrontDesk();
+	}
+	
 	public void DeliverMeal(MyCustomer mc)
 	{
 		DoGoToCook();
@@ -423,9 +585,43 @@ public class WaiterAgent extends Agent
 		//}
 	}
 	
+	//WAITER ON BREAK STUFF ******************************
+	public void GoOnBreak()
+	{
+		doGoOnBreak();
+	}
+	
+	//WAITER ON BREAK STUFF ******************************
+	private void doGoOnBreak()
+	{
+		waiterGui.GoToBreakRoom();
+		/*
+		timer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				state = WaiterState.WantToGoOffBreak;
+				stateChanged();
+			}
+		},
+		10000);
+		*/
+	}	
+	
 	public void relax()
 	{
-		doRelax();
+		//Hack, make the click button work
+		state = WaiterState.Relaxing;
+		relaxTimer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				state = WaiterState.WantToGoOffBreak;
+				stateChanged();
+			}
+		},
+		10000);
+		//doRelax();
 	}
 	
 	public void doRelax()

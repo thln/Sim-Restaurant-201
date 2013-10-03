@@ -1,7 +1,8 @@
 package restaurant.gui;
 
 import restaurant.CustomerAgent;
-import javax.swing.JTextField;
+import restaurant.WaiterAgent;
+//import javax.swing.JTextField;
 
 import javax.swing.*;
 
@@ -162,6 +163,17 @@ public class RestaurantGui extends JFrame implements ActionListener {
             infoLabel.setText(
                "<html><pre>     Name: " + customer.getName() + " </pre></html>");
         }
+        else if (person instanceof WaiterAgent)
+        {
+        	//WAITER ON BREAK STUFF ******************************
+        	WaiterAgent waiter = (WaiterAgent) person;
+        	stateCB.setText("On Break?");
+        	//DOES THIS WORK***?
+        	stateCB.setSelected(waiter.getGui().isOnBreak());
+        	stateCB.setEnabled(!waiter.getGui().isOnBreak());
+            infoLabel.setText(
+                    "<html><pre>     Name: " + waiter.getName() + " </pre></html>");
+        }
         infoPanel.validate();
     }
     /**
@@ -171,6 +183,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) 
     {
+    	
+    	//WAITER ON BREAK STUFF ******************************
+    	//Perhaps change waiter on break boolean here?
         if (e.getSource() == stateCB) 
         {
             if (currentPerson instanceof CustomerAgent) 
@@ -199,6 +214,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
             }
         }
     }
+    
+	//WAITER ON BREAK STUFF ******************************
+    // Needs a way to re-enable the Checkbox
     /**
      * Main routine to get gui started
      */

@@ -3,6 +3,7 @@ package restaurant.gui;
 
 import restaurant.CustomerAgent;
 import restaurant.WaiterAgent;
+import restaurant.WaiterAgent.WaiterState;
 
 import java.awt.*;
 
@@ -16,11 +17,14 @@ public class WaiterGui implements Gui {
 	private static final int yCordFrontDesk = -20;
 	private static final int xCordKitchen = 540;
 	private static final int yCordKitchen = 600;
+	private static final int xCordBreakRoom = 100;
+	private static final int yCordBreakRoom = 400;
 	private int tableNumber = 1;
     private int xDestination = -20, yDestination = -20;//default start position
     public boolean waiterIsFree = false;
     private String TheOrder = "";
-
+	private boolean isOnBreak = false; 	//WAITER ON BREAK STUFF ******************************
+    
     //static final
     public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
     public static final int yTable[] = {0, 250, 250, 250, 350, 350, 350, 450, 450, 450};
@@ -64,12 +68,23 @@ public class WaiterGui implements Gui {
             waiterIsFree = false;
         	agent.msgAtFrontDesk();
         	System.out.println("I am at front desk.");
-        }        
+        }
+        else if (xPos == xDestination && yPos == yDestination
+        		& (xDestination == xCordBreakRoom) & (yDestination == yCordBreakRoom))
+        {
+        	agent.msgAtBreakRoom();
+        	//System.out.println("I am at BreakRoom.");
+        }
     }
 
     public void draw(Graphics2D g) 
     {
         g.setColor(Color.MAGENTA);
+    	//WAITER ON BREAK STUFF ******************************
+        if(agent.state == WaiterState.OnWayToBreak || agent.state == WaiterState.Relaxing)//(isOnBreak)
+        {
+        	g.setColor(Color.YELLOW);
+        }
         g.fillOval(xPos, yPos, height, width);
         //g.fillRect(xPos, yPos, height, width);
         g.setColor(Color.BLUE);
@@ -81,6 +96,33 @@ public class WaiterGui implements Gui {
         return true;
     }
 
+	//WAITER ON BREAK STUFF ******************************
+	public void setOnBreak() 
+	{
+		//isOnBreak = true;
+		agent.WantGoOnBreak();
+		//setPresent(true);
+	}
+	
+	//WAITER ON BREAK STUFF ******************************
+	public void setOffBreak()
+	{
+		//isOnBreak = false;
+		agent.WantToGoOffBreak();
+	}
+	
+	//WAITER ON BREAK STUFF ******************************
+	public void setOffBreakbool()
+	{
+		isOnBreak = false;
+	}
+	
+	//WAITER ON BREAK STUFF ******************************
+	public boolean isOnBreak() 
+	{
+		return isOnBreak;
+	}
+    
     public void GoToTable(CustomerAgent customer) 
     {
     	tableNumber = customer.getCurrentTable();
@@ -104,6 +146,13 @@ public class WaiterGui implements Gui {
     {
         xDestination = xCordFrontDesk;
         yDestination = yCordFrontDesk;
+    }
+    
+	//WAITER ON BREAK STUFF ******************************
+    public void GoToBreakRoom()
+    {
+    	xDestination = xCordBreakRoom;
+    	yDestination = yCordBreakRoom;
     }
     
     public void DoRelax()

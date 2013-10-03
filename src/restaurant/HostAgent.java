@@ -4,12 +4,12 @@ package restaurant;
 import agent.Agent;
 
 import java.util.*;
-import java.util.concurrent.Semaphore;
+//import java.util.concurrent.Semaphore;
 
-import restaurant.CustomerAgent.AgentState;
+//import restaurant.CustomerAgent.AgentState;
 //import restaurant.WaiterAgent.Table;
 //import restaurant.WaiterAgent.MyCustomer;
-import restaurant.WaiterAgent.myCustomerState;
+//import restaurant.WaiterAgent.myCustomerState;
 
 /** 
  * Restaurant HostAgent
@@ -31,16 +31,17 @@ public class HostAgent extends Agent
 			c = cust;
 		}
 	}
+
+	public enum WaiterState {Working, Asked, onBreak};
+	//public boolean CheckingWaiters = false;
 	
 	private class MyWaiter
 	{
 		public WaiterAgent w1;
 		//used possibly to go through the waiterlist and reorganize the customers
-		public int NumberOfCustomers;
-//		public MyWaiter(String name)
-//		{
-//			w1 = new WaiterAgent(name);
-//		}
+		//public int NumberOfCustomers;
+		private WaiterState state = WaiterState.Working;
+		//public boolean Working = true;
 		public MyWaiter(WaiterAgent w)
 		{
 			w1 = w;
@@ -144,6 +145,35 @@ public class HostAgent extends Agent
 		stateChanged();
 	}
 	
+	//WAITER ON BREAK STUFF ******************************
+	public void CanIGoOnBreak(WaiterAgent wa)
+	{
+		//Pass in to check new waiter
+		for(MyWaiter mw : MyWaiters)
+		{
+			if(mw.w1 == wa)
+			{
+				mw.state = WaiterState.Asked;
+				stateChanged();
+			}
+		}
+	}
+
+	//WAITER ON BREAK STUFF ******************************
+	public void BackToWork(WaiterAgent wa)
+	{
+		for(MyWaiter mw : MyWaiters)
+		{
+			if(mw.w1 == wa)
+			{
+				mw.state = WaiterState.Working;
+				//mw.Working = true;
+				stateChanged();
+			}
+		}
+		
+	}
+	
 	public void IWantFood(CustomerAgent cust)
 	{
 		///////FILL IN HERE
@@ -182,6 +212,16 @@ public class HostAgent extends Agent
 	protected boolean pickAndExecuteAnAction() 
 	{
 		//////FILL IN HERE
+		//WAITER ON BREAK STUFF ******************************
+		for(MyWaiter mw : MyWaiters)
+		{
+			if(mw.state == WaiterState.Asked)
+			{
+				CheckWaiters(mw);
+				return true;
+			}
+		}
+		
 		
 		for(MyCustomer mc : MyCustomers)
 		{
@@ -208,6 +248,25 @@ public class HostAgent extends Agent
 	}
 	
 	/***** ACTIONS *****/
+	//WAITER ON BREAK STUFF ******************************
+	private void CheckWaiters(MyWaiter mw)
+	{
+		for(MyWaiter waiter : MyWaiters)
+		{
+			if(waiter.state == WaiterState.Working)
+			{
+				mw.w1.AllowedToGoOnBreak(true);
+				mw.state = WaiterState.onBreak;
+				//should I?
+				//stateChanged();
+				return;
+			}
+		}
+		
+		mw.w1.AllowedToGoOnBreak(false);
+		mw.state = WaiterState.Working;
+		stateChanged();
+	}
 	
 	private void seatCustomer(MyCustomer mc, Table t)
 	{
@@ -221,7 +280,7 @@ public class HostAgent extends Agent
 		else 
 		{
 			
-			if(MyWaiters.get(currentWaiter).w1.AtFrontDesk)
+			if(MyWaiters.get(currentWaiter).w1.AtFrontDesk && MyWaiters.get(currentWaiter).state == WaiterState.Working)
 			{
 			MyWaiters.get(currentWaiter).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
 			print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
