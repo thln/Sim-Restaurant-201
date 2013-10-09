@@ -19,5 +19,27 @@ public class Menu
 		//return choices[(int)Math.random()%size];
 		return choices[randomNumber];
 	}
-	
+
+	public double GetPrice(String Choice)
+	{
+		double nothing = 0;
+		if(Choice.equals("Steak"))
+		{
+			return prices[0];
+		}
+		else if(Choice.equals("Chicken"))
+		{
+			return prices[1];
+		}
+		else if(Choice.equals("Salad"))
+		{
+			return prices[2];
+		}
+		else if(Choice.equals("Pizza"))
+		{
+			return prices[3];
+		}
+		
+		return nothing;
+	}
 }

@@ -7,7 +7,8 @@ import java.util.concurrent.Semaphore;
 
 import restaurant.CustomerAgent.AgentState;
 
-public class CookAgent extends Agent {
+public class CookAgent extends Agent 
+{
 	
 	/***** DATA *****/
 	public enum FoodState 
