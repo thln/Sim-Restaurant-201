@@ -5,35 +5,105 @@ import agent.Agent;
 
 
 
+
+
+
+
 import java.util.*;
-import java.util.concurrent.Semaphore;
+//import java.util.concurrent.Semaphore;
+
+//import restaurant.CookAgent.Order;
+
+
+
 
 //import restaurant.CookAgent.Food;
-import restaurant.CustomerAgent.AgentState;
+//import restaurant.CookAgent.state;
+//import restaurant.CookAgent.Food;
+//import restaurant.CustomerAgent.AgentState;
 
 public class MarketAgent extends Agent
 {
 	/***** DATA *****/
-	private Map<String, Integer> FoodInventory = new HashMap<String, Integer>();
+	private Map<String, Food> FoodInventory = new HashMap<String, Food>();
 	private Timer DeliveringTimer = new Timer();
 	private CookAgent Cook;
+	private String name;
+	private enum DeliveryState
+	{RequestReceived, Processing, ReadyToDeliver, Delivered};
+	private boolean Deliver = false;
+	
 	private class Delivery
 	{
 		public String food;
 		public int WantedAmount;
 		public int PossibleAmount;
-		public boolean processed = false;
+		//public boolean processed = false;
+		public DeliveryState state = DeliveryState.RequestReceived;
+		public Delivery(String f, int Q)
+		{
+			food = f;
+			WantedAmount = Q;
+			
+		}
 	}
-	private List<Delivery> Deliveries;
-	int deliveringTime;
+	
+	private class Food
+	{
+		public String name;
+		public int Inventory = 10;
+		public Food(String f)
+		{
+			name = f;
+		}
+		
+		public void UseFood()
+		{
+			if(Inventory != 0)
+			{
+			Inventory--;
+			}
+		}
+	
+	}		
+	private List<Delivery> Deliveries = new ArrayList<Delivery>();
+	int deliveringTime = 1000;
+	
+	public MarketAgent(String name, CookAgent c)
+	{
+		super();
+		this.name = name;
+		
+		Cook = c;
+		
+		//add in food
+
+		//MenuForReference = new Menu();
+		Food Salad = new Food("Salad");
+		Food Pizza = new Food("Pizza");
+		Food Chicken = new Food("Chicken");
+		Food Steak = new Food("Steak");
+		
+		FoodInventory.put("Salad", Salad);
+		FoodInventory.put("Pizza", Pizza);
+		FoodInventory.put("Chicken", Chicken);
+		FoodInventory.put("Steak", Steak);
+	}
+	
+	
 	
 	
 	/***** MESSAGES *****/
 	public void INeedMore(String food, int Quantity)
 	{
 		//STUB
+		print("Request Received.");
+		Deliveries.add(new Delivery(food, Quantity));
+		stateChanged();
 	}
 
+	
+	
 	/***** SCHEDULER *****/
 	
 	protected boolean pickAndExecuteAnAction() 
@@ -42,6 +112,19 @@ public class MarketAgent extends Agent
 		for(Delivery D : Deliveries)
 		{
 			//STUB
+			if(D.state == DeliveryState.RequestReceived)
+			{
+				D.state = DeliveryState.Processing;
+				ProcessItem(D);
+				return true;
+			}
+			
+			if(D.state == DeliveryState.Processing && Deliver)
+			{
+				D.state = DeliveryState.Delivered;
+				DeliverItem(D);
+				return true;
+			}
 		}
 		
 		return false;
@@ -54,5 +137,38 @@ public class MarketAgent extends Agent
 	private void ProcessItem(Delivery D)
 	{
 		//STUB
+		//D.processed = true;
+		for(int i=0; i <D.WantedAmount; i++)
+		{
+			FoodInventory.get(D.food).UseFood(); // = FoodInventory.get(D.food)-1:
+			D.PossibleAmount++;
+			if(FoodInventory.get(D.food).Inventory == 0)
+			{
+				break;
+			}
+		}
+		
+		print("We can give you " + D.PossibleAmount + " " + D.food);
+		Cook.WeCanSupply(D.food, D.PossibleAmount);
+		
+		DeliveringTimer.schedule(new TimerTask() 
+		{
+			public void run() 
+			{
+				//Cook.deliverFood(D.food, D.PossibleAmount);
+				//D.state = DeliveryState.ReadyToDeliver;
+				//FIX
+				Deliver = true;
+				stateChanged();
+			}
+		},
+		deliveringTime);
+	}
+	
+	private void DeliverItem(Delivery D)
+	{
+		Deliver = false;
+		print("Delivered: " + D.PossibleAmount + " " + D.food);
+		Cook.deliverFood(D.food, D.PossibleAmount);
 	}
 }

@@ -37,6 +37,9 @@ public class CookAgent extends Agent
 	{
 		public int amount;
 		public int low;
+		//Hack
+		//Add in a max size
+		public int OrderSize = 10;
 		public int cookingtimer;
 		public String type;
 		
@@ -61,6 +64,7 @@ public class CookAgent extends Agent
 	
 	private Timer CookTimer  = new Timer();
 	private List <Order> orders = new ArrayList<Order>();
+	private List <MarketAgent> markets = new ArrayList<MarketAgent>();
 	private Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
 	private Map<String, Food> FoodInventory = new HashMap<String, Food>();
 	private String name;
@@ -76,10 +80,10 @@ public class CookAgent extends Agent
 		RecipeBook.put("Chicken",7000);
 		RecipeBook.put("Steak",8000);
 		
-		Food Salad = new Food("Salad", 1, 3, 3000);
-		Food Pizza = new Food("Pizza", 1, 3, 5000);
-		Food Chicken = new Food("Chicken", 1, 3, 7000);
-		Food Steak = new Food("Steak", 1, 3, 8000);
+		Food Salad = new Food("Salad", 2, 1, 3000);
+		Food Pizza = new Food("Pizza", 2, 1, 5000);
+		Food Chicken = new Food("Chicken", 2, 1, 7000);
+		Food Steak = new Food("Steak", 2, 1, 8000);
 		
 		FoodInventory.put("Salad", Salad);
 		FoodInventory.put("Pizza", Pizza);
@@ -96,6 +100,21 @@ public class CookAgent extends Agent
 		orders.add(new Order(food, table, w));
 		stateChanged();
 	}
+	
+	public void WeCanSupply(String food, int quantity)
+	{
+		//STUB
+		//Fix, order from other market if necessary
+		print ("Alright, cool.");
+	}
+	
+	public void deliverFood(String food, int quantity)
+	{
+		//STUB
+		FoodInventory.get(food).amount += quantity;
+		print("Awesome, now I have " + FoodInventory.get(food).amount + " " + food );
+	}
+	
 	
 	/***** SCHEDULER *****/
 	
@@ -153,8 +172,22 @@ public class CookAgent extends Agent
 			return;
 		}
 		
+		/*
+		if(FoodInventory.get(o.food).amount == FoodInventory.get(o.food).low)
+		{
+			print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more!");
+			markets.get(0).INeedMore(o.food, FoodInventory.get(o.food).OrderSize);
+		}*/
+		
 		FoodInventory.get(o.food).UseFood();
 		print("Using " + o.food +", inventory is now " + FoodInventory.get(o.food).amount);
+		
+		if(FoodInventory.get(o.food).amount == FoodInventory.get(o.food).low)
+		{
+			print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more!");
+			markets.get(0).INeedMore(o.food, FoodInventory.get(o.food).OrderSize);
+		}
+		
 		//Check Food Inventory for low
 		o.state = FoodState.Cooking;
 		CookTimer.schedule(new TimerTask() 
@@ -171,6 +204,12 @@ public class CookAgent extends Agent
 		/////COOOKING TIMER
 		//o.state = FoodState.Ready;
 		//stateChanged();
+	}
+	
+	
+	public void addMarket(MarketAgent m)
+	{
+		markets.add(m);
 	}
 	
 }

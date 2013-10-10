@@ -26,7 +26,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private final int firstRow = 0;
     private final int secondRow = 1;
     private final int thirdRow = 2;
-    private final int timeLength = 20;
+    private final int frameDelay = 20; //20 is standard
     private Image bufferImage;
     private Dimension bufferSize;
 
@@ -41,7 +41,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
         
         bufferSize = this.getSize();
  
-    	Timer timer = new Timer(timeLength, this );
+    	Timer timer = new Timer(frameDelay, this );
     	timer.start();
     }
 

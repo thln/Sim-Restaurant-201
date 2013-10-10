@@ -26,7 +26,7 @@ public class WaiterAgent extends Agent
 	private int yCordFrontDesk = -20;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
-	public List<MyCustomer> myCustomers
+	public List<MyCustomer> MyCustomers
 	= new ArrayList<MyCustomer>();
 	public boolean AtFrontDesk = true;
 	//public boolean OnBreak = false;
@@ -63,6 +63,7 @@ public class WaiterAgent extends Agent
 		int table;
 		String choice;
 		private myCustomerState state = myCustomerState.Waiting;
+		public Check CustomersCheck;
 		public MyCustomer(CustomerAgent cust, int t)
 		{
 			c = cust;
@@ -100,7 +101,7 @@ public class WaiterAgent extends Agent
 
 	public List getWaitingCustomers() 
 	{
-		return myCustomers;
+		return MyCustomers;
 	}
 	
 
@@ -150,7 +151,7 @@ public class WaiterAgent extends Agent
 	
 	public void pleaseSeatCustomer(CustomerAgent cust, int table)
 	{
-		myCustomers.add(new MyCustomer(cust,table));
+		MyCustomers.add(new MyCustomer(cust,table));
 		//print("I have " + myCustomers.size() + " Customers");
 		//for(MyCustomer mc: myCustomers)
 		//{
@@ -162,7 +163,7 @@ public class WaiterAgent extends Agent
 	
 	public void ReadyToOrder(CustomerAgent c)
 	{
-		for(MyCustomer mc : myCustomers)
+		for(MyCustomer mc : MyCustomers)
 		{
 			if(mc.c == c)
 			{
@@ -174,7 +175,7 @@ public class WaiterAgent extends Agent
 
 	public void myChoiceIs(String TheOrder, CustomerAgent cust)
 	{
-		for(MyCustomer mc : myCustomers)
+		for(MyCustomer mc : MyCustomers)
 		{
 			if(mc.c == cust)
 			{
@@ -189,7 +190,7 @@ public class WaiterAgent extends Agent
 	
 	public void OrderIsReady(String food, int table)
 	{
-		for(MyCustomer mc : myCustomers)
+		for(MyCustomer mc : MyCustomers)
 		{
 			if(mc.table == table && mc.choice == food)
 			{
@@ -202,7 +203,7 @@ public class WaiterAgent extends Agent
 	
 	public void iAmLeavingTable(CustomerAgent cust) 
 	{
-		for(MyCustomer mc : myCustomers)
+		for(MyCustomer mc : MyCustomers)
 		{
 			if(mc.c == cust)
 			{
@@ -215,7 +216,7 @@ public class WaiterAgent extends Agent
 	public void OutOfFood(int table, String food)
 	{
 		//Fill this in
-		for(MyCustomer mc : myCustomers)
+		for(MyCustomer mc : MyCustomers)
 		{
 			if(mc.table == table && mc.choice == food)
 			{
@@ -225,6 +226,21 @@ public class WaiterAgent extends Agent
 			
 		}
 	}
+
+	//Cashier Messages
+	public void ThisIsTheCheck(CustomerAgent cust, Check ch)
+	{
+		for( MyCustomer mc : MyCustomers)
+		{
+			if(mc.c == cust)
+			{
+				mc.CustomersCheck = ch;
+				//Add a State?
+			}
+		}
+	}
+	
+	
 	
 	//Semaphore release messages
 	public void msgAtTable() 
@@ -287,7 +303,7 @@ public class WaiterAgent extends Agent
 		}
 
 		
-		for(MyCustomer mc : myCustomers)
+		for(MyCustomer mc : MyCustomers)
 		{
 			
 			//print("On Customer: "+ mc.c);

@@ -4,6 +4,7 @@ import restaurant.CustomerAgent;
 import restaurant.WaiterAgent;
 import restaurant.HostAgent;
 import restaurant.CookAgent;
+import restaurant.MarketAgent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class RestaurantPanel extends JPanel {
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent("Jesse");
+    private MarketAgent target = new MarketAgent("Target", cook);
     //private WaiterAgent testWaiter = new WaiterAgent("Danny", host, cook);
 	//private WaiterGui WaiterGui = new WaiterGui(testWaiter);
 
@@ -39,14 +41,12 @@ public class RestaurantPanel extends JPanel {
     public RestaurantPanel(RestaurantGui gui) 
     {
         this.gui = gui;
-      //  testWaiter.setGui(WaiterGui);
-        //host.newWaiter(testWaiter);
-
-        //Remember to add a spot to dynamically create waiters
         
-        //gui.animationPanel.addGui(WaiterGui);
+        //Hack for adding Markets
+        
+        target.startThread();
+        cook.addMarket(target);
         host.startThread();
-        //testWaiter.startThread();
         cook.startThread();
         
         
@@ -159,6 +159,7 @@ public class RestaurantPanel extends JPanel {
     {
     	host.pause();
     	cook.pause();
+    	target.pause();
     	for(CustomerAgent cust : customers)
     	{
     		cust.pause();
@@ -174,6 +175,7 @@ public class RestaurantPanel extends JPanel {
     {
     	host.restart();
     	cook.restart();
+    	target.restart();
     	for(CustomerAgent cust : customers)
     	{
     		cust.restart();
