@@ -39,6 +39,7 @@ public class CookAgent extends Agent
 		public int low;
 		//Hack
 		//Add in a max size
+		public int MaximumSize = 5;
 		public int OrderSize = 10;
 		public int cookingtimer;
 		public String type;
@@ -106,6 +107,10 @@ public class CookAgent extends Agent
 		//STUB
 		//Fix, order from other market if necessary
 		print ("Alright, cool.");
+		if(quantity < FoodInventory.get(food).OrderSize)
+		{
+			//What to do here?
+		}
 	}
 	
 	public void deliverFood(String food, int quantity)
@@ -120,6 +125,8 @@ public class CookAgent extends Agent
 	
 	protected boolean pickAndExecuteAnAction() {
 		//////FILL IN HERE
+		
+		
 		for( Order order : orders)
 		{
 			if(order.state == FoodState.Cooking && S == state.Plating)
@@ -184,8 +191,12 @@ public class CookAgent extends Agent
 		
 		if(FoodInventory.get(o.food).amount == FoodInventory.get(o.food).low)
 		{
-			print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more!");
+			//OrderFood(o);
+			/*
+			print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more from " + markets.get(0) + "!");
+			//Implement a mechanism to choose between markets
 			markets.get(0).INeedMore(o.food, FoodInventory.get(o.food).OrderSize);
+			*/
 		}
 		
 		//Check Food Inventory for low
@@ -206,6 +217,12 @@ public class CookAgent extends Agent
 		//stateChanged();
 	}
 	
+	public void OrderFood(Order o)
+	{
+		print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more from " + markets.get(0) + "!");
+		//Implement a mechanism to choose between markets
+		markets.get(0).INeedMore(o.food, FoodInventory.get(o.food).OrderSize);
+	}
 	
 	public void addMarket(MarketAgent m)
 	{

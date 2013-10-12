@@ -25,6 +25,8 @@ public class CustomerAgent extends Agent
 	private int DecidingFoodTime = 8000;
 	private int SpeakingFoodTime = 2000;
 	private int EatingFoodTime = 5000;
+	private Check myCheck;
+	private double cash;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -101,11 +103,17 @@ public class CustomerAgent extends Agent
 	
 	public void OutOfChoice(String o)
 	{
+		myMenu.FoodMenu.get(o).setUnavailable();
+		print("Okay, I will reorder.");
+		state = AgentState.ReadyToOrder;
+		stateChanged();
+		/*
 		print("Okay, I will leave.");
 		//Hack, should reorder
 		state = AgentState.Eating;
 		event = AgentEvent.doneEating;
-		stateChanged();		
+		stateChanged();	
+		*/	
 		
 	}
 
@@ -113,6 +121,20 @@ public class CustomerAgent extends Agent
 	{
 		state = AgentState.FoodReceived;
 		stateChanged();
+	}
+	
+	//Cashier Stuff
+	public void HereIsYourCheck(Check ch)
+	{
+		myCheck = ch;
+		//a state
+		stateChanged();
+	}
+	
+	//Cashier stuff, Getting Change
+	public void HereIsYourChange(double c)
+	{
+		cash = c;
 	}
 	
 	public void msgAnimationFinishedGoToSeat() 
@@ -261,7 +283,6 @@ public class CustomerAgent extends Agent
 			waitingForWaiter.acquire();
 		} catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

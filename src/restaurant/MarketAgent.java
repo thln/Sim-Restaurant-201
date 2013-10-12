@@ -51,10 +51,11 @@ public class MarketAgent extends Agent
 	private class Food
 	{
 		public String name;
-		public int Inventory = 10;
-		public Food(String f)
+		public int Inventory; // = 10;
+		public Food(String f, int I)
 		{
 			name = f;
+			Inventory = I;
 		}
 		
 		public void UseFood()
@@ -67,7 +68,7 @@ public class MarketAgent extends Agent
 	
 	}		
 	private List<Delivery> Deliveries = new ArrayList<Delivery>();
-	int deliveringTime = 1000;
+	int deliveringTime = 5000;
 	
 	public MarketAgent(String name, CookAgent c)
 	{
@@ -79,10 +80,10 @@ public class MarketAgent extends Agent
 		//add in food
 
 		//MenuForReference = new Menu();
-		Food Salad = new Food("Salad");
-		Food Pizza = new Food("Pizza");
-		Food Chicken = new Food("Chicken");
-		Food Steak = new Food("Steak");
+		Food Salad = new Food("Salad", 10);
+		Food Pizza = new Food("Pizza", 10);
+		Food Chicken = new Food("Chicken", 10);
+		Food Steak = new Food("Steak", 10);
 		
 		FoodInventory.put("Salad", Salad);
 		FoodInventory.put("Pizza", Pizza);

@@ -21,6 +21,8 @@ public class RestaurantPanel extends JPanel {
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent("Jesse");
     private MarketAgent target = new MarketAgent("Target", cook);
+    private MarketAgent walmart = new MarketAgent("Walmart", cook);
+    private MarketAgent costco = new MarketAgent("Costco", cook);
     //private WaiterAgent testWaiter = new WaiterAgent("Danny", host, cook);
 	//private WaiterGui WaiterGui = new WaiterGui(testWaiter);
 
@@ -45,7 +47,11 @@ public class RestaurantPanel extends JPanel {
         //Hack for adding Markets
         
         target.startThread();
+        walmart.startThread();
+        costco.startThread();
         cook.addMarket(target);
+        cook.addMarket(walmart);
+        cook.addMarket(costco);
         host.startThread();
         cook.startThread();
         
@@ -160,6 +166,8 @@ public class RestaurantPanel extends JPanel {
     	host.pause();
     	cook.pause();
     	target.pause();
+    	walmart.pause();
+    	costco.pause();
     	for(CustomerAgent cust : customers)
     	{
     		cust.pause();
@@ -176,6 +184,8 @@ public class RestaurantPanel extends JPanel {
     	host.restart();
     	cook.restart();
     	target.restart();
+    	walmart.restart();
+    	costco.restart();
     	for(CustomerAgent cust : customers)
     	{
     		cust.restart();
