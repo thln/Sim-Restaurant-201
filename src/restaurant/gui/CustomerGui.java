@@ -18,10 +18,12 @@ public class CustomerGui implements Gui{
 	private final int height = 20, width = 20;
 	private static final int xCordOffScreen = -40;
 	private static final int yCordOffScreen = -40;
+	private static final int xCordCashier = 400;
+	private static final int yCordCashier = 100;
 	private int xDestination, yDestination;
 	private int xCordPutOnTable = 20;
 	private int yCordPutOnTable = 20;
-	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
+	private enum Command {noCommand, GoToSeat, GoToCashier, LeaveRestaurant};
 	private Command command=Command.noCommand;
 	private String myOrder = "";
 
@@ -58,7 +60,14 @@ public class CustomerGui implements Gui{
 		
 		if (xCordCurrent == xDestination && yCordCurrent == yDestination) 
 		{
-			if (command==Command.GoToSeat) agent.msgAnimationFinishedGoToSeat();
+			if (command==Command.GoToSeat)
+			{
+				agent.msgAnimationFinishedGoToSeat();
+			}
+			else if (command == Command.GoToCashier)
+			{
+				agent.msgAnimationFinishedGoToCashier();
+			}
 			else if (command==Command.LeaveRestaurant) 
 			{
 				agent.msgAnimationFinishedLeaveRestaurant();
@@ -111,6 +120,13 @@ public class CustomerGui implements Gui{
 	{
 		myOrder = order;
 	}
+    
+    public void GoToCashier()
+    {
+    	xDestination = xCordCashier;
+    	yDestination = yCordCashier;
+		command = Command.GoToCashier;
+    }
 	
 	public void DoExitRestaurant() 
 	{

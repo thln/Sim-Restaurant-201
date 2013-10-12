@@ -36,6 +36,7 @@ public class WaiterAgent extends Agent
 	//Agent Correspondents
 	private HostAgent host;
 	private CookAgent cook;
+	private CashierAgent cashier;
 	
 	Timer relaxTimer = new Timer();
 	
@@ -46,11 +47,13 @@ public class WaiterAgent extends Agent
 	private Semaphore receivingOrder = new Semaphore(0, true);
 	private Semaphore atKitchen = new Semaphore(0, true);
 	private Semaphore atFrontDesk = new Semaphore(0, true);
+	private Semaphore atCashier = new Semaphore(0, true);
+	private Semaphore receivingCheck = new Semaphore(0, true);
 	
 	public WaiterGui waiterGui = null;
 	
 	public enum myCustomerState 
-	{Waiting, Seated, readyToOrder, TakingOrder, OrderReceived, OrderSent, OutOfOrder, DeliveringMeal, Eating, Leaving, Left};
+	{Waiting, Seated, readyToOrder, TakingOrder, OrderReceived, OrderSent, OutOfOrder, DeliveringMeal, Eating, AskedForCheck, GettingCheck, WaitingForCashierCheck, CheckReceived, GivenCheckToCustomer, Leaving, Left};
 
 	//WAITER ON BREAK STUFF ******************************
 	public enum WaiterState 
@@ -73,13 +76,14 @@ public class WaiterAgent extends Agent
 	
 	
 
-	public WaiterAgent(String name, HostAgent h, CookAgent c) 
+	public WaiterAgent(String name, HostAgent h, CookAgent c, CashierAgent cas) 
 	{
 		super();
 
 		this.name = name;
 		this.host = h;
 		this.cook = c;
+		this.cashier = cas;
 		
 		if(name.equals("OnBreak"))
 		{
@@ -142,22 +146,21 @@ public class WaiterAgent extends Agent
 		}
 	}
 	
-	public void msgIWantFood(CustomerAgent cust)
+	public void CanIGetMyCheck(CustomerAgent cust)
 	{
-		//necessary anymore?
-		//myCustomers.add(cust);
-		//stateChanged();
+		for(MyCustomer mc : MyCustomers)
+		{
+			if(mc.c == cust)
+			{
+				mc.state = myCustomerState.AskedForCheck;
+				stateChanged();
+			}
+		}
 	}
 	
 	public void pleaseSeatCustomer(CustomerAgent cust, int table)
 	{
 		MyCustomers.add(new MyCustomer(cust,table));
-		//print("I have " + myCustomers.size() + " Customers");
-		//for(MyCustomer mc: myCustomers)
-		//{
-		//	print("Customer: " + mc.c + " State" + mc.state);
-		//}
-		//cust.setWaiter(this);
 		stateChanged();
 	}
 	
@@ -235,6 +238,9 @@ public class WaiterAgent extends Agent
 			if(mc.c == cust)
 			{
 				mc.CustomersCheck = ch;
+				mc.state = myCustomerState.CheckReceived;
+				receivingCheck.release();
+				stateChanged();
 				//Add a State?
 			}
 		}
@@ -279,7 +285,14 @@ public class WaiterAgent extends Agent
 	{
 		state = WaiterState.InBreakRoom;
 	}
-
+	
+	public void msgAtCashier()
+	{
+		if(atCashier.availablePermits() < 1)
+		{
+		atCashier.release();
+		}
+	}
 	
 	
 	
@@ -336,6 +349,18 @@ public class WaiterAgent extends Agent
 				if(mc.state == myCustomerState.DeliveringMeal)
 				{
 					DeliverMeal(mc);
+					return true;
+				}
+				
+				if(mc.state == myCustomerState.AskedForCheck)
+				{
+					RetrieveCheck(mc);
+					return true;
+				}
+				
+				if(mc.state == myCustomerState.CheckReceived)
+				{
+					DeliverCheck(mc);
 					return true;
 				}
 				
@@ -413,8 +438,6 @@ public class WaiterAgent extends Agent
 	private void seatCustomer(MyCustomer mc) 
 	{
 		AtFrontDesk = false;
-		//AccompanyingCustomer = true;
-		//print("permits" + atFrontDesk.availablePermits());
 		if(waiterGui.getXPos() != xCordFrontDesk && waiterGui.getYPos() != yCordFrontDesk)
 		{
 			waiterGui.GoToFrontDesk();
@@ -427,9 +450,6 @@ public class WaiterAgent extends Agent
 				e.printStackTrace();
 			}
 		}
-		//print("permits" + atFrontDesk.availablePermits());	
-		//AccompanyingCustomer = false;
-		//customer.setCurrentTable(table.tableNumber);
 		Menu menuforCust = new Menu();
 		mc.c.followMe(menuforCust, this, mc.table);
 		DoSeatCustomer(mc.c, mc.table);
@@ -464,9 +484,9 @@ public class WaiterAgent extends Agent
 		try 
 		{
 			atTable.acquire();
-		} catch (InterruptedException e) 
+		}
+		catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		mc.c.WhatDoYouWant();
@@ -474,9 +494,9 @@ public class WaiterAgent extends Agent
 		try 
 		{
 			receivingOrder.acquire();
-		} catch (InterruptedException e) 
+		}
+		catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -499,7 +519,6 @@ public class WaiterAgent extends Agent
 			atKitchen.acquire();
 		} catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		waiterGui.GoToFrontDesk();
@@ -525,7 +544,6 @@ public class WaiterAgent extends Agent
 			atKitchen.acquire();
 		} catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//print ("At Kitchen " + atTable.toString());
@@ -538,7 +556,6 @@ public class WaiterAgent extends Agent
 			atTable.acquire();
 		} catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		mc.c.OutOfChoice(mc.choice);
@@ -558,7 +575,6 @@ public class WaiterAgent extends Agent
 			atKitchen.acquire();
 		} catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//print ("At Kitchen " + atTable.toString());
@@ -571,7 +587,6 @@ public class WaiterAgent extends Agent
 			atTable.acquire();
 		} catch (InterruptedException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//Do we need to pass in a "food" item
@@ -581,6 +596,59 @@ public class WaiterAgent extends Agent
 		waiterGui.DoDeliver("");
 		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;
+		atFrontDesk.tryAcquire();
+		waiterGui.GoToFrontDesk();
+	}
+	
+	public void RetrieveCheck(MyCustomer mc)
+	{
+		
+		DoGoToCashier();
+		try 
+		{
+			atCashier.acquire();
+		} catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+		cashier.GiveMeCheck(mc.choice, mc.c, this);
+		print("At Cashier");
+		waiterGui.DoDeliver("Check");
+		mc.state = myCustomerState.GettingCheck;
+		try 
+		{
+			receivingCheck.acquire();
+		}
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void DoGoToCashier() //REMEMBER TO PASS CHEF AS A PARAMETER
+	{
+		//REMEMBER TO DO THIS
+		//AFFECTS GUI!!!!!!
+		print("Going to Cashier");
+		atFrontDesk.tryAcquire();
+		waiterGui.GoToCashier();
+	}
+	
+	public void DeliverCheck(MyCustomer mc)
+	{
+		DoGoToTable(mc.c);
+		try 
+		{
+			atTable.acquire();
+		}
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+		mc.c.HereIsYourCheck(mc.CustomersCheck);
+		waiterGui.DoDeliver("");
+		print("Delivered Check");
+		mc.state = myCustomerState.GivenCheckToCustomer;
 		atFrontDesk.tryAcquire();
 		waiterGui.GoToFrontDesk();
 	}

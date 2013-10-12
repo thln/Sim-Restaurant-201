@@ -3,9 +3,12 @@ package restaurant;
 import agent.Agent;
 //import restaurant.Menu;
 
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
+
 import restaurant.Check.CheckState;
+//import restaurant.MarketAgent.Delivery;
 
 //import restaurant.CustomerAgent.AgentState;
 
@@ -37,7 +40,7 @@ public class CashierAgent extends Agent
 		
 	}
 	*/
-	List<Check> AllChecks;
+	List<Check> AllChecks= new ArrayList<Check>();;
 	
 	public CashierAgent(String name)
 	{
@@ -66,6 +69,7 @@ public class CashierAgent extends Agent
 			if(ch == c)
 			{
 				c.s = CheckState.CustomerHere;
+				ch.cash = cash;
 				stateChanged();
 				return;
 			}
@@ -103,17 +107,20 @@ public class CashierAgent extends Agent
 	private void ComputeCheck(Check ch)
 	{
 		//STUB
+		//ch.CalculateCost();
+		ch.cost = MenuForReference.GetPrice(ch.foodItem);
 		ch.w.ThisIsTheCheck(ch.c, ch);
 	}
 	
 	private void GiveChange(Check ch)
 	{
 		//STUB
+		print("The bill is $" + ch.cost);
 		ch.cost -= ch.cash;
 		ch.cash = 0;
 		if(ch.cost > 0) //Not Paid Off
 		{
-			
+			//include debt somehow in HereIsYourChange?
 		}
 		else //Has Paid off 
 		{

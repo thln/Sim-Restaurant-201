@@ -22,23 +22,25 @@ public class CustomerAgent extends Agent
 	private Menu myMenu;
 	private String myOrder;
 	private Semaphore waitingForWaiter = new Semaphore(0, true);
+	//private Semaphore GoingToCashier = new Semaphore(0, true);
 	private int DecidingFoodTime = 8000;
 	private int SpeakingFoodTime = 2000;
 	private int EatingFoodTime = 5000;
 	private Check myCheck;
-	private double cash;
+	private double Cash = 20.00;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
 	private HostAgent host;
+	private CashierAgent cashier;
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, ReadyToOrder, GivingOrder, SayingOrder, Ordering, WaitingForFood, FoodReceived, Eating, DoneEating, Leaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, ReadyToOrder, GivingOrder, SayingOrder, Ordering, WaitingForFood, FoodReceived, Eating, AskedForCheck, WaitingForCheck, CheckReceived, GoingToCashier, Paying, donePaying, Leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
-	{none, gotHungry, followMe, seated, doneEating, doneLeaving};
+	{none, gotHungry, followMe, seated, doneEating, atCashier, doneLeaving};
 	AgentEvent event = AgentEvent.none;
 
 	/**
@@ -47,10 +49,13 @@ public class CustomerAgent extends Agent
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name)
+	public CustomerAgent(String name, HostAgent h, CashierAgent cas)
 	{
 		super();
 		this.name = name;
+		
+		this.host = h;
+		this.cashier = cas;
 	}
 
 	/**
@@ -126,15 +131,20 @@ public class CustomerAgent extends Agent
 	//Cashier Stuff
 	public void HereIsYourCheck(Check ch)
 	{
+		//include debt?
 		myCheck = ch;
-		//a state
+		customerGui.DoOrder("Check");
+		state = AgentState.CheckReceived;
 		stateChanged();
 	}
 	
 	//Cashier stuff, Getting Change
 	public void HereIsYourChange(double c)
 	{
-		cash = c;
+		Cash = c;
+		print("I am receiving $" + Cash + " as change");
+		state = AgentState.donePaying;
+		stateChanged();
 	}
 	
 	public void msgAnimationFinishedGoToSeat() 
@@ -143,6 +153,13 @@ public class CustomerAgent extends Agent
 		event = AgentEvent.seated;
 		stateChanged();
 	}
+	
+	public void msgAnimationFinishedGoToCashier()
+	{
+		event = AgentEvent.atCashier;
+		stateChanged();
+	}
+	
 	public void msgAnimationFinishedLeaveRestaurant() 
 	{
 		//from animation
@@ -206,10 +223,40 @@ public class CustomerAgent extends Agent
 		//NEED TO GO THROUGH Seated, ChoosingOrder, Ordering, waitingforFood, then go to Eating
 		if (state == AgentState.Eating && event == AgentEvent.doneEating)
 		{
+			///change from here
+			state = AgentState.AskedForCheck;
+			AskForCheck();
+			return true;
+			/*
+			state = AgentState.Leaving;
+			leaveTable();
+			return true;
+			*/
+		}
+		
+		if(state == AgentState.CheckReceived && event == AgentEvent.doneEating)
+		{
+			state = AgentState.GoingToCashier;
+			HeadToCashier();
+			return true;
+			
+		}
+		
+		if(state == AgentState.GoingToCashier && event == AgentEvent.atCashier)
+		{
+			state = AgentState.Paying;
+			PayForFood();
+			return true;
+			
+		}
+		
+		if(state == AgentState.donePaying && event == AgentEvent.atCashier)
+		{
 			state = AgentState.Leaving;
 			leaveTable();
 			return true;
 		}
+		
 		if (state == AgentState.Leaving && event == AgentEvent.doneLeaving)
 		{
 			state = AgentState.DoingNothing;
@@ -334,15 +381,40 @@ public class CustomerAgent extends Agent
 		},
 		EatingFoodTime);//getHungerLevel() * 1000);//how long to wait before running task
 	}
+	
+	private void AskForCheck()
+	{
+		customerGui.DoOrder("Check?");
+		waiter.CanIGetMyCheck(this);
+	}
+	
+	private void HeadToCashier()
+	{
+		currentTable = 0;
+		myMenu = null;
+		myOrder = "Check";
+		waiter.iAmLeavingTable(this);
+		customerGui.GoToCashier();
+	}
+	
+	private void PayForFood()
+	{
+		myOrder = "";
+		customerGui.DoOrder("");
+		print("I am giving the cashier $" + Cash);
+		cashier.HereIsPayment(myCheck, Cash);
+		Cash = 0;
+	}
 
 	private void leaveTable() 
 	{
-		customerGui.DoOrder("");
-		currentTable = 0;
-		myMenu = null;
-		myOrder = "";
+		//customerGui.DoOrder("");
+		//Breaking up this method
+		//currentTable = 0;
+		//myMenu = null;
+		//myOrder = "";
 		Do("Leaving.");
-		waiter.iAmLeavingTable(this);
+		//waiter.iAmLeavingTable(this);
 		print("Message 10 Sent - I am leaving");
 		customerGui.DoExitRestaurant();
 	}

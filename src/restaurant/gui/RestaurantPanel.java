@@ -5,6 +5,7 @@ import restaurant.WaiterAgent;
 import restaurant.HostAgent;
 import restaurant.CookAgent;
 import restaurant.MarketAgent;
+import restaurant.CashierAgent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,11 +16,12 @@ import java.util.Vector;
  * Panel in frame that contains all the restaurant information,
  * including host, cook, waiters, and customers.
  */
-public class RestaurantPanel extends JPanel {
-
+public class RestaurantPanel extends JPanel 
+{
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent("Jesse");
+    private CashierAgent cashier = new CashierAgent("David");
     private MarketAgent target = new MarketAgent("Target", cook);
     private MarketAgent walmart = new MarketAgent("Walmart", cook);
     private MarketAgent costco = new MarketAgent("Costco", cook);
@@ -54,6 +56,7 @@ public class RestaurantPanel extends JPanel {
         cook.addMarket(costco);
         host.startThread();
         cook.startThread();
+        cashier.startThread();
         
         
         //magic numbers---
@@ -131,7 +134,7 @@ public class RestaurantPanel extends JPanel {
 
     	if (type.equals("Customers")) 
     	{
-    		CustomerAgent ca = new CustomerAgent(name);	
+    		CustomerAgent ca = new CustomerAgent(name, host, cashier);	
     		CustomerGui cg = new CustomerGui(ca, gui);
 
     		gui.animationPanel.addGui(cg);// dw
@@ -148,7 +151,7 @@ public class RestaurantPanel extends JPanel {
     	
     	else if (type.equals("Waiters"))
     	{
-    		WaiterAgent wa = new WaiterAgent(name,host, cook);
+    		WaiterAgent wa = new WaiterAgent(name,host, cook, cashier);
     		WaiterGui wg = new WaiterGui(wa);
     		
     		gui.animationPanel.addGui(wg);
@@ -168,6 +171,7 @@ public class RestaurantPanel extends JPanel {
     	target.pause();
     	walmart.pause();
     	costco.pause();
+    	cashier.pause();
     	for(CustomerAgent cust : customers)
     	{
     		cust.pause();
@@ -186,6 +190,7 @@ public class RestaurantPanel extends JPanel {
     	target.restart();
     	walmart.restart();
     	costco.restart();
+    	cashier.restart();
     	for(CustomerAgent cust : customers)
     	{
     		cust.restart();

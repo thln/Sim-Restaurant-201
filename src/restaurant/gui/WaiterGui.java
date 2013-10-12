@@ -19,6 +19,8 @@ public class WaiterGui implements Gui {
 	private static final int yCordKitchen = 600;
 	private static final int xCordBreakRoom = 100;
 	private static final int yCordBreakRoom = 400;
+	private static final int xCordCashier = 400;
+	private static final int yCordCashier = 100;
 	private int tableNumber = 1;
     private int xDestination = -20, yDestination = -20;//default start position
     public boolean waiterIsFree = false;
@@ -73,6 +75,12 @@ public class WaiterGui implements Gui {
         		& (xDestination == xCordBreakRoom) & (yDestination == yCordBreakRoom))
         {
         	agent.msgAtBreakRoom();
+        	//System.out.println("I am at BreakRoom.");
+        }
+        else if (xPos == xDestination && yPos == yDestination
+        		& (xDestination == xCordCashier) & (yDestination == yCordCashier))
+        {
+        	agent.msgAtCashier();
         	//System.out.println("I am at BreakRoom.");
         }
     }
@@ -153,6 +161,12 @@ public class WaiterGui implements Gui {
     {
     	xDestination = xCordBreakRoom;
     	yDestination = yCordBreakRoom;
+    }
+    
+    public void GoToCashier()
+    {
+    	xDestination = xCordCashier;
+    	yDestination = yCordCashier;
     }
     
     public void DoRelax()
