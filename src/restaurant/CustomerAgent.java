@@ -28,6 +28,7 @@ public class CustomerAgent extends Agent
 	private int EatingFoodTime = 5000;
 	private Check myCheck;
 	private double Cash = 20.00;
+	private double Debt = 0.00;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -139,10 +140,11 @@ public class CustomerAgent extends Agent
 	}
 	
 	//Cashier stuff, Getting Change
-	public void HereIsYourChange(double c)
+	public void HereIsYourChange(double c, double d)
 	{
 		Cash = c;
-		print("I am receiving $" + Cash + " as change");
+		Debt = d;
+		print("I am receiving $" + Cash + " as change and I have $" + Debt + " as my debt");
 		state = AgentState.donePaying;
 		stateChanged();
 	}

@@ -121,10 +121,12 @@ public class CashierAgent extends Agent
 		if(ch.cost > 0) //Not Paid Off
 		{
 			//include debt somehow in HereIsYourChange?
+			ch.c.HereIsYourChange(0, ch.cost);
+			ch.s = CheckState.NotPaidOff;
 		}
 		else //Has Paid off 
 		{
-			ch.c.HereIsYourChange(-ch.cost);
+			ch.c.HereIsYourChange(-ch.cost, 0);
 			ch.s = CheckState.PaidOff;
 		}
 	}
