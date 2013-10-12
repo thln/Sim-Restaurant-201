@@ -25,7 +25,7 @@ public class RestaurantPanel extends JPanel {
     private MarketAgent costco = new MarketAgent("Costco", cook);
     //private WaiterAgent testWaiter = new WaiterAgent("Danny", host, cook);
 	//private WaiterGui WaiterGui = new WaiterGui(testWaiter);
-
+ 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
     private Vector<WaiterAgent> waiters = new Vector<WaiterAgent>();
 
