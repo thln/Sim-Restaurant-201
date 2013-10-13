@@ -222,13 +222,13 @@ public class CookAgent extends Agent
 		FoodInventory.get(o.food).UseFood();
 		print("Using " + o.food +", inventory is now " + FoodInventory.get(o.food).amount);
 		
-		if(FoodInventory.get(o.food).amount == FoodInventory.get(o.food).low)
+		//Check Food Inventory for low
+		if(FoodInventory.get(o.food).amount <= FoodInventory.get(o.food).low)
 		{
 			FoodInventory.get(o.food).isLow = true;
 			OrderFood(o.food);
 		}
-		
-		//Check Food Inventory for low
+	
 		o.state = OrderState.Cooking;
 		CookTimer.schedule(new TimerTask() 
 		{
@@ -242,7 +242,7 @@ public class CookAgent extends Agent
 		FoodInventory.get(o.food).cookingtimer);
 	}
 	
-	public void OrderFood(String foodItem)//Order o)
+	public void OrderFood(String foodItem)
 	{
 		S = state.Cooking;
 		print("We are low on " + foodItem + ". Let's order " + FoodInventory.get(foodItem).OrderSize + " more from " + markets.get(CurrentMarket) + "!");
@@ -261,5 +261,21 @@ public class CookAgent extends Agent
 		FoodInventory.get("Chicken").amount = 2;
 		FoodInventory.get("Pizza").amount = 2;
 		FoodInventory.get("Salad").amount = 2;
+	}
+	
+	public void setEmpty()
+	{
+		FoodInventory.get("Steak").amount = 0;
+		FoodInventory.get("Chicken").amount = 0;
+		FoodInventory.get("Pizza").amount = 0;
+		FoodInventory.get("Salad").amount = 0;	
+		FoodInventory.get("Steak").isLow = true;
+		OrderFood("Steak");
+		FoodInventory.get("Chicken").isLow = true;
+		OrderFood("Chicken");
+		FoodInventory.get("Pizza").isLow = true;
+		OrderFood("Pizza");
+		FoodInventory.get("Salad").isLow = true;
+		OrderFood("Salad");
 	}
 }

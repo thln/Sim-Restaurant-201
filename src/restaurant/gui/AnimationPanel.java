@@ -1,6 +1,6 @@
 package restaurant.gui;
 
-import restaurant.WaiterAgent;
+//import restaurant.WaiterAgent;
 import restaurant.HostAgent;
 
 import javax.swing.*;
@@ -8,8 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+//import java.awt.event.KeyEvent;
+//import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private final int secondRow = 1;
     private final int thirdRow = 2;
     private final int frameDelay = 10; //20 is standard
-    private Image bufferImage;
+    // Image bufferImage;
     private Dimension bufferSize;
 
     private List<Gui> guis = new ArrayList<Gui>();
@@ -46,8 +46,6 @@ public class AnimationPanel extends JPanel implements ActionListener {
     {
     	setSize(WINDOWX, WINDOWY);
         setVisible(true);
-        
-        addBindings();
         
         bufferSize = this.getSize();
  
@@ -138,60 +136,4 @@ public class AnimationPanel extends JPanel implements ActionListener {
     {
     	host = hostName;
     }
-    protected void addBindings() 
-    {
-        //InputMap inputMap = getInputMap();
-        String ctrlSave = "CTRL Save";
-        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK), ctrlSave);
-        getActionMap().put(ctrlSave, new AbstractAction() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-            	 System.out.println("GREAT SUCCESS!");   
-            }
-        });
-        /*
-        Action myAction = new AbstractAction()
-        {
-        	public void actionPerformed(ActionEvent e) 
-        	{                //04
-        	      System.out.println("GREAT SUCCESS!");                     //05
-        	    }
-        };
-        //Ctrl-b to go backward one character
-        KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_B, 0);
-        inputMap.put(key, myAction);
- 
-        //Ctrl-f to go forward one character
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_F, 0);
-        inputMap.put(key, myAction);
- 
-        //Ctrl-p to go up one line
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_P, 0);
-        inputMap.put(key, myAction);
- 
-        //Ctrl-n to go down one line
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_N, 0);
-        inputMap.put(key, myAction);*/
-    }
-    /*
-    public void registerActions()
-    {     //01
-  	  Action myAction = new AbstractAction()
-  	  {              										         //02
-  	    @Override                                                   //03
-  	    public void actionPerformed(ActionEvent e) {                //04
-  	      System.out.println("GREAT SUCCESS!");                     //05
-  	    }                                                           //06
-  	  }; 
-  	getInputMap().put(KeyStroke.getKeyStroke("F2"),"doSomething");
-  	getActionMap().put("doSomething", myAction);//07
-  	/*
-  	  KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0); //08
-  	  getInputMap().put(key, "myAction");                 //09
-  	  getActionMap().put("myAction", myAction);           //10
-  	  
-  	} */
-  	
 }

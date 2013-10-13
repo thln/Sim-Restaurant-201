@@ -17,6 +17,8 @@ public class CashierAgent extends Agent
 	/***** DATA *****/
 	private String name;
 	private Menu MenuForReference;
+	private double accumulatedRevenue = 0;
+	private double accumulatedDebt = 0;
 	
 	/*
 	public enum CheckState
@@ -117,17 +119,22 @@ public class CashierAgent extends Agent
 		//STUB
 		print("The bill is $" + ch.cost);
 		ch.cost -= ch.cash;
-		ch.cash = 0;
+		//ch.cash = 0;
 		if(ch.cost > 0) //Not Paid Off
 		{
 			//include debt somehow in HereIsYourChange?
+			accumulatedDebt -= (ch.cost);
+			print("The restaurant debt is now " + accumulatedDebt );
 			ch.c.HereIsYourChange(0, ch.cost);
 			ch.s = CheckState.NotPaidOff;
 		}
 		else //Has Paid off 
 		{
+			accumulatedRevenue += (ch.cash + ch.cost);
+			print("The restaurant revenue is now " + accumulatedRevenue );
 			ch.c.HereIsYourChange(-ch.cost, 0);
 			ch.s = CheckState.PaidOff;
 		}
+		ch.cash = 0;
 	}
 }

@@ -224,6 +224,7 @@ public class RestaurantPanel extends JPanel // implements KeyListener
         String stringCtrlO = "CTRL O";
         String stringCtrlP = "CTRL P";
         String stringCtrlL = "CTRL L";
+        String stringCtrlE = "CTRL E";
         Action keyCtrlI = new AbstractAction()
         {
              public void actionPerformed(ActionEvent e)
@@ -297,66 +298,30 @@ public class RestaurantPanel extends JPanel // implements KeyListener
             	 cook.setLow();
              }
         };
-        
+        Action keyCtrlE = new AbstractAction()
+        {
+             public void actionPerformed(ActionEvent e)
+             {
+            	 System.out.println("Ctrl+E : The inventory of the cook will be emptied. When a customer orders, the chef will begin to purchase more foods. ");
+            	 //Do Stuff
+            	 cook.setEmpty();
+             }
+        };
         
         getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), stringCtrlI); 
         getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), stringCtrlB);
         getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK), stringCtrlO);
         getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK), stringCtrlP);
         getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK), stringCtrlL);
+        getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK), stringCtrlE);
+
         
         getActionMap().put(stringCtrlI, keyCtrlI);
         getActionMap().put(stringCtrlB, keyCtrlB);
         getActionMap().put(stringCtrlO, keyCtrlO);
         getActionMap().put(stringCtrlP, keyCtrlP);
         getActionMap().put(stringCtrlL, keyCtrlL);
+        getActionMap().put(stringCtrlE, keyCtrlE);
+
     }
-    /*
-    @Override
-   	public void keyReleased(KeyEvent arg0) 
-   	{	
-
-   	}
-
-   	@Override
-   	public void keyTyped(KeyEvent arg0) 
-   	{
-   		
-   	}
-       
-   	@Override
-       public void keyPressed(KeyEvent evt)
-       {
-   		if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_I) 
-   		{
-   			if(host.FullRestaurant())
-   			{
-   				for(CustomerAgent cust : customers)
-   				{
-   					if(cust.WaitingToBeSeated)
-   					{
-   						cust.ImpatientNoMoreSeats();
-   					}
-   				}
-   			}
-   			return;
-        } 
-   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_X) 
-   		{
-            JOptionPane.showMessageDialog(this, "ctrl + x");
-        } 
-   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
-   		{
-            JOptionPane.showMessageDialog(this, "ctrl + v");
-        }
-   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
-   		{
-            JOptionPane.showMessageDialog(this, "ctrl + v");
-        }
-   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
-   		{
-            JOptionPane.showMessageDialog(this, "ctrl + v");
-        }
-       }
-       */
 }
