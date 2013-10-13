@@ -85,6 +85,14 @@ public class MarketAgent extends Agent
 		Food Chicken = new Food("Chicken", 10);
 		Food Steak = new Food("Steak", 10);
 		
+		if(name.equals("Target"))
+		{
+			Salad.Inventory = 1;
+			Pizza.Inventory = 1;
+			Chicken.Inventory = 1;
+			Steak.Inventory = 1;
+		}
+		
 		FoodInventory.put("Salad", Salad);
 		FoodInventory.put("Pizza", Pizza);
 		FoodInventory.put("Chicken", Chicken);

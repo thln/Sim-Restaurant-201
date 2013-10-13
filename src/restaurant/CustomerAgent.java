@@ -29,6 +29,7 @@ public class CustomerAgent extends Agent
 	private Check myCheck;
 	private double Cash = 20.00;
 	private double Debt = 0.00;
+	public boolean DineAndDash = false;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -132,7 +133,6 @@ public class CustomerAgent extends Agent
 	//Cashier Stuff
 	public void HereIsYourCheck(Check ch)
 	{
-		//include debt?
 		myCheck = ch;
 		customerGui.DoOrder("Check");
 		state = AgentState.CheckReceived;
@@ -145,6 +145,7 @@ public class CustomerAgent extends Agent
 		Cash = c;
 		Debt = d;
 		print("I am receiving $" + Cash + " as change and I have $" + Debt + " as my debt");
+		//What happens if you have a debt?
 		state = AgentState.donePaying;
 		stateChanged();
 	}
@@ -255,7 +256,7 @@ public class CustomerAgent extends Agent
 		if(state == AgentState.donePaying && event == AgentEvent.atCashier)
 		{
 			state = AgentState.Leaving;
-			leaveTable();
+			leaveTheRestaurant();
 			return true;
 		}
 		
@@ -304,6 +305,16 @@ public class CustomerAgent extends Agent
 	
 	private void chooseOrder()
 	{
+		if((Cash<myMenu.FoodMenu.get("Salad").price) && !DineAndDash)
+		{
+			print("Oh man, I can't even afford a salad. I should leave.");
+			waiter.iAmLeavingTable(this);
+			state = AgentState.donePaying;
+			event = AgentEvent.atCashier;
+			stateChanged();
+			return;
+		}
+		
 		myOrder = myMenu.blindPick();
 		waiter.ReadyToOrder(this);
 		
@@ -408,7 +419,7 @@ public class CustomerAgent extends Agent
 		Cash = 0;
 	}
 
-	private void leaveTable() 
+	private void leaveTheRestaurant() 
 	{
 		//customerGui.DoOrder("");
 		//Breaking up this method

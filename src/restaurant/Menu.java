@@ -12,7 +12,7 @@ public class Menu
 
 	
 	public String choices[] = {"Steak", "Chicken", "Salad", "Pizza"};
-	public double prices[] = {15.99, 10.99, 5.99, 8.99};
+	public double prices[] = {15.99, 10.99, 4.99, 8.99};
 	public int size = 4;
 	public class Food
 	{
@@ -42,7 +42,7 @@ public class Menu
 	
 	public Menu()
 	{
-		Food Salad = new Food("Salad", 5.99);
+		Food Salad = new Food("Salad", 4.99);
 		Food Pizza = new Food("Pizza", 8.99);
 		Food Chicken = new Food("Chicken", 10.99);
 		Food Steak = new Food("Steak", 15.99);

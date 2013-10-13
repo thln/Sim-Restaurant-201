@@ -11,11 +11,11 @@ public class CookAgent extends Agent
 {
 	
 	/***** DATA *****/
-	public enum FoodState 
-	{Pending, Cooking, Finished};
+	public enum OrderState 
+	{Pending, Cooking, Finished, NeedMore};
 	
 	public enum state
-	{Cooking, Plating};
+	{Cooking, Plating, Ordering};
 	state S = state.Cooking;
 	
 	private class Order
@@ -23,7 +23,7 @@ public class CookAgent extends Agent
 		public WaiterAgent w;
 		public String food;
 		public int table;
-		FoodState state = FoodState.Pending;
+		OrderState state = OrderState.Pending;
 		
 		public Order(String foodchoice, int tablenumber, WaiterAgent waiter)
 		{
@@ -37,6 +37,7 @@ public class CookAgent extends Agent
 	{
 		public int amount;
 		public int low;
+		public boolean isLow = false;
 		//Hack
 		//Add in a max size
 		public int MaximumSize = 5;
@@ -69,6 +70,7 @@ public class CookAgent extends Agent
 	private Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
 	private Map<String, Food> FoodInventory = new HashMap<String, Food>();
 	private String name;
+	private int CurrentMarket = 0;
 //	private String name;
 	
 	public CookAgent(String name)
@@ -106,10 +108,19 @@ public class CookAgent extends Agent
 	{
 		//STUB
 		//Fix, order from other market if necessary
-		print ("Alright, cool.");
 		if(quantity < FoodInventory.get(food).OrderSize)
 		{
 			//What to do here?
+			print("Looks like we have to order more.");
+			FoodInventory.get(food).OrderSize -= quantity;
+			S = state.Ordering;
+			stateChanged();
+		}
+		else
+		{
+			print ("Alright, cool. We don't have to order more.");
+			FoodInventory.get(food).OrderSize = 10;
+			FoodInventory.get(food).isLow = false;
 		}
 	}
 	
@@ -121,21 +132,51 @@ public class CookAgent extends Agent
 	}
 	
 	
+	
+	
+	
 	/***** SCHEDULER *****/
 	
 	protected boolean pickAndExecuteAnAction() {
 		//////FILL IN HERE
 		
-		
+		if(S == state.Ordering)
+		{
+			if(FoodInventory.get("Steak").isLow)
+			{
+				CurrentMarket++;
+				OrderFood("Steak");
+				return true;
+			}
+			if(FoodInventory.get("Chicken").isLow)
+			{
+				CurrentMarket++;
+				OrderFood("Chicken");
+				return true;
+			}
+			if(FoodInventory.get("Pizza").isLow)
+			{
+				CurrentMarket++;
+				OrderFood("Pizza");
+				return true;
+			}
+			if(FoodInventory.get("Salad").isLow)
+			{
+				CurrentMarket++;
+				OrderFood("Salad");
+				return true;
+			}
+		}
+			
 		for( Order order : orders)
 		{
-			if(order.state == FoodState.Cooking && S == state.Plating)
+			if(order.state == OrderState.Cooking && S == state.Plating)
 			{
 				PlateIt(order);
 				return true;
 			}
 			
-			if(order.state == FoodState.Pending)
+			if(order.state == OrderState.Pending)
 			{
 				CookIt(order);
 				return true;
@@ -158,7 +199,7 @@ public class CookAgent extends Agent
 		o.w.OrderIsReady(o.food, o.table);
 		print("Message 8 Sent, Food is Ready" + name);
 		/////Why is the print coming from a "CookAgent address"
-		o.state = FoodState.Finished;
+		o.state = OrderState.Finished;
 	}
 	
 	private void DoPlate(Order o)
@@ -168,7 +209,6 @@ public class CookAgent extends Agent
 	
 	public void CookIt(Order o)
 	{
-		/////FILL IN HERE
 		
 		//Out of Food
 		if(FoodInventory.get(o.food).amount == 0)
@@ -179,28 +219,17 @@ public class CookAgent extends Agent
 			return;
 		}
 		
-		/*
-		if(FoodInventory.get(o.food).amount == FoodInventory.get(o.food).low)
-		{
-			print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more!");
-			markets.get(0).INeedMore(o.food, FoodInventory.get(o.food).OrderSize);
-		}*/
-		
 		FoodInventory.get(o.food).UseFood();
 		print("Using " + o.food +", inventory is now " + FoodInventory.get(o.food).amount);
 		
 		if(FoodInventory.get(o.food).amount == FoodInventory.get(o.food).low)
 		{
-			//OrderFood(o);
-			/*
-			print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more from " + markets.get(0) + "!");
-			//Implement a mechanism to choose between markets
-			markets.get(0).INeedMore(o.food, FoodInventory.get(o.food).OrderSize);
-			*/
+			FoodInventory.get(o.food).isLow = true;
+			OrderFood(o.food);
 		}
 		
 		//Check Food Inventory for low
-		o.state = FoodState.Cooking;
+		o.state = OrderState.Cooking;
 		CookTimer.schedule(new TimerTask() 
 		{
 			public void run() 
@@ -210,18 +239,15 @@ public class CookAgent extends Agent
 				stateChanged();
 			}
 		},
-		//RecipeBook.get(o.food));
 		FoodInventory.get(o.food).cookingtimer);
-		/////COOOKING TIMER
-		//o.state = FoodState.Ready;
-		//stateChanged();
 	}
 	
-	public void OrderFood(Order o)
+	public void OrderFood(String foodItem)//Order o)
 	{
-		print("We are low on " + o.food + ". Let's order " + FoodInventory.get(o.food).OrderSize + " more from " + markets.get(0) + "!");
+		S = state.Cooking;
+		print("We are low on " + foodItem + ". Let's order " + FoodInventory.get(foodItem).OrderSize + " more from " + markets.get(CurrentMarket) + "!");
 		//Implement a mechanism to choose between markets
-		markets.get(0).INeedMore(o.food, FoodInventory.get(o.food).OrderSize);
+		markets.get(CurrentMarket).INeedMore(foodItem, FoodInventory.get(foodItem).OrderSize);
 	}
 	
 	public void addMarket(MarketAgent m)
