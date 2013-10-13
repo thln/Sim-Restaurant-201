@@ -27,9 +27,9 @@ public class CustomerAgent extends Agent
 	private int SpeakingFoodTime = 2000;
 	private int EatingFoodTime = 5000;
 	private Check myCheck;
-	private double Cash =  20.00; //8.00; //4.00;
-	private double Debt = 0.00;
-	public boolean DineAndDash = false;
+	private double Cash = 20.00; //8.00; //4.00;
+	private double Debt = 0.00; //What Do I do with debt
+	public boolean DineAndDash = false; // true; //false;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -143,10 +143,19 @@ public class CustomerAgent extends Agent
 	public void HereIsYourChange(double c, double d)
 	{
 		Cash = c;
-		Debt = d;
-		print("I am receiving $" + Cash + " as change and I have $" + Debt + " as my debt");
+		Debt += d;
+		print("I am receiving $" + c + " as change and I have $" + d + " as my debt");
+		print("I have $" + Cash + " and $" + Debt + " as debt");
 		//What happens if you have a debt?
 		state = AgentState.donePaying;
+		stateChanged();
+	}
+	
+	public void ImpatientNoMoreSeats()
+	{
+		print("It's a full restaurant, I think I'm just going to leave.");
+		state = AgentState.donePaying;
+		event = AgentEvent.atCashier;
 		stateChanged();
 	}
 	
@@ -169,7 +178,6 @@ public class CustomerAgent extends Agent
 		event = AgentEvent.doneLeaving;
 		stateChanged();
 	}
-
 	
 	
 	

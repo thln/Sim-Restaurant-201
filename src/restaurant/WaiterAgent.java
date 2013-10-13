@@ -663,8 +663,9 @@ public class WaiterAgent extends Agent
 				print(mc.c + " leaving table " + mc.table);
 				//table.setUnoccupied();
 				mc.state = myCustomerState.Left;
-				host.TableIsFree(mc.table);
+				host.TableIsFree(mc.table, this);
 				print("Message 11 Sent, " + mc.c + " has left, " + mc.table + " is free");
+				MyCustomers.remove(mc);
 			//}
 		//}
 	}

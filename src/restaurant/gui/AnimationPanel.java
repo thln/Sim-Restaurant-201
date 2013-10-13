@@ -26,7 +26,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private final int firstRow = 0;
     private final int secondRow = 1;
     private final int thirdRow = 2;
-    private final int frameDelay = 20; //20 is standard
+    private final int frameDelay = 10; //20 is standard
     private Image bufferImage;
     private Dimension bufferSize;
 

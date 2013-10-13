@@ -39,7 +39,7 @@ public class HostAgent extends Agent
 	{
 		public WaiterAgent w1;
 		//used possibly to go through the waiterlist and reorganize the customers
-		//public int NumberOfCustomers;
+		public int NumberOfCustomers;
 		private WaiterState state = WaiterState.Working;
 		//public boolean Working = true;
 		public MyWaiter(WaiterAgent w)
@@ -90,6 +90,7 @@ public class HostAgent extends Agent
 	private int NTABLES = 1;
 	private int MAXTABLES = 9;
 	private int currentWaiter = 0;
+	private int currentNumberOfCustomers = 0;
 	//private int NWAITERS = 1;
 	private String name;
 	
@@ -182,7 +183,7 @@ public class HostAgent extends Agent
 		stateChanged();
 	}
 	
-	public void TableIsFree(int t)
+	public void TableIsFree(int t, WaiterAgent w)
 	{
 		///////FILL IN HERE
 		for(Table table : tables)
@@ -193,9 +194,17 @@ public class HostAgent extends Agent
 				{
 					if(mc.c == table.getOccupant())
 					{
-						mc.state = CustomerState.Left;
-						table.setUnoccupied();
-						stateChanged();
+						for(MyWaiter mw : MyWaiters)
+						{
+							if(mw.w1 == w)
+							{
+								mw.NumberOfCustomers--;
+								updateNumberOfCustomers();
+								mc.state = CustomerState.Left;
+								table.setUnoccupied();
+								stateChanged();
+							}
+						}
 					}
 					
 				}
@@ -282,6 +291,8 @@ public class HostAgent extends Agent
 			
 			if(MyWaiters.get(currentWaiter).w1.AtFrontDesk && MyWaiters.get(currentWaiter).state == WaiterState.Working)
 			{
+			MyWaiters.get(currentWaiter).NumberOfCustomers++;
+			updateNumberOfCustomers();
 			MyWaiters.get(currentWaiter).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
 			print("Message 2 Sent " + mc.c.getName() + " " + mc.state);
 			//print("currentWaiter number : " + currentWaiter + " and size of waiterlist : " + MyWaiters.size());
@@ -304,5 +315,25 @@ public class HostAgent extends Agent
 		}
 	
 		stateChanged();
+	}
+	
+	private void updateNumberOfCustomers()
+	{
+		currentNumberOfCustomers = 0;
+		for(MyWaiter mw : MyWaiters)
+		{
+			currentNumberOfCustomers += mw.NumberOfCustomers;
+		}
+		print("The current Number of Customers is " + currentNumberOfCustomers);
+	}
+
+	public boolean FullRestaurant()
+	{		
+		if(currentNumberOfCustomers == NTABLES)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 }
