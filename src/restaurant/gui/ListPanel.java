@@ -64,18 +64,6 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
 
         setLayout(new BoxLayout((Container) this, BoxLayout.Y_AXIS));
         //add(new JLabel(type)); //"<html><pre><u>" + type + "</u><br></pre></html>"));
-
-        
-        
-        /*
-        additionalTables.addActionListener(this);
-        add(additionalTables);
-        
-        addPersonB.addActionListener(this);
-        addPersonB.setEnabled(false);
-        add(addPersonB);
-        */
-        //~~
         
         
         
@@ -87,14 +75,6 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
         newCustomerHungerCB.setText("Hungry?");
         newCustomerHungerCB.setEnabled(false); 
         newCustomerHungerCB.addActionListener(this);
-
-        /*
-        Dimension paneSize = pane.getSize();
-        Dimension NameEnterDimensions = new Dimension(250, 20);
-        Dimension NamePersonDimensions = new Dimension(250, 50);
-        Dimension PeopleListDimensions = new Dimension(250,300);
-        //(paneSize.width, (int) (paneSize.height / 2));
-        */
         
         //add(NameEnter);
         NewCustomerInfo.setLayout(new BoxLayout((Container) NewCustomerInfo, BoxLayout.X_AXIS));

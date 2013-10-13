@@ -83,10 +83,10 @@ public class CookAgent extends Agent
 		RecipeBook.put("Chicken",7000);
 		RecipeBook.put("Steak",8000);
 		
-		Food Salad = new Food("Salad", 2, 1, 3000);
-		Food Pizza = new Food("Pizza", 2, 1, 5000);
-		Food Chicken = new Food("Chicken", 2, 1, 7000);
-		Food Steak = new Food("Steak", 2, 1, 8000);
+		Food Salad = new Food("Salad", 10, 1, 3000);
+		Food Pizza = new Food("Pizza", 10, 1, 5000);
+		Food Chicken = new Food("Chicken", 10, 1, 7000);
+		Food Steak = new Food("Steak", 10, 1, 8000);
 		
 		FoodInventory.put("Salad", Salad);
 		FoodInventory.put("Pizza", Pizza);
@@ -254,5 +254,12 @@ public class CookAgent extends Agent
 	{
 		markets.add(m);
 	}
-	
+		
+	public void setLow()
+	{
+		FoodInventory.get("Steak").amount = 2;
+		FoodInventory.get("Chicken").amount = 2;
+		FoodInventory.get("Pizza").amount = 2;
+		FoodInventory.get("Salad").amount = 2;
+	}
 }

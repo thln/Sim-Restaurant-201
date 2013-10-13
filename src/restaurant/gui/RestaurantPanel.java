@@ -1,6 +1,7 @@
 package restaurant.gui;
 
 import restaurant.CustomerAgent;
+import restaurant.HostAgent.CustomerState;
 import restaurant.WaiterAgent;
 import restaurant.HostAgent;
 import restaurant.CookAgent;
@@ -8,6 +9,7 @@ import restaurant.MarketAgent;
 import restaurant.CashierAgent;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -16,7 +18,7 @@ import java.util.Vector;
  * Panel in frame that contains all the restaurant information,
  * including host, cook, waiters, and customers.
  */
-public class RestaurantPanel extends JPanel 
+public class RestaurantPanel extends JPanel // implements KeyListener 
 {
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
@@ -45,6 +47,10 @@ public class RestaurantPanel extends JPanel
     public RestaurantPanel(RestaurantGui gui) 
     {
         this.gui = gui;
+        
+        //addKeyListener((KeyListener) this);
+        addBindings();
+        //peoplePanel.addBindings();
         
         //Hack for adding Markets
         
@@ -211,5 +217,146 @@ public class RestaurantPanel extends JPanel
     	return host;
     }
     
+    protected void addBindings() 
+    {
+        String stringCtrlI = "CTRL I";
+        String stringCtrlB = "CTRL B";
+        String stringCtrlO = "CTRL O";
+        String stringCtrlP = "CTRL P";
+        String stringCtrlL = "CTRL L";
+        Action keyCtrlI = new AbstractAction()
+        {
+             public void actionPerformed(ActionEvent e)
+             {
+            	 System.out.println("Ctrl+I : Any customers waiting to be seated while there is a full restaurant will leave.");
+            	 if(host.FullRestaurant())
+        			{
+        				for(CustomerAgent cust : customers)
+        				{
+        					if(cust.WaitingToBeSeated)
+        					{
+        						cust.ImpatientNoMoreSeats();
+        					}
+        				}
+        			}
+             }
+        };
+        
+        Action keyCtrlB = new AbstractAction()
+        {
+             public void actionPerformed(ActionEvent e)
+             {
+            	 System.out.println("Ctrl+B : Any customer waiting to be seated will now dine and dash/eat regardless of cost.");
+            	 for(CustomerAgent cust : customers)
+ 				{
+ 					if(cust.WaitingToBeSeated)
+ 					{
+ 						cust.setCash(0.00);
+ 						cust.DineAndDash = true;
+ 					}
+ 				}
+             }
+        };
+        
+        Action keyCtrlO = new AbstractAction()
+        {
+             public void actionPerformed(ActionEvent e)
+             {
+            	 System.out.println("Ctrl+O : Any customer waiting to be seated will now have $0, and will not be able to buy any item.");
+            	 for(CustomerAgent cust : customers)
+ 				{
+ 					if(cust.WaitingToBeSeated)
+ 					{
+ 						cust.setCash(0.00);
+ 					}
+ 				}
+             }
+        };
+        
+        Action keyCtrlP = new AbstractAction()
+        {
+             public void actionPerformed(ActionEvent e)
+             {
+            	 System.out.println("Ctrl+P : Any customer waiting to be seated will now have $8, and will only be able to afford a salad.");
+            	 for(CustomerAgent cust : customers)
+ 				{
+ 					if(cust.WaitingToBeSeated)
+ 					{
+ 						cust.setCash(8.00);
+ 					}
+ 				}
+             }
+        };
+        
+        Action keyCtrlL = new AbstractAction()
+        {
+             public void actionPerformed(ActionEvent e)
+             {
+            	 System.out.println("Ctrl+L : The inventory of the cook will be set to right before low (2). When a customer orders, the chef will begin to purchase more foods. ");
+            	 //Do Stuff
+            	 cook.setLow();
+             }
+        };
+        
+        
+        getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), stringCtrlI); 
+        getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), stringCtrlB);
+        getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK), stringCtrlO);
+        getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK), stringCtrlP);
+        getInputMap(this.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK), stringCtrlL);
+        
+        getActionMap().put(stringCtrlI, keyCtrlI);
+        getActionMap().put(stringCtrlB, keyCtrlB);
+        getActionMap().put(stringCtrlO, keyCtrlO);
+        getActionMap().put(stringCtrlP, keyCtrlP);
+        getActionMap().put(stringCtrlL, keyCtrlL);
+    }
+    /*
+    @Override
+   	public void keyReleased(KeyEvent arg0) 
+   	{	
 
+   	}
+
+   	@Override
+   	public void keyTyped(KeyEvent arg0) 
+   	{
+   		
+   	}
+       
+   	@Override
+       public void keyPressed(KeyEvent evt)
+       {
+   		if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_I) 
+   		{
+   			if(host.FullRestaurant())
+   			{
+   				for(CustomerAgent cust : customers)
+   				{
+   					if(cust.WaitingToBeSeated)
+   					{
+   						cust.ImpatientNoMoreSeats();
+   					}
+   				}
+   			}
+   			return;
+        } 
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_X) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + x");
+        } 
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + v");
+        }
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + v");
+        }
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + v");
+        }
+       }
+       */
 }

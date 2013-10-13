@@ -30,6 +30,7 @@ public class CustomerAgent extends Agent
 	private double Cash = 20.00; //8.00; //4.00;
 	private double Debt = 0.00; //What Do I do with debt
 	public boolean DineAndDash = false; // true; //false;
+	public boolean WaitingToBeSeated = false;
 	
 	// agent correspondents
 	private WaiterAgent waiter;
@@ -92,6 +93,7 @@ public class CustomerAgent extends Agent
 
 	public void followMe(Menu m, WaiterAgent w, int t) 
 	{
+		WaitingToBeSeated = false;
 		print("Message 3 Sent - Following Waiter");
 		myMenu = m;
 		waiter = w;
@@ -289,6 +291,7 @@ public class CustomerAgent extends Agent
 		Do("Going to restaurant");
 		//waiter.msgIWantFood(this);//send our instance, so he can respond to us
 		host.IWantFood(this);
+		WaitingToBeSeated = true;
 	}
 
 	private void SitDown() 
@@ -471,6 +474,11 @@ public class CustomerAgent extends Agent
 		return hungerLevel;
 	}
 
+	public void setCash(double number)
+	{
+		Cash = number;
+	}
+	
 	public void setHungerLevel(int hungerLevel) 
 	{
 		this.hungerLevel = hungerLevel;

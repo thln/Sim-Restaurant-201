@@ -1,8 +1,10 @@
 package restaurant.gui;
+//package components;
 
 import restaurant.CustomerAgent;
 import restaurant.WaiterAgent;
 //import javax.swing.JTextField;
+
 
 import javax.swing.*;
 
@@ -12,7 +14,7 @@ import java.awt.event.*;
  * Main GUI class.
  * Contains the main frame and subsequent panels
  */
-public class RestaurantGui extends JFrame implements ActionListener {
+public class RestaurantGui extends JFrame implements ActionListener { //, KeyListener {
     /* The GUI has two frames, the control frame (in variable gui) 
      * and the animation frame, (in variable animationFrame within gui)
      */
@@ -67,6 +69,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
         animationFrame.setVisible(true);
     	animationFrame.add(animationPanel); 
     	*/
+    	//addKeyListener((KeyListener) this);
+    	//addBindings();
     	
     	animationPanel.setHost(restPanel.getHost());
     	
@@ -228,4 +232,64 @@ public class RestaurantGui extends JFrame implements ActionListener {
         gui.setResizable(false);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+   /* 
+    public void registerActions(){                                  //01
+    	  Action myAction = new AbstractAction(){                       //02
+    	    @Override                                                   //03
+    	    public void actionPerformed(ActionEvent e) {                //04
+    	      System.out.println("GREAT SUCCESS!");                     //05
+    	    }                                                           //06
+    	  };                                                            //07
+    	  KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0); //08
+    	  animationPanel.getInputMap().put(key, "myAction");                 //09
+    	  animationPanel.getActionMap().put("myAction", myAction);           //10
+    	}   
+    	*/
+    /*
+    @Override
+   	public void keyReleased(KeyEvent evt) 
+   	{	
+
+   		if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_I) 
+   		{
+   			System.out.println("It works");
+        } 
+   	}
+
+   	@Override
+   	public void keyTyped(KeyEvent evt) 
+   	{
+
+   		if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_I) 
+   		{
+   			System.out.println("It works");
+        } 
+   	}
+       
+   	@Override
+       public void keyPressed(KeyEvent evt)
+       {
+   		if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_I) 
+   		{
+   			System.out.println("It works");
+   			restPanel.CtrlI();
+        } 
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_X) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + x");
+        } 
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + v");
+        }
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + v");
+        }
+   		else if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_V) 
+   		{
+            JOptionPane.showMessageDialog(this, "ctrl + v");
+        }
+       }
+       */
 }
