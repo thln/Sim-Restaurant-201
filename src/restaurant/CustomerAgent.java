@@ -27,7 +27,7 @@ public class CustomerAgent extends Agent
 	private int SpeakingFoodTime = 2000;
 	private int EatingFoodTime = 5000;
 	private Check myCheck;
-	private double Cash = 20.00;
+	private double Cash =  20.00; //8.00; //4.00;
 	private double Debt = 0.00;
 	public boolean DineAndDash = false;
 	
@@ -305,17 +305,36 @@ public class CustomerAgent extends Agent
 	
 	private void chooseOrder()
 	{
+		myOrder = myMenu.blindPick();
 		if((Cash<myMenu.FoodMenu.get("Salad").price) && !DineAndDash)
 		{
 			print("Oh man, I can't even afford a salad. I should leave.");
+			myOrder = "";
+			customerGui.DoOrder("");
 			waiter.iAmLeavingTable(this);
 			state = AgentState.donePaying;
 			event = AgentEvent.atCashier;
 			stateChanged();
 			return;
 		}
+		if((Cash<myMenu.FoodMenu.get("Pizza").price) && !DineAndDash && !(myMenu.FoodMenu.get("Salad").Available))
+		{
+			print("I only have enough for a salad. But they're out! I'll leave.");
+			myOrder = "";
+			customerGui.DoOrder("");
+			waiter.iAmLeavingTable(this);
+			state = AgentState.donePaying;
+			event = AgentEvent.atCashier;
+			stateChanged();
+			return;
+		}		
+		if((Cash<myMenu.FoodMenu.get("Pizza").price) && !DineAndDash && (myMenu.FoodMenu.get("Salad").Available))
+		{
+			print("I only have enough for a salad. I'll get that.");
+			myOrder = "Salad";
+		}
 		
-		myOrder = myMenu.blindPick();
+		
 		waiter.ReadyToOrder(this);
 		
 		

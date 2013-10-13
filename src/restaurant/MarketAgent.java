@@ -68,7 +68,7 @@ public class MarketAgent extends Agent
 	
 	}		
 	private List<Delivery> Deliveries = new ArrayList<Delivery>();
-	int deliveringTime = 5000;
+	int deliveringTime = 30000;
 	
 	public MarketAgent(String name, CookAgent c)
 	{

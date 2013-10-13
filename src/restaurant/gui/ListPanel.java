@@ -222,9 +222,8 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
     }
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void keyReleased(KeyEvent arg0) 
+	{	
     	if(!(customerNameEnter.getText().isEmpty()))
     	{
     		newCustomerHungerCB.setEnabled(true);
@@ -238,8 +237,8 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+	public void keyTyped(KeyEvent arg0) 
+	{
 		
 	}
     
