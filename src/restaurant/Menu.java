@@ -65,7 +65,8 @@ public class Menu
 		}
 		else
 		{
-			return blindPick();
+			randomNumber = randomizer.nextInt(size-1);
+			return choices[randomNumber];
 		}
 	}
 

@@ -158,7 +158,7 @@ public class RestaurantPanel extends JPanel // implements KeyListener
     	else if (type.equals("Waiters"))
     	{
     		WaiterAgent wa = new WaiterAgent(name,host, cook, cashier);
-    		WaiterGui wg = new WaiterGui(wa);
+    		WaiterGui wg = new WaiterGui(wa, gui);
     		
     		gui.animationPanel.addGui(wg);
     		wa.setGui(wg);

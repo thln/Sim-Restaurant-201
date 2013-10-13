@@ -168,6 +168,7 @@ public class HostAgent extends Agent
 			if(mw.w1 == wa)
 			{
 				mw.state = WaiterState.Working;
+				print(mw.w1.getName() + ", welcome back to work.");
 				//mw.Working = true;
 				stateChanged();
 			}
@@ -265,6 +266,7 @@ public class HostAgent extends Agent
 			if(waiter.state == WaiterState.Working)
 			{
 				mw.w1.AllowedToGoOnBreak(true);
+				print(mw.w1.getName() + ", you are allowed to go on break.");
 				mw.state = WaiterState.onBreak;
 				//should I?
 				//stateChanged();
@@ -273,6 +275,7 @@ public class HostAgent extends Agent
 		}
 		
 		mw.w1.AllowedToGoOnBreak(false);
+		print(mw.w1.getName() + ", you aren't allowed to go on break.");
 		mw.state = WaiterState.Working;
 		stateChanged();
 	}

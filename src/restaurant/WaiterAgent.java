@@ -43,6 +43,8 @@ public class WaiterAgent extends Agent
 	//Checks for state, since there are only two states, boolean works
 	//private boolean bringingCustomer = false; 
 	private String name;
+	private boolean onBreak = false;
+	private boolean requestingBreak = false;
 	private Semaphore atTable = new Semaphore(0,true);
 	private Semaphore receivingOrder = new Semaphore(0, true);
 	private Semaphore atKitchen = new Semaphore(0, true);
@@ -118,15 +120,16 @@ public class WaiterAgent extends Agent
 	//WAITER ON BREAK STUFF ******************************
 	public void WantGoOnBreak() 
 	{//from animation
-		print("I want to go on break");
+		print("I want to go on break.");
 		state = WaiterState.WantToGoOnBreak;
+		requestingBreak = true;
 		stateChanged();
 	}
 	
 	//WAITER ON BREAK STUFF ******************************
 	public void WantToGoOffBreak()
 	{
-		print("I want to go off break");
+		print("I want to go off break.");
 		state = WaiterState.WantToGoOffBreak;
 		stateChanged();
 	}
@@ -137,11 +140,14 @@ public class WaiterAgent extends Agent
 		if(answer)
 		{
 			state = WaiterState.OnWayToBreak;
+			//onBreak = true;
+			//requestingBreak = false;
 			stateChanged();
 		}
 		else if (!answer)
 		{
 			state = WaiterState.CannotGoOnBreak;
+			//onBreak = false;
 			stateChanged();
 		}
 	}
@@ -307,14 +313,6 @@ public class WaiterAgent extends Agent
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		//WAITER ON BREAK STUFF ******************************
-		//Asking Host
-		if(state == WaiterState.WantToGoOnBreak)
-		{
-			AskHost();
-			return true;
-		}
-
 		
 		for(MyCustomer mc : MyCustomers)
 		{
@@ -376,6 +374,14 @@ public class WaiterAgent extends Agent
 				//}
 			}
 		
+		//WAITER ON BREAK STUFF ******************************
+		//Asking Host
+		if(state == WaiterState.WantToGoOnBreak && MyCustomers.isEmpty())
+		{
+			AskHost();
+			return true;
+		}
+		
 		if(state == WaiterState.InBreakRoom)
 		{
 			relax();
@@ -429,6 +435,9 @@ public class WaiterAgent extends Agent
 	private void TellHost()
 	{
 		state = WaiterState.Working;
+		print("I am coming back to work.");
+		requestingBreak = false;
+		onBreak = false;
 		waiterGui.setOffBreakbool();
 		waiterGui.GoToFrontDesk();
 		host.BackToWork(this);
@@ -558,11 +567,13 @@ public class WaiterAgent extends Agent
 		{
 			e.printStackTrace();
 		}
-		mc.c.OutOfChoice(mc.choice);
 		print("We are unfortunately out of " + mc.choice);
+		mc.c.OutOfChoice(mc.choice);
+		//print("We are unfortunately out of " + mc.choice);
 		//atFrontDesk.tryAcquire();
 		waiterGui.DoDeliver("");
-		mc.state = myCustomerState.Leaving;
+		mc.state = myCustomerState.Seated;
+		//mc.state = myCustomerState.Leaving;
 		//atFrontDesk.tryAcquire();
 		waiterGui.GoToFrontDesk();
 	}
@@ -673,6 +684,8 @@ public class WaiterAgent extends Agent
 	//WAITER ON BREAK STUFF ******************************
 	public void GoOnBreak()
 	{
+		onBreak = true;
+		requestingBreak = false;
 		doGoOnBreak();
 	}
 	
@@ -701,6 +714,7 @@ public class WaiterAgent extends Agent
 		{
 			public void run() 
 			{
+				print("It's been a while, I should get back to work.");
 				state = WaiterState.WantToGoOffBreak;
 				stateChanged();
 			}
@@ -725,6 +739,16 @@ public class WaiterAgent extends Agent
 	public WaiterGui getGui() 
 	{
 		return waiterGui;
+	}
+	
+	public boolean isOnBreak()
+	{
+		return onBreak;
+	}
+	
+	public boolean isRequestingBreak()
+	{
+		return requestingBreak;
 	}
 
 }

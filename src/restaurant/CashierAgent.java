@@ -4,6 +4,7 @@ import agent.Agent;
 //import restaurant.Menu;
 
 
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -52,6 +53,10 @@ public class CashierAgent extends Agent
 		MenuForReference = new Menu();
 	}
 	
+	public String getName() 
+	{
+		return name;
+	}
 	
 	
 	/***** MESSAGES *****/

@@ -94,6 +94,10 @@ public class CookAgent extends Agent
 		FoodInventory.put("Steak", Steak);
 	}
 	
+	public String getName() 
+	{
+		return name;
+	}
 	
 	
 	/***** MESSAGES *****/
@@ -245,7 +249,7 @@ public class CookAgent extends Agent
 	public void OrderFood(String foodItem)
 	{
 		S = state.Cooking;
-		print("We are low on " + foodItem + ". Let's order " + FoodInventory.get(foodItem).OrderSize + " more from " + markets.get(CurrentMarket) + "!");
+		print("We are low on " + foodItem + ". Let's order " + FoodInventory.get(foodItem).OrderSize + " more from " + markets.get(CurrentMarket).getName() + "!");
 		//Implement a mechanism to choose between markets
 		markets.get(CurrentMarket).INeedMore(foodItem, FoodInventory.get(foodItem).OrderSize);
 	}

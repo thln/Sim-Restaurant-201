@@ -10,6 +10,7 @@ import java.awt.*;
 public class WaiterGui implements Gui {
 
     private WaiterAgent agent = null;
+    RestaurantGui gui;
 
     private int xPos = -20, yPos = -20;//default waiter position
     private int height = 20, width = 20;
@@ -31,9 +32,10 @@ public class WaiterGui implements Gui {
     public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
     public static final int yTable[] = {0, 250, 250, 250, 350, 350, 350, 450, 450, 450};
 
-    public WaiterGui(WaiterAgent agent) 
+    public WaiterGui(WaiterAgent agent, RestaurantGui gui) 
     {
         this.agent = agent;
+        this.gui = gui;
     }
 
     public void updatePosition() 
@@ -123,6 +125,7 @@ public class WaiterGui implements Gui {
 	public void setOffBreakbool()
 	{
 		isOnBreak = false;
+		gui.setWaiterEnabled(agent);
 	}
 	
 	//WAITER ON BREAK STUFF ******************************

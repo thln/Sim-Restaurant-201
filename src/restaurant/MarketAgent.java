@@ -9,6 +9,7 @@ import agent.Agent;
 
 
 
+
 import java.util.*;
 //import java.util.concurrent.Semaphore;
 
@@ -99,6 +100,10 @@ public class MarketAgent extends Agent
 		FoodInventory.put("Steak", Steak);
 	}
 	
+	public String getName() 
+	{
+		return name;
+	}	
 	
 	
 	
