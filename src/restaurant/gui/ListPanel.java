@@ -1,7 +1,7 @@
 package restaurant.gui;
 
-import restaurant.CustomerAgent;
-import restaurant.WaiterAgent;
+//import restaurant.CustomerAgent;
+//import restaurant.WaiterAgent;
 
 import javax.swing.*;
 

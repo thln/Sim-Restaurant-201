@@ -19,6 +19,12 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private final int YCord = 250;
     private final int xCordCorner = 0;
     private final int yCordCorner = 0;
+    private final int xCordCashier = 400;
+    private final int yCordCashier = 100;
+    private final int xCordBreakRoom = 100;
+	private final int yCordBreakRoom = 400;
+	private static final int xCordKitchen = 500;
+	private static final int yCordKitchen = 540;
     private final int Height = 50;
     private final int Width = 50;
     private final int distanceBetweenTables = 100;
@@ -58,6 +64,15 @@ public class AnimationPanel extends JPanel implements ActionListener {
         g2.setColor(getBackground());
         g2.fillRect(xCordCorner, yCordCorner, WINDOWX, WINDOWY);
 
+        g2.setColor(Color.CYAN);
+        g2.fillRect(xCordCashier, yCordCashier, Height, Width);
+        g2.fillRect(xCordBreakRoom, yCordBreakRoom, Height, Width);
+        g2.fillRect(xCordKitchen, yCordKitchen, Height, Width);
+        g2.setColor(Color.BLACK);
+        g2.drawString("Cashier", xCordCashier, yCordCashier+20);
+        g2.drawString("Break Room", xCordBreakRoom, yCordBreakRoom+20);
+        g2.drawString("Kitchen", xCordKitchen, yCordKitchen+20);
+        
         //Here is the table
         
         for(int i=0; i < host.tables.size(); i++)

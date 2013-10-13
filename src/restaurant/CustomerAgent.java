@@ -1,7 +1,7 @@
 package restaurant;
 
 import restaurant.gui.CustomerGui;
-import restaurant.gui.RestaurantGui;
+//import restaurant.gui.RestaurantGui;
 import agent.Agent;
 
 import java.util.Timer;

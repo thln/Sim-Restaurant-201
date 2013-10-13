@@ -1,9 +1,9 @@
 package restaurant;
 
 import agent.Agent;
-import restaurant.CustomerAgent.AgentEvent;
-import restaurant.CustomerAgent.AgentState;
-import restaurant.HostAgent.CustomerState;
+//import restaurant.CustomerAgent.AgentEvent;
+//import restaurant.CustomerAgent.AgentState;
+//import restaurant.HostAgent.CustomerState;
 import restaurant.gui.WaiterGui;
 
 import java.util.*;
