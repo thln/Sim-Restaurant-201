@@ -128,7 +128,7 @@ public class CashierAgent extends Agent
 		if(ch.cost > 0) //Not Paid Off
 		{
 			//include debt somehow in HereIsYourChange?
-			accumulatedDebt -= (ch.cost);
+			accumulatedDebt = (ch.cost); //-=, This does not take into account multiple bad people 
 			print("The restaurant debt is now " + accumulatedDebt );
 			ch.c.HereIsYourChange(0, ch.cost);
 			ch.s = CheckState.NotPaidOff;

@@ -146,30 +146,32 @@ public class CookAgent extends Agent
 		
 		if(S == state.Ordering)
 		{
+			CurrentMarket++;
 			if(FoodInventory.get("Steak").isLow)
 			{
-				CurrentMarket++;
+				//CurrentMarket++;
 				OrderFood("Steak");
-				return true;
+				//return true;
 			}
 			if(FoodInventory.get("Chicken").isLow)
 			{
-				CurrentMarket++;
+				//CurrentMarket++;
 				OrderFood("Chicken");
-				return true;
+				//return true;
 			}
 			if(FoodInventory.get("Pizza").isLow)
 			{
-				CurrentMarket++;
+				//CurrentMarket++;
 				OrderFood("Pizza");
-				return true;
+				//return true;
 			}
 			if(FoodInventory.get("Salad").isLow)
 			{
-				CurrentMarket++;
+				//CurrentMarket++;
 				OrderFood("Salad");
-				return true;
+				//return true;
 			}
+			return true;
 		}
 			
 		for( Order order : orders)

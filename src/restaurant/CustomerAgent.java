@@ -145,7 +145,7 @@ public class CustomerAgent extends Agent
 	public void HereIsYourChange(double c, double d)
 	{
 		Cash = c;
-		Debt += d;
+		Debt = d; //+=
 		print("I am receiving $" + c + " as change and I have $" + d + " as my debt");
 		print("I have $" + Cash + " and $" + Debt + " as debt");
 		//What happens if you have a debt?
@@ -444,6 +444,11 @@ public class CustomerAgent extends Agent
 	{
 		myOrder = "";
 		customerGui.DoOrder("");
+		if(Debt > 0)
+		{
+			myCheck.cost += Debt;
+			print("I have a debt. I will add it to the bill.");
+		}
 		print("I am giving the cashier $" + Cash);
 		cashier.HereIsPayment(myCheck, Cash);
 		Cash = 0;

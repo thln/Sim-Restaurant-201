@@ -41,5 +41,56 @@
   + You can click "Pause" to pause or resume the agents at anytime. The agents
     will finish what they are doing before pausing.
 
+###V2.1 Notes
+  + The Cook has 10 of every item by default. Every item's low indicator is set at 1.
+  + There are 3 markets implemented : Target, Walmart, and Costco. Target will only have one of every item in stock,
+   thus ordering from target will automatically trigger ordering from Walmart.
+  + I have added in "visuals" for the cashier, breakroom, and kitchen in order to make easier to understand.
+  + I sped up my restaurant so everything moves quicker!
+  + Key Bindings! You can use any of the following to create scenarios 
+  *(NOTE: The first 4 bindings only affect customers who are waiting)*
+    + "Ctrl+I" : Any customer waiting to be seated while there is a full restaurant will leave.
+    + "Ctrl+B" : Any customer waiting to be seated will now dine and dash/eat regardless of cost.
+    + "Ctrl+O" : Any customer waiting to be seated will now have $0, and will not be able to buy any item.
+    + "Ctrl+P" : Any customer waiting to be seated will now have $8, and will only be able to afford a salad.
+    + "Ctrl+L" : The inventory of the cook will be set to right before low (2). When a customer orders, the chef will begin to purchase more foods. 
+    + "Ctrl+E" : The inventory of the cook will be emptied. The chef will immediately order more food.
+  + I hope you enjoy my restaurant!
+
+###V2.1 Scenarios
+  + In order to make grading my restaurant more convenient for you, I will explain how to run each scenario! *Do not forget to restart the application each time.*
+  + *One of every type of agent, no market interactions, customer orders, pays, and leaves*
+    + Add a waiter, add a customer.
+  + *No customers, cook orders low items from market, when food arrives, then customers arrive*
+    + Ctrl+E. The cook won't be able to give food until the delivery arrives, so the customers will just wait. 
+  + *Multiple customers, multiple waiters, cashier operating normally, no running out of food.*
+    + Add the number of waiters, customers, and table as you would like.
+  + *Waiter wants to go on break, he's told it's ok, goes on break when he finished all his current customers; goes on break, then goes off break.*
+    + Add in a table, two waiters, and then two customers. Set the second waiter to "onBreak." The second waiter will finish his customer, then go on break. Read the console to follow what is happening.
+    + The waiter will automatically return from break after a couple of seconds. This is fine, according to Professor Crowley (issue #41).
+    + /*If the onBreak is unenabled after the waiter is done with his break, click on his button from the list waiter to refresh the infoPanel.
+  + *Customer orders, food has run out, cook has obviously ordered but food hasn't arrived, Customer makes new choice.*
+   + Ctrl+L. Add in two waiters. Add in two "Salad" people to have the amounts of salads set to 0. From there, you can add in *a lot* of people in order to have them reorder (one will eventually order a salad). 
+   + You can't press Ctrl+P because the person will only be able to afford a salad, and will thus leave instead of making a new choice.
+  + *Cook orders from a Market, but is told they can't fulfill his order; must order from one of his backup markets.*
+    + Ctrl+E. The cook will order from Target, see that they do not have enough, and orders more from Walmart.
+  + *Waiter wants to go on break, he's told it's NOT OK and must keep working.*
+    + Add in one waiter. Attempt to press the "onBreak." It will "blink." Read the console, and you will see the waiter was rejected from going on break.
+  + *Customer comes to restaurant and restaurant is full, customer is told and waits.*
+    + By default, the customer will wait if the restaurant is full.
+  + *Customer comes to restaurant and restaurant is full, customer is told and leaves.*
+    + Add a customer, add a waiter. Add a customer. Ctrl+I. AThecustomer waiting will just leave. You can read the console to see that the customer has left.
+  + *Customer doesn't have enough money to order anything and leaves.*
+    + Add a customer. Ctrl+O. Any customer waiting will have $0. Add a waiter. The customer will sit down, see that he cannot afford anything, and then leave.
+  + *Customer has only enough money to order the cheapest item (salad).*
+    + Add a customer. Press Ctrl+P. Add a waiter. The customer will only be able to afford a salad, and thus order it.
+  + *Customer has only enough money to order the cheapest item (salad); he orders it, then they run out of it and he leaves.*
+    + Ctrl+L. Add in two waiters. Add in two "Salad" people to have the amounts of salads set to 0. Add another person, press Ctrl+P, to make the person only
+    be able to afford a salad. Add a table and another waiter to seat the customer. The customer will order a salad, find out that there are no more, and leave.
+  + *Customer orders, eats, but hasn't enough money to pay.
+    + Add one customer. Ctrl+B. Any customer waiting will eat, regardless of cost (customer has $0). Add a waiter. This will incur a debt from the customer. The restaurant also keeps tracks of debts. If the customer returns, he will still dine and dish (once a cheater always a cheater) since he will only have $0. He will add his debt to the bill, and his debt will increase.
+
+
 ###Issues
   + Currently, none :)
+  + The application likes to play mindgames and stop randomly. Just restart it! 
