@@ -147,6 +147,10 @@ public class CookAgent extends Agent
 		if(S == state.Ordering)
 		{
 			CurrentMarket++;
+			if(CurrentMarket == 3)
+			{
+				CurrentMarket = 0;
+			}
 			if(FoodInventory.get("Steak").isLow)
 			{
 				//CurrentMarket++;

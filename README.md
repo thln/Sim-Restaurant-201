@@ -47,6 +47,7 @@
    thus ordering from target will automatically trigger ordering from Walmart.
   + I have added in "visuals" for the cashier, breakroom, and kitchen in order to make easier to understand.
   + I sped up my restaurant so everything moves quicker!
+  + The Design Docs for the original 4 agents have an Additional page.
   + Key Bindings! You can use any of the following to create scenarios 
   *(NOTE: The first 4 bindings only affect customers who are waiting)*
     + "Ctrl+I" : Any customer waiting to be seated while there is a full restaurant will leave.
