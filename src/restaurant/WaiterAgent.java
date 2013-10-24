@@ -5,6 +5,9 @@ import agent.Agent;
 //import restaurant.CustomerAgent.AgentState;
 //import restaurant.HostAgent.CustomerState;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Cashier;
+import restaurant.interfaces.Customer;
+import restaurant.interfaces.Waiter;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -18,7 +21,7 @@ import java.util.concurrent.Semaphore;
 //is proceeded as he wishes.
 
 //This is now a Waiter Agent. We are implementing the Host separately. 9/18/13
-public class WaiterAgent extends Agent 
+public class WaiterAgent extends Agent implements Waiter
 {
 	//static final int NTABLES = 3;//a global for the number of tables.
 	//private int NTABLES = 1;
@@ -63,7 +66,7 @@ public class WaiterAgent extends Agent
 	public WaiterState state = WaiterState.Working;
 	
 	private class MyCustomer
-	{
+	{//switch into just Customers?
 		public CustomerAgent c;
 		int table;
 		String choice;
@@ -152,7 +155,7 @@ public class WaiterAgent extends Agent
 		}
 	}
 	
-	public void CanIGetMyCheck(CustomerAgent cust)
+	public void CanIGetMyCheck(Customer cust)
 	{
 		for(MyCustomer mc : MyCustomers)
 		{
@@ -182,7 +185,7 @@ public class WaiterAgent extends Agent
 		}
 	}
 
-	public void myChoiceIs(String TheOrder, CustomerAgent cust)
+	public void myChoiceIs(String TheOrder, Customer cust)
 	{
 		for(MyCustomer mc : MyCustomers)
 		{
@@ -210,7 +213,7 @@ public class WaiterAgent extends Agent
 		}
 	}
 	
-	public void iAmLeavingTable(CustomerAgent cust) 
+	public void iAmLeavingTable(Customer cust) 
 	{
 		for(MyCustomer mc : MyCustomers)
 		{
@@ -237,7 +240,7 @@ public class WaiterAgent extends Agent
 	}
 
 	//Cashier Messages
-	public void ThisIsTheCheck(CustomerAgent cust, Check ch)
+	public void ThisIsTheCheck(Customer cust, Check ch)
 	{
 		for( MyCustomer mc : MyCustomers)
 		{

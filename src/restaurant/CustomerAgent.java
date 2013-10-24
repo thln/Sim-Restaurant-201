@@ -1,6 +1,7 @@
 package restaurant;
 
 import restaurant.gui.CustomerGui;
+import restaurant.interfaces.Customer;
 //import restaurant.gui.RestaurantGui;
 import agent.Agent;
 
@@ -12,7 +13,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Restaurant customer agent.
  */
-public class CustomerAgent extends Agent 
+public class CustomerAgent extends Agent implements Customer 
 {
 	private String name;
 	private int hungerLevel = 5;        // determines length of meal
@@ -36,7 +37,8 @@ public class CustomerAgent extends Agent
 	private WaiterAgent waiter;
 	private HostAgent host;
 	private CashierAgent cashier;
-
+	//CashierAgent
+	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
 	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, ChoosingOrder, ReadyToOrder, GivingOrder, SayingOrder, Ordering, WaitingForFood, FoodReceived, Eating, AskedForCheck, WaitingForCheck, CheckReceived, GoingToCashier, Paying, donePaying, Leaving};
@@ -52,7 +54,7 @@ public class CustomerAgent extends Agent
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name, HostAgent h, CashierAgent cas)
+	public CustomerAgent(String name, HostAgent h, CashierAgent cas) //CashierAgent
 	{
 		super();
 		this.name = name;

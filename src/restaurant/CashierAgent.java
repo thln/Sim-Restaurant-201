@@ -5,21 +5,32 @@ import agent.Agent;
 
 
 
+
+
+
+
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
 import restaurant.Check.CheckState;
 //import restaurant.MarketAgent.Delivery;
+import restaurant.interfaces.Cashier;
+import restaurant.interfaces.Customer;
+import restaurant.interfaces.Waiter;
+import restaurant.test.mock.EventLog;
+import restaurant.test.mock.LoggedEvent;
 
 //import restaurant.CustomerAgent.AgentState;
 
-public class CashierAgent extends Agent 
+public class CashierAgent extends Agent implements Cashier
 {
 	/***** DATA *****/
 	private String name;
 	private Menu MenuForReference;
 	private double accumulatedRevenue = 0;
 	private double accumulatedDebt = 0;
+	public EventLog log; //necessary?
 	
 	/*
 	public enum CheckState
@@ -43,7 +54,7 @@ public class CashierAgent extends Agent
 		
 	}
 	*/
-	List<Check> AllChecks= new ArrayList<Check>();;
+	public List<Check> AllChecks= new ArrayList<Check>(); //private
 	
 	public CashierAgent(String name)
 	{
@@ -60,16 +71,21 @@ public class CashierAgent extends Agent
 	
 	
 	/***** MESSAGES *****/
-	public void GiveMeCheck(String choice, CustomerAgent cust, WaiterAgent wait)
+	public void GiveMeCheck(String choice, Customer cust, Waiter wait) //CustomerAgent, WaiterAgent
 	{
 		//STUB
 		AllChecks.add(new Check(choice, cust, wait));
+		if(choice.equals("7.98"))
+		{
+			AllChecks.get(0).cost = 7.98;
+		}
 		stateChanged();
 	}
 	
 	public void HereIsPayment(Check ch, double cash)
 	{
-		
+		//ch.s = CheckState.CustomerHere;
+//		log.add(new LoggedEvent("Received HereIsMyPayment"));
 		//STUB
 		for(Check c : AllChecks)
 		{
@@ -86,7 +102,7 @@ public class CashierAgent extends Agent
 	
 	/***** SCHEDULER *****/
 	
-	protected boolean pickAndExecuteAnAction() 
+	public boolean pickAndExecuteAnAction() 
 	{
 		//////FILL IN HERE
 		for(Check c : AllChecks)
@@ -95,11 +111,13 @@ public class CashierAgent extends Agent
 			{
 				c.s = CheckState.Pending;
 				ComputeCheck(c);
+				return true;
 			}
 			if(c.s == CheckState.CustomerHere)
 			{
 				c.s = CheckState.Paying;
 				GiveChange(c);
+				return true;
 			}
 		}
 		
