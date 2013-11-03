@@ -12,10 +12,10 @@ public class WaiterGui implements Gui {
     private WaiterAgent agent = null;
     RestaurantGui gui;
 
-    private int xPos = -20, yPos = -20;//default waiter position
+    private int xPos = 25, yPos = 25;//default waiter position
     private int height = 20, width = 20;
-	private static final int xCordFrontDesk = -20;
-	private static final int yCordFrontDesk = -20;
+	private static final int xCordFrontDesk = 25;
+	private static final int yCordFrontDesk = 25;
 	private static final int xCordKitchen = 540;
 	private static final int yCordKitchen = 600;
 	private static final int xCordBreakRoom = 100;
@@ -23,7 +23,7 @@ public class WaiterGui implements Gui {
 	private static final int xCordCashier = 400;
 	private static final int yCordCashier = 100;
 	private int tableNumber = 1;
-    private int xDestination = -20, yDestination = -20;//default start position
+    private int xDestination = 25, yDestination = 25;//default start position
     public boolean waiterIsFree = false;
     private String TheOrder = "";
 	private boolean isOnBreak = false; 	//WAITER ON BREAK STUFF ******************************

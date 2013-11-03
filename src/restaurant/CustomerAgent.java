@@ -290,6 +290,7 @@ public class CustomerAgent extends Agent implements Customer
 
 	private void goToRestaurant() 
 	{
+		customerGui.DoEnterRestaurant();
 		Do("Going to restaurant");
 		//waiter.msgIWantFood(this);//send our instance, so he can respond to us
 		host.IWantFood(this);

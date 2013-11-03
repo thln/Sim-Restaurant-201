@@ -61,7 +61,7 @@ public class CashierAgent extends Agent implements Cashier
 	}
 	*/
 	
-	private List<Check> AllChecks= Collections.synchronizedList(new ArrayList<Check>()); //private
+	public List<Check> AllChecks= Collections.synchronizedList(new ArrayList<Check>()); //private
 	private List<MarketBill> MarketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
 	//private List<MyCustomer> customers = 
 	//	    Collections.synchronizedList(new ArrayList<MyCustomer>()); example

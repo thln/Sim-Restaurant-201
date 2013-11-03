@@ -305,7 +305,7 @@ public class HostAgent extends Agent
 		//Add in way to look through waiter list
 		if(MyWaiters.isEmpty())
 		{
-			print("We currently have no waiters available.");
+			//print("We currently have no waiters available.");
 		}
 	
 		else 

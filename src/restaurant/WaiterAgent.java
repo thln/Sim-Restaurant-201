@@ -25,8 +25,9 @@ public class WaiterAgent extends Agent implements Waiter
 {
 	//static final int NTABLES = 3;//a global for the number of tables.
 	//private int NTABLES = 1;
-	private int xCordFrontDesk = -20;
-	private int yCordFrontDesk = -20;
+	private int xCordFrontDesk = 25;
+	private int yCordFrontDesk = 25;
+	private int waiterNumber; 
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<MyCustomer> MyCustomers
@@ -316,18 +317,20 @@ public class WaiterAgent extends Agent implements Waiter
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		
+	
+	try
+	{
 		for(MyCustomer mc : MyCustomers)
 		{
 			
-			//print("On Customer: "+ mc.c);
-			//WAITER ON BREAK STUFF ******************************
-			if(mc.state == myCustomerState.Waiting && state == WaiterState.Working)
-			{
-				//print("I need to seat someone " + mc.c);
-				seatCustomer(mc);//the action
-				return true;//return true to the abstract agent to reinvoke the scheduler.
-			}
+				//print("On Customer: "+ mc.c);
+				//WAITER ON BREAK STUFF ******************************
+				if(mc.state == myCustomerState.Waiting && state == WaiterState.Working)
+				{
+					//print("I need to seat someone " + mc.c);
+					seatCustomer(mc);//the action
+					return true;//return true to the abstract agent to reinvoke the scheduler.
+				}
 			
 				if(mc.state == myCustomerState.readyToOrder)
 				{
@@ -414,6 +417,11 @@ public class WaiterAgent extends Agent implements Waiter
 			GoOnBreak();
 			return true;
 		}
+	}
+	catch(ConcurrentModificationException e)
+	{
+		return false;
+	}
 		
 		return false;
 		//we have tried all our rules and found

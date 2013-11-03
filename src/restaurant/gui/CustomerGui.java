@@ -18,6 +18,8 @@ public class CustomerGui implements Gui{
 	private final int height = 20, width = 20;
 	private static final int xCordOffScreen = -40;
 	private static final int yCordOffScreen = -40;
+	private static final int xCordFrontDesk = 10;
+	private static final int yCordFrontDesk = 10;
 	private static final int xCordCashier = 400;
 	private static final int yCordCashier = 100;
 	private int xDestination, yDestination;
@@ -128,6 +130,12 @@ public class CustomerGui implements Gui{
 		command = Command.GoToCashier;
     }
 	
+    public void DoEnterRestaurant()
+    {
+    	xDestination = xCordFrontDesk;
+    	yDestination = yCordFrontDesk;
+    }
+    
 	public void DoExitRestaurant() 
 	{
 		//xCordOffscreen = -40;
