@@ -16,8 +16,6 @@ public class MockCustomer extends Mock implements Customer
 
     }
 
-	public EventLog log = new EventLog(); //necessary?
-	
 	public void HereIsYourCheck(Check ch)
 	{
 		log.add(new LoggedEvent("Received HereIsYourTotal from cashier. Total = "+ ch.cost));

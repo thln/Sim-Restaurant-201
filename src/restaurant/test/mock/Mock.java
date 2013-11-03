@@ -10,6 +10,7 @@ package restaurant.test.mock;
 public class Mock 
 {
     private String name; //private
+    public EventLog log = new EventLog();
 
     public Mock(String name) 
     {

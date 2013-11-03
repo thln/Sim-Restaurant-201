@@ -24,9 +24,9 @@ public class RestaurantPanel extends JPanel // implements KeyListener
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent("Jesse");
     private CashierAgent cashier = new CashierAgent("David");
-    private MarketAgent target = new MarketAgent("Target", cook);
-    private MarketAgent walmart = new MarketAgent("Walmart", cook);
-    private MarketAgent costco = new MarketAgent("Costco", cook);
+    private MarketAgent target = new MarketAgent("Target", cook, cashier);
+    private MarketAgent walmart = new MarketAgent("Walmart", cook, cashier);
+    private MarketAgent costco = new MarketAgent("Costco", cook, cashier);
     //private WaiterAgent testWaiter = new WaiterAgent("Danny", host, cook);
 	//private WaiterGui WaiterGui = new WaiterGui(testWaiter);
  

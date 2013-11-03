@@ -14,8 +14,6 @@ public class MockWaiter extends Mock implements Waiter
             super(name);
 
     }
-
-	public EventLog log = new EventLog(); //necessary? 
 	
 	public void CanIGetMyCheck(Customer cust)
 	{

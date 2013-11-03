@@ -1,17 +1,9 @@
 package restaurant;
 
-import agent.Agent;
+import java.util.ArrayList;
+import java.util.Collections;
 //import restaurant.Menu;
-
-
-
-
-
-
-
-
-import java.util.*;
-import java.util.concurrent.Semaphore;
+import java.util.List;
 
 import restaurant.Check.CheckState;
 //import restaurant.MarketAgent.Delivery;
@@ -19,7 +11,7 @@ import restaurant.interfaces.Cashier;
 import restaurant.interfaces.Customer;
 import restaurant.interfaces.Waiter;
 import restaurant.test.mock.EventLog;
-import restaurant.test.mock.LoggedEvent;
+import agent.Agent;
 
 //import restaurant.CustomerAgent.AgentState;
 
@@ -28,9 +20,24 @@ public class CashierAgent extends Agent implements Cashier
 	/***** DATA *****/
 	private String name;
 	private Menu MenuForReference;
-	private double accumulatedRevenue = 0;
+	private double accumulatedRevenue = 35.00;
 	private double accumulatedDebt = 0;
+	private double profits = 35.00;
+	private boolean free = true;
 	public EventLog log; //necessary?
+	
+	private class MarketBill
+	{
+		String foodItem;
+		double finalTotal;
+		MarketAgent market;
+		MarketBill(String s, double c, MarketAgent m)
+		{
+			foodItem = s;
+			finalTotal = c;
+			market = m;
+		}
+	}
 	
 	/*
 	public enum CheckState
@@ -51,10 +58,13 @@ public class CashierAgent extends Agent implements Cashier
 			c = cust;
 			w = wait;
 		}
-		
 	}
 	*/
-	public List<Check> AllChecks= new ArrayList<Check>(); //private
+	
+	private List<Check> AllChecks= Collections.synchronizedList(new ArrayList<Check>()); //private
+	private List<MarketBill> MarketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
+	//private List<MyCustomer> customers = 
+	//	    Collections.synchronizedList(new ArrayList<MyCustomer>()); example
 	
 	public CashierAgent(String name)
 	{
@@ -85,41 +95,67 @@ public class CashierAgent extends Agent implements Cashier
 	public void HereIsPayment(Check ch, double cash)
 	{
 		//ch.s = CheckState.CustomerHere;
-//		log.add(new LoggedEvent("Received HereIsMyPayment"));
+		//log.add(new LoggedEvent("Received HereIsMyPayment"));
 		//STUB
-		for(Check c : AllChecks)
+		synchronized(AllChecks)
 		{
-			if(ch == c)
+			for(Check c : AllChecks)
 			{
-				c.s = CheckState.CustomerHere;
-				ch.cash = cash;
-				stateChanged();
-				return;
+				if(ch == c)
+				{
+					free = true;
+					c.s = CheckState.CustomerHere;
+					ch.cash = cash;
+					stateChanged();
+					return;
+				}
 			}
 		}
 	}
 	
+	public void MarketCost(String foodName, double cost, MarketAgent m)
+	{
+		print("I am adding a bill for " + cost + " and I have " + profits);
+		MarketBills.add(new MarketBill(foodName, cost, m));
+		stateChanged();
+	}
+	
 	
 	/***** SCHEDULER *****/
-	
 	public boolean pickAndExecuteAnAction() 
 	{
-		//////FILL IN HERE
-		for(Check c : AllChecks)
+		synchronized(MarketBills)
 		{
-			if(c.s == CheckState.Created)
+			for(MarketBill mb : MarketBills)
 			{
-				c.s = CheckState.Pending;
-				ComputeCheck(c);
-				return true;
-			}
-			if(c.s == CheckState.CustomerHere)
-			{
-				c.s = CheckState.Paying;
-				GiveChange(c);
-				return true;
+				if(profits > mb.finalTotal)
+				{
+					MarketBills.remove(mb);
+					PayMarket(mb);
+					return true;
+				}
 			}
 		}
+		
+		//////FILL IN HERE
+		synchronized(AllChecks)
+		{
+			for(Check c : AllChecks)
+			{
+				if(c.s == CheckState.Created)
+				{
+					ComputeCheck(c);
+					return true;
+				}
+				if(c.s == CheckState.CustomerHere)
+				{
+					GiveChange(c);
+					return true;
+				}
+			}
+		}
+		
+			
 		
 		return false;
 		//we have tried all our rules and found
@@ -133,6 +169,7 @@ public class CashierAgent extends Agent implements Cashier
 	{
 		//STUB
 		//ch.CalculateCost();
+		ch.s = CheckState.Pending;
 		ch.cost = MenuForReference.GetPrice(ch.foodItem);
 		ch.w.ThisIsTheCheck(ch.c, ch);
 	}
@@ -140,6 +177,7 @@ public class CashierAgent extends Agent implements Cashier
 	private void GiveChange(Check ch)
 	{
 		//STUB
+		ch.s = CheckState.Paying;
 		print("The bill is $" + ch.cost);
 		ch.cost -= ch.cash;
 		//ch.cash = 0;
@@ -154,10 +192,36 @@ public class CashierAgent extends Agent implements Cashier
 		else //Has Paid off 
 		{
 			accumulatedRevenue += (ch.cash + ch.cost);
-			print("The restaurant revenue is now " + accumulatedRevenue );
+			profits += (ch.cash + ch.cost);
+			print("The restaurant revenue is now " + accumulatedRevenue + " and profits are " + profits );
 			ch.c.HereIsYourChange(-ch.cost, 0);
 			ch.s = CheckState.PaidOff;
 		}
 		ch.cash = 0;
+		if(free)
+		{
+			free = false;
+			stateChanged();
+		}
+	}
+	private void PayMarket(MarketBill mb)
+	{
+		print("PayMarket runs.");
+		/*synchronized(MarketBills)
+		{
+			for(MarketBill mb1 : MarketBills)
+			{
+				if(mb == mb1)
+				{
+					MarketBills.remove(mb1);
+				}
+			}
+		}*/
+		print("I am paying for the bill " + mb.finalTotal + " and I have " + profits);
+		mb.market.Paid(mb.finalTotal);
+		accumulatedDebt += mb.finalTotal;
+		profits -= mb.finalTotal;
+		print("I now have " + profits);
+		
 	}
 }

@@ -84,10 +84,10 @@ public class HostAgent extends Agent
 		}
 	}
 	
-	public List<MyCustomer> MyCustomers = new ArrayList<MyCustomer>();
-	public List<MyWaiter> MyWaiters = new ArrayList<MyWaiter>();
+	public List<MyCustomer> MyCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
+	public List<MyWaiter> MyWaiters = Collections.synchronizedList(new ArrayList<MyWaiter>());
 	public Collection<Table> tables;
-	private int NTABLES = 1;
+	private int NTABLES = 1; //Number of tables!! Check, possible race conditions here?
 	private int MAXTABLES = 9;
 	private int currentWaiter = 0;
 	private int currentNumberOfCustomers = 0;
@@ -150,12 +150,15 @@ public class HostAgent extends Agent
 	public void CanIGoOnBreak(WaiterAgent wa)
 	{
 		//Pass in to check new waiter
-		for(MyWaiter mw : MyWaiters)
+		synchronized(MyWaiters)
 		{
-			if(mw.w1 == wa)
+			for(MyWaiter mw : MyWaiters)
 			{
-				mw.state = WaiterState.Asked;
-				stateChanged();
+				if(mw.w1 == wa)
+				{
+					mw.state = WaiterState.Asked;
+					stateChanged();
+				}
 			}
 		}
 	}
@@ -163,14 +166,17 @@ public class HostAgent extends Agent
 	//WAITER ON BREAK STUFF ******************************
 	public void BackToWork(WaiterAgent wa)
 	{
-		for(MyWaiter mw : MyWaiters)
+		synchronized(MyWaiters)
 		{
-			if(mw.w1 == wa)
+			for(MyWaiter mw : MyWaiters)
 			{
-				mw.state = WaiterState.Working;
-				print(mw.w1.getName() + ", welcome back to work.");
-				//mw.Working = true;
-				stateChanged();
+				if(mw.w1 == wa)
+				{
+					mw.state = WaiterState.Working;
+					print(mw.w1.getName() + ", welcome back to work.");
+					//mw.Working = true;
+					stateChanged();
+				}
 			}
 		}
 		
@@ -191,23 +197,28 @@ public class HostAgent extends Agent
 		{
 			if(table.tableNumber == t)
 			{
-				for(MyCustomer mc : MyCustomers)
+				synchronized(MyCustomers)
 				{
-					if(mc.c == table.getOccupant())
+					for(MyCustomer mc : MyCustomers)
 					{
-						for(MyWaiter mw : MyWaiters)
+						if(mc.c == table.getOccupant())
 						{
-							if(mw.w1 == w)
+							synchronized(MyWaiters)
 							{
-								mw.NumberOfCustomers--;
-								updateNumberOfCustomers();
-								mc.state = CustomerState.Left;
-								table.setUnoccupied();
-								stateChanged();
+								for(MyWaiter mw : MyWaiters)
+								{
+									if(mw.w1 == w)
+									{
+										mw.NumberOfCustomers--;
+										updateNumberOfCustomers();
+										mc.state = CustomerState.Left;
+										table.setUnoccupied();
+										stateChanged();
+									}
+								}
 							}
 						}
 					}
-					
 				}
 			}
 		}
@@ -223,29 +234,34 @@ public class HostAgent extends Agent
 	{
 		//////FILL IN HERE
 		//WAITER ON BREAK STUFF ******************************
-		for(MyWaiter mw : MyWaiters)
+		synchronized(MyWaiters)
 		{
-			if(mw.state == WaiterState.Asked)
+			for(MyWaiter mw : MyWaiters)
 			{
-				CheckWaiters(mw);
-				return true;
+				if(mw.state == WaiterState.Asked)
+				{
+					CheckWaiters(mw);
+					return true;
+				}
 			}
 		}
 		
-		
-		for(MyCustomer mc : MyCustomers)
+		synchronized(MyCustomers)
 		{
-			//Checking all MyCustomers in list for anyone who is waiting
-			if(mc.state == CustomerState.Waiting)
+			for(MyCustomer mc : MyCustomers)
 			{
-				for(Table table : tables)
+				//Checking all MyCustomers in list for anyone who is waiting
+				if(mc.state == CustomerState.Waiting)
 				{
-					//Checking all Tables in list for any empty tables
-					if(!(table.isOccupied()))
+					for(Table table : tables)
 					{
-						//if there is an empty table and waiting customer, seat customer
-						seatCustomer(mc, table);
-						return true;
+						//Checking all Tables in list for any empty tables
+						if(!(table.isOccupied()))
+						{
+							//if there is an empty table and waiting customer, seat customer
+							seatCustomer(mc, table);
+							return true;
+						}
 					}
 				}
 			}
@@ -261,16 +277,19 @@ public class HostAgent extends Agent
 	//WAITER ON BREAK STUFF ******************************
 	private void CheckWaiters(MyWaiter mw)
 	{
-		for(MyWaiter waiter : MyWaiters)
+		synchronized(MyWaiters)
 		{
-			if(waiter.state == WaiterState.Working)
+			for(MyWaiter waiter : MyWaiters)
 			{
-				mw.w1.AllowedToGoOnBreak(true);
-				print(mw.w1.getName() + ", you are allowed to go on break.");
-				mw.state = WaiterState.onBreak;
-				//should I?
-				//stateChanged();
-				return;
+				if(waiter.state == WaiterState.Working)
+				{
+					mw.w1.AllowedToGoOnBreak(true);
+					print(mw.w1.getName() + ", you are allowed to go on break.");
+					mw.state = WaiterState.onBreak;
+					//should I?
+					//stateChanged();
+					return;
+				}
 			}
 		}
 		
@@ -286,7 +305,7 @@ public class HostAgent extends Agent
 		//Add in way to look through waiter list
 		if(MyWaiters.isEmpty())
 		{
-			//print("We currently have no waiters available.");
+			print("We currently have no waiters available.");
 		}
 	
 		else 
@@ -316,16 +335,19 @@ public class HostAgent extends Agent
 				currentWaiter = 0;
 			}
 		}
-	
-		stateChanged();
+		//commented out 10/30/13
+		//stateChanged();
 	}
 	
 	private void updateNumberOfCustomers()
 	{
 		currentNumberOfCustomers = 0;
-		for(MyWaiter mw : MyWaiters)
+		synchronized(MyWaiters)
 		{
-			currentNumberOfCustomers += mw.NumberOfCustomers;
+			for(MyWaiter mw : MyWaiters)
+			{
+				currentNumberOfCustomers += mw.NumberOfCustomers;
+			}
 		}
 		print("The current Number of Customers is " + currentNumberOfCustomers);
 	}

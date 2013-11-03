@@ -65,8 +65,8 @@ public class CookAgent extends Agent
 	}
 	
 	private Timer CookTimer  = new Timer();
-	private List <Order> orders = new ArrayList<Order>();
-	private List <MarketAgent> markets = new ArrayList<MarketAgent>();
+	private List <Order> orders = Collections.synchronizedList(new ArrayList<Order>());
+	private List <MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
 	private Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
 	private Map<String, Food> FoodInventory = new HashMap<String, Food>();
 	private String name;
@@ -178,21 +178,23 @@ public class CookAgent extends Agent
 			return true;
 		}
 			
-		for( Order order : orders)
+		synchronized(orders)
 		{
-			if(order.state == OrderState.Cooking && S == state.Plating)
+			for( Order order : orders)
 			{
-				PlateIt(order);
-				return true;
-			}
-			
-			if(order.state == OrderState.Pending)
-			{
-				CookIt(order);
-				return true;
+				if(order.state == OrderState.Cooking && S == state.Plating)
+				{
+					PlateIt(order);
+					return true;
+				}
+				
+				if(order.state == OrderState.Pending)
+				{
+					CookIt(order);
+					return true;
+				}
 			}
 		}
-		
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent

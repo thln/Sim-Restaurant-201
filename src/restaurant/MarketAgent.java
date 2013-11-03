@@ -10,6 +10,7 @@ import agent.Agent;
 
 
 
+
 import java.util.*;
 //import java.util.concurrent.Semaphore;
 
@@ -29,10 +30,12 @@ public class MarketAgent extends Agent
 	private Map<String, Food> FoodInventory = new HashMap<String, Food>();
 	private Timer DeliveringTimer = new Timer();
 	private CookAgent Cook;
+	private CashierAgent Cashier;
 	private String name;
 	private enum DeliveryState
 	{RequestReceived, Processing, ReadyToDeliver, Delivered};
 	private boolean Deliver = false;
+	private double moneyInTheBank = 0;
 	
 	private class Delivery
 	{
@@ -53,10 +56,12 @@ public class MarketAgent extends Agent
 	{
 		public String name;
 		public int Inventory; // = 10;
-		public Food(String f, int I)
+		public double wholesaleCost;
+		public Food(String f, int I, double c)
 		{
 			name = f;
 			Inventory = I;
+			wholesaleCost = c;
 		}
 		
 		public void UseFood()
@@ -68,27 +73,28 @@ public class MarketAgent extends Agent
 		}
 	
 	}		
-	private List<Delivery> Deliveries = new ArrayList<Delivery>();
+	private List<Delivery> Deliveries = Collections.synchronizedList(new ArrayList<Delivery>());
 	int deliveringTime = 30000;
 	
-	public MarketAgent(String name, CookAgent c)
+	public MarketAgent(String name, CookAgent c, CashierAgent ca)
 	{
 		super();
 		this.name = name;
 		
 		Cook = c;
+		Cashier = ca;
 		
 		//add in food
 
 		//MenuForReference = new Menu();
-		Food Salad = new Food("Salad", 10);
-		Food Pizza = new Food("Pizza", 10);
-		Food Chicken = new Food("Chicken", 10);
-		Food Steak = new Food("Steak", 10);
+		Food Salad = new Food("Salad", 10, 2.00);
+		Food Pizza = new Food("Pizza", 10, 3.00);
+		Food Chicken = new Food("Chicken", 10, 4.00);
+		Food Steak = new Food("Steak", 10, 5.00);
 		
 		if(name.equals("Target"))
 		{
-			Salad.Inventory = 1;
+			Salad.Inventory = 10;
 			Pizza.Inventory = 1;
 			Chicken.Inventory = 1;
 			Steak.Inventory = 1;
@@ -116,31 +122,37 @@ public class MarketAgent extends Agent
 		stateChanged();
 	}
 
-	
+	public void Paid(double cash)
+	{
+		moneyInTheBank += cash;
+		print("I got the money");
+	}
 	
 	/***** SCHEDULER *****/
 	
 	protected boolean pickAndExecuteAnAction() 
 	{
 		//////FILL IN HERE
-		for(Delivery D : Deliveries)
+		synchronized(Deliveries)
 		{
-			//STUB
-			if(D.state == DeliveryState.RequestReceived)
+			for(Delivery D : Deliveries)
 			{
-				D.state = DeliveryState.Processing;
-				ProcessItem(D);
-				return true;
-			}
-			
-			if(D.state == DeliveryState.Processing && Deliver)
-			{
-				D.state = DeliveryState.Delivered;
-				DeliverItem(D);
-				return true;
+				//STUB
+				if(D.state == DeliveryState.RequestReceived)
+				{
+					D.state = DeliveryState.Processing;
+					ProcessItem(D);
+					return true;
+				}
+				
+				if(D.state == DeliveryState.Processing && Deliver)
+				{
+					D.state = DeliveryState.Delivered;
+					DeliverItem(D);
+					return true;
+				}
 			}
 		}
-		
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
@@ -183,6 +195,8 @@ public class MarketAgent extends Agent
 	{
 		Deliver = false;
 		print("Delivered: " + D.PossibleAmount + " " + D.food);
+		print(Cashier + ", can you pay me?");
+		Cashier.MarketCost(D.food, (D.PossibleAmount * FoodInventory.get(D.food).wholesaleCost), this);
 		Cook.deliverFood(D.food, D.PossibleAmount);
 	}
 }
