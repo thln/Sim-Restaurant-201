@@ -18,8 +18,8 @@ public class CustomerGui implements Gui{
 	private final int height = 20, width = 20;
 	private static final int xCordOffScreen = -40;
 	private static final int yCordOffScreen = -40;
-	private static final int xCordFrontDesk = 10;
-	private static final int yCordFrontDesk = 10;
+	private static int xCordLobby = 10;
+	private static int yCordLobby;
 	private static final int xCordCashier = 400;
 	private static final int yCordCashier = 100;
 	private int xDestination, yDestination;
@@ -32,7 +32,7 @@ public class CustomerGui implements Gui{
     public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
     public static final int yTable[] = {0, 250, 250, 250, 350, 350, 350, 450, 450, 450};
 
-	public CustomerGui(CustomerAgent c, RestaurantGui gui)
+	public CustomerGui(CustomerAgent c, RestaurantGui gui, int n)
 	{ //WaiterAgent m) {
 		agent = c;
 		//xCordOffScreen, yCordOffScreen
@@ -44,6 +44,7 @@ public class CustomerGui implements Gui{
 		yDestination = yCordOffScreen;
 		//maitreD = m;
 		this.gui = gui;
+        yCordLobby = width + (width * n);
 	}
 
 	public void updatePosition() 
@@ -132,8 +133,8 @@ public class CustomerGui implements Gui{
 	
     public void DoEnterRestaurant()
     {
-    	xDestination = xCordFrontDesk;
-    	yDestination = yCordFrontDesk;
+    	xDestination = xCordLobby;
+    	yDestination = yCordLobby;
     }
     
 	public void DoExitRestaurant() 

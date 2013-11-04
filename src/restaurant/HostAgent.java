@@ -126,6 +126,10 @@ public class HostAgent extends Agent
 		return tables;
 	}
 	
+
+	
+	
+	/***** MESSAGES *****/
 	public void addTables()
 	{
 		//ONLY 9 TABLES ALLOWED ATM
@@ -134,11 +138,10 @@ public class HostAgent extends Agent
 			NTABLES++;
 			tables.add(new Table(NTABLES));
 			print("Number of tables " + NTABLES);
+			stateChanged();
 		}
 	}
 	
-	
-	/***** MESSAGES *****/
 	public void newWaiter(WaiterAgent wa)
 	{
 		MyWaiters.add(new MyWaiter(wa));
@@ -209,10 +212,10 @@ public class HostAgent extends Agent
 								{
 									if(mw.w1 == w)
 									{
+										table.setUnoccupied();
 										mw.NumberOfCustomers--;
 										updateNumberOfCustomers();
 										mc.state = CustomerState.Left;
-										table.setUnoccupied();
 										stateChanged();
 									}
 								}
@@ -311,8 +314,9 @@ public class HostAgent extends Agent
 		else 
 		{
 			
-			if(MyWaiters.get(currentWaiter).w1.AtFrontDesk && MyWaiters.get(currentWaiter).state == WaiterState.Working)
+			if(MyWaiters.get(currentWaiter).w1.AtHomeboolean && MyWaiters.get(currentWaiter).state == WaiterState.Working)
 			{
+				print("The current waiter is number" + currentWaiter);
 			MyWaiters.get(currentWaiter).NumberOfCustomers++;
 			updateNumberOfCustomers();
 			MyWaiters.get(currentWaiter).w1.pleaseSeatCustomer(mc.c, t.tableNumber);
@@ -330,7 +334,7 @@ public class HostAgent extends Agent
 			//keeps track of current waiter, if currentwaiter is last waiter on list, resets to first waiter
 			//automatically divide the customers among the number of waiters
 			currentWaiter++;
-			if(currentWaiter == MyWaiters.size())
+			if(currentWaiter >= MyWaiters.size())
 			{
 				currentWaiter = 0;
 			}

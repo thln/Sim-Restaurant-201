@@ -169,6 +169,7 @@ public class CashierAgent extends Agent implements Cashier
 	{
 		//STUB
 		//ch.CalculateCost();
+		print("Calculating check for " + ch.c + " " + ch.w);
 		ch.s = CheckState.Pending;
 		ch.cost = MenuForReference.GetPrice(ch.foodItem);
 		ch.w.ThisIsTheCheck(ch.c, ch);

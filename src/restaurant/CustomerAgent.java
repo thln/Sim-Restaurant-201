@@ -27,6 +27,7 @@ public class CustomerAgent extends Agent implements Customer
 	private int DecidingFoodTime = 8000;
 	private int SpeakingFoodTime = 2000;
 	private int EatingFoodTime = 5000;
+	private int customerNumber;
 	private Check myCheck;
 	private double Cash = 20.00; //8.00; //4.00;
 	private double Debt = 0.00; //What Do I do with debt
@@ -54,13 +55,14 @@ public class CustomerAgent extends Agent implements Customer
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name, HostAgent h, CashierAgent cas) //CashierAgent
+	public CustomerAgent(String name, HostAgent h, CashierAgent cas, int n) //CashierAgent
 	{
 		super();
 		this.name = name;
 		
 		this.host = h;
 		this.cashier = cas;
+		this.customerNumber = n;
 	}
 
 	/**
@@ -517,6 +519,11 @@ public class CustomerAgent extends Agent implements Customer
 	public CustomerGui getGui() 
 	{
 		return customerGui;
+	}
+	
+	public int getCustomerNumber()
+	{
+		return customerNumber;
 	}
 }
 

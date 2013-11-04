@@ -12,10 +12,12 @@ public class WaiterGui implements Gui {
     private WaiterAgent agent = null;
     RestaurantGui gui;
 
-    private int xPos = 25, yPos = 25;//default waiter position
+    private int xPos = 500, yPos = -10;//default waiter position
     private int height = 20, width = 20;
-	private static final int xCordFrontDesk = 25;
-	private static final int yCordFrontDesk = 25;
+	private int xCordCustomerLobby = 25;
+	private int yCordCustomerLobby = 25;
+	private int xCordHomePosition = 20;
+	private int yCordHomePosition = 20;
 	private static final int xCordKitchen = 540;
 	private static final int yCordKitchen = 600;
 	private static final int xCordBreakRoom = 100;
@@ -23,8 +25,8 @@ public class WaiterGui implements Gui {
 	private static final int xCordCashier = 400;
 	private static final int yCordCashier = 100;
 	private int tableNumber = 1;
-    private int xDestination = 25, yDestination = 25;//default start position
-    public boolean waiterIsFree = false;
+    private int xDestination = 20, yDestination = 20;//default start position
+    public boolean waiterIsFree = true; //false
     private String TheOrder = "";
 	private boolean isOnBreak = false; 	//WAITER ON BREAK STUFF ******************************
     
@@ -32,10 +34,13 @@ public class WaiterGui implements Gui {
     public static final int xTable[] = {0, 200, 300, 400, 200, 300, 400, 200, 300, 400};
     public static final int yTable[] = {0, 250, 250, 250, 350, 350, 350, 450, 450, 450};
 
-    public WaiterGui(WaiterAgent agent, RestaurantGui gui) 
+    public WaiterGui(WaiterAgent agent, RestaurantGui gui, int n) 
     {
         this.agent = agent;
         this.gui = gui;
+        
+        xCordHomePosition = width + (width * n);
+        xDestination = width + (width * n);
     }
 
     public void updatePosition() 
@@ -67,16 +72,22 @@ public class WaiterGui implements Gui {
         //	agent.msgNotAtFrontDesk();
         }
         else if (xPos == xDestination && yPos == yDestination
-        		& (xDestination == xCordFrontDesk) & (yDestination == yCordFrontDesk) && waiterIsFree)
+        		& (xDestination == xCordCustomerLobby) & (yDestination == yCordCustomerLobby) && waiterIsFree)
         {
             waiterIsFree = false;
-        	agent.msgAtFrontDesk();
+        	agent.msgAtCustomerLobby();
         	System.out.println("I am at front desk.");
         }
         else if (xPos == xDestination && yPos == yDestination
         		& (xDestination == xCordBreakRoom) & (yDestination == yCordBreakRoom))
         {
         	agent.msgAtBreakRoom();
+        	//System.out.println("I am at BreakRoom.");
+        }
+        else if (xPos == xDestination && yPos == yDestination
+        		& (xDestination == xCordHomePosition) & (yDestination == yCordHomePosition))
+        {
+        	agent.msgAtHomePosition();
         	//System.out.println("I am at BreakRoom.");
         }
         else if (xPos == xDestination && yPos == yDestination
@@ -153,10 +164,12 @@ public class WaiterGui implements Gui {
     	yDestination = yCordKitchen;
     }
     
-    public void GoToFrontDesk() 
+    public void GoToCustomerLobby(int customerNumber) 
     {
-        xDestination = xCordFrontDesk;
-        yDestination = yCordFrontDesk;
+        xCordCustomerLobby = 40;
+        yCordCustomerLobby = 40 + (width * customerNumber);
+        xDestination = xCordCustomerLobby;
+    	yDestination = yCordCustomerLobby;
     }
     
 	//WAITER ON BREAK STUFF ******************************
@@ -170,6 +183,12 @@ public class WaiterGui implements Gui {
     {
     	xDestination = xCordCashier;
     	yDestination = yCordCashier;
+    }
+    
+    public void GoHomePosition()
+    {
+    	xDestination = xCordHomePosition;
+    	yDestination = yCordHomePosition;
     }
     
     public void DoRelax()

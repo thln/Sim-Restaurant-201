@@ -41,6 +41,8 @@ public class RestaurantPanel extends JPanel // implements KeyListener
     private int numberOfColumns = 2;
     private int mainGap = 20;
     private int subGap = 10;
+    private int currentCustomer = 0;
+    private int currentWaiter = 0;
 
     private RestaurantGui gui; //reference to main gui
 
@@ -140,9 +142,9 @@ public class RestaurantPanel extends JPanel // implements KeyListener
 
     	if (type.equals("Customers")) 
     	{
-    		CustomerAgent ca = new CustomerAgent(name, host, cashier);	
-    		CustomerGui cg = new CustomerGui(ca, gui);
-
+    		CustomerAgent ca = new CustomerAgent(name, host, cashier, customers.size());	
+    		CustomerGui cg = new CustomerGui(ca, gui, customers.size());
+    		
     		gui.animationPanel.addGui(cg);// dw
     		//c.setWaiter(host);
     		ca.setHost(host);
@@ -157,8 +159,8 @@ public class RestaurantPanel extends JPanel // implements KeyListener
     	
     	else if (type.equals("Waiters"))
     	{
-    		WaiterAgent wa = new WaiterAgent(name,host, cook, cashier);
-    		WaiterGui wg = new WaiterGui(wa, gui);
+    		WaiterAgent wa = new WaiterAgent(name, host, cook, cashier, waiters.size());
+    		WaiterGui wg = new WaiterGui(wa, gui, waiters.size());
     		
     		gui.animationPanel.addGui(wg);
     		wa.setGui(wg);

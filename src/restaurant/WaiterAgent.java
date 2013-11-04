@@ -32,7 +32,7 @@ public class WaiterAgent extends Agent implements Waiter
 	//with List semantics.
 	public List<MyCustomer> MyCustomers
 	= new ArrayList<MyCustomer>();
-	public boolean AtFrontDesk = true;
+	public boolean AtHomeboolean = true;
 	//public boolean OnBreak = false;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
@@ -52,7 +52,7 @@ public class WaiterAgent extends Agent implements Waiter
 	private Semaphore atTable = new Semaphore(0,true);
 	private Semaphore receivingOrder = new Semaphore(0, true);
 	private Semaphore atKitchen = new Semaphore(0, true);
-	private Semaphore atFrontDesk = new Semaphore(0, true);
+	private Semaphore atCustomerLobby = new Semaphore(0, true);
 	private Semaphore atCashier = new Semaphore(0, true);
 	private Semaphore receivingCheck = new Semaphore(0, true);
 	
@@ -73,16 +73,22 @@ public class WaiterAgent extends Agent implements Waiter
 		String choice;
 		private myCustomerState state = myCustomerState.Waiting;
 		public Check CustomersCheck;
+		public int xCordCustomerLobby;
+		public int yCordCustomerLobby;
+		public int initPosition = 20;
 		public MyCustomer(CustomerAgent cust, int t)
 		{
 			c = cust;
 			table = t;
+			xCordCustomerLobby = initPosition;
+			yCordCustomerLobby = initPosition + (initPosition * cust.getCustomerNumber());
+			
 		}
 	}
 	
 	
 
-	public WaiterAgent(String name, HostAgent h, CookAgent c, CashierAgent cas) 
+	public WaiterAgent(String name, HostAgent h, CookAgent c, CashierAgent cas, int n) 
 	{
 		super();
 
@@ -90,6 +96,7 @@ public class WaiterAgent extends Agent implements Waiter
 		this.host = h;
 		this.cook = c;
 		this.cashier = cas;
+		this.waiterNumber = n;
 		
 		if(name.equals("OnBreak"))
 		{
@@ -243,10 +250,12 @@ public class WaiterAgent extends Agent implements Waiter
 	//Cashier Messages
 	public void ThisIsTheCheck(Customer cust, Check ch)
 	{
+		//print("Tried giving check.");
 		for( MyCustomer mc : MyCustomers)
 		{
 			if(mc.c == cust)
 			{
+			//	print("Got correct customer.");
 				mc.CustomersCheck = ch;
 				mc.state = myCustomerState.CheckReceived;
 				receivingCheck.release();
@@ -278,11 +287,17 @@ public class WaiterAgent extends Agent implements Waiter
 		}
 	}
 	
-	public void msgAtFrontDesk()
+	public void msgAtCustomerLobby()
 	{
-			atFrontDesk.release();
-			AtFrontDesk = true;
+			atCustomerLobby.release();
+			//AtHomeboolean = true;
 			stateChanged();
+	}
+	
+	public void msgAtHomePosition()
+	{
+		AtHomeboolean = true;
+		stateChanged();
 	}
 	
 	public void msgNotAtFrontDesk()
@@ -450,26 +465,28 @@ public class WaiterAgent extends Agent implements Waiter
 		requestingBreak = false;
 		onBreak = false;
 		waiterGui.setOffBreakbool();
-		waiterGui.GoToFrontDesk();
+		waiterGui.GoHomePosition();
 		host.BackToWork(this);
 		//stateChange
 	}
 	
 	private void seatCustomer(MyCustomer mc) 
 	{
-		AtFrontDesk = false;
-		if(waiterGui.getXPos() != xCordFrontDesk && waiterGui.getYPos() != yCordFrontDesk)
+		AtHomeboolean = false;
+		if(waiterGui.getXPos() != mc.xCordCustomerLobby && waiterGui.getYPos() != mc.yCordCustomerLobby)
 		{
-			waiterGui.GoToFrontDesk();
+			print("Aha!");
+			waiterGui.GoToCustomerLobby(mc.c.getCustomerNumber());
 			try 
 			{
-				atFrontDesk.acquire();
+				atCustomerLobby.acquire();
 				//atFrontDesk.acquire();
 			} catch (InterruptedException e) 
 			{
 				e.printStackTrace();
 			}
 		}
+		print("Here!");
 		Menu menuforCust = new Menu();
 		mc.c.followMe(menuforCust, this, mc.table);
 		DoSeatCustomer(mc.c, mc.table);
@@ -481,8 +498,8 @@ public class WaiterAgent extends Agent implements Waiter
 			e.printStackTrace();
 		}
 		//Leaving Customers
-		atFrontDesk.tryAcquire();
-		waiterGui.GoToFrontDesk();
+		atCustomerLobby.tryAcquire();
+		waiterGui.GoHomePosition();
 		mc.state = myCustomerState.Seated;
 
 	}
@@ -492,7 +509,7 @@ public class WaiterAgent extends Agent implements Waiter
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		print("Seating " + customer + " at table " + table);
-		atFrontDesk.tryAcquire();
+		atCustomerLobby.tryAcquire();
 		waiterGui.GoToTable(customer); 
 
 	}
@@ -526,7 +543,7 @@ public class WaiterAgent extends Agent implements Waiter
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!!!!
 		print("Going to Table" + cust.getCurrentTable() + " Customer " + cust);
-		atFrontDesk.tryAcquire();
+		atCustomerLobby.tryAcquire();
 		waiterGui.GoToTable(cust);
 		
 	}
@@ -541,7 +558,7 @@ public class WaiterAgent extends Agent implements Waiter
 		{
 			e.printStackTrace();
 		}
-		waiterGui.GoToFrontDesk();
+		waiterGui.GoHomePosition();
 		cook.pleaseCook(mc.choice, mc.table, this);
 		print("Message 7 - Sent Order");
 		mc.state = myCustomerState.OrderSent;
@@ -552,7 +569,7 @@ public class WaiterAgent extends Agent implements Waiter
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!
 		print("Going to Kitchen");
-		atFrontDesk.tryAcquire();
+		atCustomerLobby.tryAcquire();
 		waiterGui.GoToKitchen();
 	}
 	
@@ -586,7 +603,7 @@ public class WaiterAgent extends Agent implements Waiter
 		mc.state = myCustomerState.Seated;
 		//mc.state = myCustomerState.Leaving;
 		//atFrontDesk.tryAcquire();
-		waiterGui.GoToFrontDesk();
+		waiterGui.GoHomePosition();
 	}
 	
 	public void DeliverMeal(MyCustomer mc)
@@ -614,12 +631,12 @@ public class WaiterAgent extends Agent implements Waiter
 		//Do we need to pass in a "food" item
 		//print ("At table " + atTable.toString());
 		mc.c.HereIsYourOrder(mc.choice);
-		atFrontDesk.tryAcquire();
+		atCustomerLobby.tryAcquire();
 		waiterGui.DoDeliver("");
 		print("Message 9 Sent - Delivering Meal");
 		mc.state = myCustomerState.Eating;
-		atFrontDesk.tryAcquire();
-		waiterGui.GoToFrontDesk();
+		atCustomerLobby.tryAcquire();
+		waiterGui.GoHomePosition();
 	}
 	
 	public void RetrieveCheck(MyCustomer mc)
@@ -633,10 +650,11 @@ public class WaiterAgent extends Agent implements Waiter
 		{
 			e.printStackTrace();
 		}
-		cashier.GiveMeCheck(mc.choice, mc.c, this);
+		//Line originally here
 		print("At Cashier");
 		waiterGui.DoDeliver("Check");
 		mc.state = myCustomerState.GettingCheck;
+		cashier.GiveMeCheck(mc.choice, mc.c, this);
 		try 
 		{
 			receivingCheck.acquire();
@@ -652,7 +670,7 @@ public class WaiterAgent extends Agent implements Waiter
 		//REMEMBER TO DO THIS
 		//AFFECTS GUI!!!!!!
 		print("Going to Cashier");
-		atFrontDesk.tryAcquire();
+		atCustomerLobby.tryAcquire();
 		waiterGui.GoToCashier();
 	}
 	
@@ -671,8 +689,8 @@ public class WaiterAgent extends Agent implements Waiter
 		waiterGui.DoDeliver("");
 		print("Delivered Check");
 		mc.state = myCustomerState.GivenCheckToCustomer;
-		atFrontDesk.tryAcquire();
-		waiterGui.GoToFrontDesk();
+		atCustomerLobby.tryAcquire();
+		waiterGui.GoHomePosition();
 	}
 	
 	public void clearTable(MyCustomer mc)
