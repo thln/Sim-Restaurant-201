@@ -1,18 +1,17 @@
 package restaurant;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+//import java.util.concurrent.Semaphore;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import restaurant.interfaces.Market;
 import agent.Agent;
 //import restaurant.Menu;
-
-
-
-
-
-
-
-
-
-import java.util.*;
-//import java.util.concurrent.Semaphore;
 
 //import restaurant.CookAgent.Order;
 
@@ -24,7 +23,7 @@ import java.util.*;
 //import restaurant.CookAgent.Food;
 //import restaurant.CustomerAgent.AgentState;
 
-public class MarketAgent extends Agent
+public class MarketAgent extends Agent implements Market
 {
 	/***** DATA *****/
 	private Map<String, Food> FoodInventory = new HashMap<String, Food>();

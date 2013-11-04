@@ -23,7 +23,8 @@ public class CashierTest extends TestCase
      * This method is run before each test. You can use it to instantiate the class variables
      * for your agent and mocks, etc.
      */
-    public void setUp() throws Exception{
+    public void setUp() throws Exception
+    {
             super.setUp();                
             cashier = new CashierAgent("cashier");                
             customer = new MockCustomer("mockcustomer");                

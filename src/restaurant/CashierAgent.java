@@ -1,5 +1,6 @@
 package restaurant;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 //import restaurant.Menu;
@@ -9,6 +10,7 @@ import restaurant.Check.CheckState;
 //import restaurant.MarketAgent.Delivery;
 import restaurant.interfaces.Cashier;
 import restaurant.interfaces.Customer;
+import restaurant.interfaces.Market;
 import restaurant.interfaces.Waiter;
 import restaurant.test.mock.EventLog;
 import agent.Agent;
@@ -20,18 +22,19 @@ public class CashierAgent extends Agent implements Cashier
 	/***** DATA *****/
 	private String name;
 	private Menu MenuForReference;
-	private double accumulatedRevenue = 35.00;
-	private double accumulatedDebt = 0;
-	private double profits = 35.00;
+	public double accumulatedRevenue = 35.00;
+	public double accumulatedCosts = 0.0;
+	public double profits = 35.00;
+	final DecimalFormat df = new DecimalFormat(); 
 	private boolean free = true;
 	public EventLog log; //necessary?
 	
-	private class MarketBill
+	public class MarketBill
 	{
-		String foodItem;
-		double finalTotal;
-		MarketAgent market;
-		MarketBill(String s, double c, MarketAgent m)
+		public String foodItem;
+		public double finalTotal;
+		public Market market;
+		MarketBill(String s, double c, Market m)
 		{
 			foodItem = s;
 			finalTotal = c;
@@ -62,7 +65,7 @@ public class CashierAgent extends Agent implements Cashier
 	*/
 	
 	public List<Check> AllChecks= Collections.synchronizedList(new ArrayList<Check>()); //private
-	private List<MarketBill> MarketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
+	public List<MarketBill> MarketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
 	//private List<MyCustomer> customers = 
 	//	    Collections.synchronizedList(new ArrayList<MyCustomer>()); example
 	
@@ -72,6 +75,7 @@ public class CashierAgent extends Agent implements Cashier
 		this.name = name;
 
 		MenuForReference = new Menu();
+		df.setMaximumFractionDigits(2);
 	}
 	
 	public String getName() 
@@ -113,7 +117,7 @@ public class CashierAgent extends Agent implements Cashier
 		}
 	}
 	
-	public void MarketCost(String foodName, double cost, MarketAgent m)
+	public void MarketCost(String foodName, double cost, Market m)
 	{
 		print("I am adding a bill for " + cost + " and I have " + profits);
 		MarketBills.add(new MarketBill(foodName, cost, m));
@@ -171,7 +175,10 @@ public class CashierAgent extends Agent implements Cashier
 		//ch.CalculateCost();
 		print("Calculating check for " + ch.c + " " + ch.w);
 		ch.s = CheckState.Pending;
-		ch.cost = MenuForReference.GetPrice(ch.foodItem);
+		if(!(ch.foodItem.equals("7.98")))
+		{
+			ch.cost = MenuForReference.GetPrice(ch.foodItem);
+		}
 		ch.w.ThisIsTheCheck(ch.c, ch);
 	}
 	
@@ -185,8 +192,11 @@ public class CashierAgent extends Agent implements Cashier
 		if(ch.cost > 0) //Not Paid Off
 		{
 			//include debt somehow in HereIsYourChange?
-			accumulatedDebt = (ch.cost); //-=, This does not take into account multiple bad people 
-			print("The restaurant debt is now " + accumulatedDebt );
+			accumulatedCosts = (ch.cost); //-=, This does not take into account multiple bad people 
+			profits -= (ch.cost);
+			profits = Double.parseDouble(df.format(profits));
+			accumulatedCosts = Double.parseDouble(df.format(accumulatedCosts));
+			print("The restaurant debt is now " + accumulatedCosts );
 			ch.c.HereIsYourChange(0, ch.cost);
 			ch.s = CheckState.NotPaidOff;
 		}
@@ -194,6 +204,8 @@ public class CashierAgent extends Agent implements Cashier
 		{
 			accumulatedRevenue += (ch.cash + ch.cost);
 			profits += (ch.cash + ch.cost);
+			profits = Double.parseDouble(df.format(profits));
+			accumulatedRevenue = Double.parseDouble(df.format(accumulatedRevenue));
 			print("The restaurant revenue is now " + accumulatedRevenue + " and profits are " + profits );
 			ch.c.HereIsYourChange(-ch.cost, 0);
 			ch.s = CheckState.PaidOff;
@@ -208,19 +220,9 @@ public class CashierAgent extends Agent implements Cashier
 	private void PayMarket(MarketBill mb)
 	{
 		print("PayMarket runs.");
-		/*synchronized(MarketBills)
-		{
-			for(MarketBill mb1 : MarketBills)
-			{
-				if(mb == mb1)
-				{
-					MarketBills.remove(mb1);
-				}
-			}
-		}*/
 		print("I am paying for the bill " + mb.finalTotal + " and I have " + profits);
 		mb.market.Paid(mb.finalTotal);
-		accumulatedDebt += mb.finalTotal;
+		accumulatedCosts += mb.finalTotal;
 		profits -= mb.finalTotal;
 		print("I now have " + profits);
 		

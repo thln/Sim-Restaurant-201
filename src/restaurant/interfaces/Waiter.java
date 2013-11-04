@@ -6,7 +6,8 @@ import restaurant.CustomerAgent;
 //import restaurant.WaiterAgent.WaiterState;
 //import restaurant.WaiterAgent.myCustomerState;
 
-public interface Waiter {
+public interface Waiter
+{
 	//public abstract void WantGoOnBreak();
 	//public abstract void WantToGoOffBreak();
 	//public abstract void AllowedToGoOnBreak(boolean answer);

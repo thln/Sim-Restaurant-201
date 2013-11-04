@@ -22,6 +22,6 @@ public class MockWaiter extends Mock implements Waiter
 	
 	public void ThisIsTheCheck(Customer cust, Check ch)
 	{
-		
+		log.add(new LoggedEvent("Received Check from cashier. Customer = "+ cust + " and check cost is : " + ch.cost));
 	}
 }

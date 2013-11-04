@@ -1,12 +1,16 @@
 package restaurant;
 
-import agent.Agent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import java.util.*;
-import java.util.concurrent.Semaphore;
-
-import restaurant.CustomerAgent.AgentState;
 import restaurant.gui.AnimationPanel;
+import restaurant.interfaces.Market;
+import agent.Agent;
 
 public class CookAgent extends Agent 
 {
@@ -68,7 +72,7 @@ public class CookAgent extends Agent
 	private AnimationPanel animPanel;
 	private Timer CookTimer  = new Timer();
 	private List <Order> orders = Collections.synchronizedList(new ArrayList<Order>());
-	private List <MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
+	private List <Market> markets = Collections.synchronizedList(new ArrayList<Market>());
 	private Map<String, Integer> RecipeBook  = new HashMap<String, Integer>();
 	private Map<String, Food> FoodInventory = new HashMap<String, Food>();
 	private String name;
@@ -270,7 +274,7 @@ public class CookAgent extends Agent
 	public void OrderFood(String foodItem)
 	{
 		S = state.Cooking;
-		print("We are low on " + foodItem + ". Let's order " + FoodInventory.get(foodItem).OrderSize + " more from " + markets.get(CurrentMarket).getName() + "!");
+		print("We are low on " + foodItem + ". Let's order " + FoodInventory.get(foodItem).OrderSize + " more from " + markets.get(CurrentMarket) + "!");
 		//Implement a mechanism to choose between markets
 		markets.get(CurrentMarket).INeedMore(foodItem, FoodInventory.get(foodItem).OrderSize);
 	}
