@@ -91,6 +91,24 @@
   + *Customer orders, eats, but hasn't enough money to pay.
     + Add one customer. Ctrl+B. Any customer waiting will eat, regardless of cost (customer has $0). Add a waiter. This will incur a debt from the customer. The restaurant also keeps tracks of debts. If the customer returns, he will still dine and dish (once a cheater always a cheater) since he will only have $0. He will add his debt to the bill, and his debt will increase.
 
+####V2.2 Scenarios
+  + V2.2A: To test the first two scenarios as well as the 'extra credit' scenario in V2.2A, please run the JUnit test named 'V22BTests.java.' They are testCases 1, 2, and 6.
+  + V2.2B: The JUnit tests tests the following
+    + 1 - One order fulfilled by market, one bill paid
+    + 2 - One order fulfilled by two markets, two bills paid
+    + 3 - One Customer ready to pay, has money
+    + 4 - One customer ready to pay, but doesn't have enough money
+    + 5 - One customer ready to pay and one bill ready to be paid (bill will take priority)
+    + 6 - One customer ready to pay, and one bill ready to be paid, but cashier will not have enough money until the customer pays (customer takes priority)
+    + In Scenarios 3-6, I also test the waiter creating a check with the cashier.
+  + V2.2C: Last I checked, no concurrent modification errors! :) I synchronized (solution 1) Cashier, Cook, Market, and Host. I caught Concurrenet Modification exceptions (solution 2) in Waiter. I did not change Customers.
+  + V2.2D: The customer's waiting area is on the left side of the screen.
+  + The waiter's home position is on the top side of the screen.
+  + The left side of the kitchen is plating/ready area. The right side of the kitchen is the cooking area. I did not do the extra credit.
+  + V2.2E: I have made commits on October 24th, November 2nd, and November 3rd.
+  + I will tag my submission.
+  + I think my commit comments are pretty awesome, and I hope you do too.
+
 
 ###Issues
   + Currently, none :)
