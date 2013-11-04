@@ -104,7 +104,7 @@
   + V2.2C: Last I checked, no concurrent modification errors! :) I synchronized (solution 1) Cashier, Cook, Market, and Host. I caught Concurrenet Modification exceptions (solution 2) in Waiter. I did not change Customers.
   + V2.2D: The customer's waiting area is on the left side of the screen.
   + The waiter's home position is on the top side of the screen.
-  + The left side of the kitchen is plating/ready area. The right side of the kitchen is the cooking area. I did not do the extra credit.
+  + The left side of the kitchen is plating/ready area. The right side of the kitchen is the cooking area. I did not do this extra credit.
   + V2.2E: I have made commits on October 24th, November 2nd, and November 3rd.
   + I will tag my submission.
   + I think my commit comments are pretty awesome, and I hope you do too.
