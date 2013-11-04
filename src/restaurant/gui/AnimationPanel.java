@@ -84,16 +84,18 @@ public class AnimationPanel extends JPanel implements ActionListener
         g2.setColor(Color.BLACK);
         g2.drawString("Cashier", xCordCashier, yCordCashier+20);
         g2.drawString("Break Room", xCordBreakRoom, yCordBreakRoom+20);
+        g2.drawString("Ready", xCordPlatingArea + 5, yCordKitchen+20);
         g2.drawString("Kitchen", xCordKitchen + 55, yCordKitchen+20);
+        g2.drawString("Grills", xCordCookingArea + 5, yCordKitchen+20);
         
         //Draw Orders and Cooking
         for(int i=0; i < Cooking.size(); i++)
         {
-        	g2.drawString(Cooking.get(i), xCordCookingArea, yCordCookingArea + (15*(i+1)));
+        	g2.drawString(Cooking.get(i), xCordCookingArea +5, yCordCookingArea + (20*(i+2)));
         }
         for(int i=0; i < Plated.size(); i++)
         {
-        	g2.drawString(Plated.get(i), xCordPlatingArea, yCordPlatingArea + (15*(i+1)));
+        	g2.drawString(Plated.get(i), xCordPlatingArea +5, yCordPlatingArea + (20*(i+2)));
         }        
         
         //Here are the tables
