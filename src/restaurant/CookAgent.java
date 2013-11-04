@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 import restaurant.CustomerAgent.AgentState;
+import restaurant.gui.AnimationPanel;
 
 public class CookAgent extends Agent 
 {
@@ -64,6 +65,7 @@ public class CookAgent extends Agent
 		}
 	}
 	
+	private AnimationPanel animPanel;
 	private Timer CookTimer  = new Timer();
 	private List <Order> orders = Collections.synchronizedList(new ArrayList<Order>());
 	private List <MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
@@ -97,6 +99,11 @@ public class CookAgent extends Agent
 	public String getName() 
 	{
 		return name;
+	}
+	
+	public void setAnimationPanel(AnimationPanel aP)
+	{
+		this.animPanel = aP;
 	}
 	
 	
@@ -135,6 +142,10 @@ public class CookAgent extends Agent
 		print("Awesome, now I have " + FoodInventory.get(food).amount + " " + food );
 	}
 	
+	public void PickedUpOrder(String food)
+	{
+		animPanel.removeFromPlated(food);
+	}
 	
 	
 	
@@ -217,6 +228,7 @@ public class CookAgent extends Agent
 	private void DoPlate(Order o)
 	{
 		////Animate plate?
+		animPanel.addToPlated(o.food);
 	}
 	
 	public void CookIt(Order o)
@@ -242,6 +254,7 @@ public class CookAgent extends Agent
 		}
 	
 		o.state = OrderState.Cooking;
+		animPanel.addToCooking(o.food);
 		CookTimer.schedule(new TimerTask() 
 		{
 			public void run() 

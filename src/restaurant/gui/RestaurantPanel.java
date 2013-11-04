@@ -41,8 +41,6 @@ public class RestaurantPanel extends JPanel // implements KeyListener
     private int numberOfColumns = 2;
     private int mainGap = 20;
     private int subGap = 10;
-    private int currentCustomer = 0;
-    private int currentWaiter = 0;
 
     private RestaurantGui gui; //reference to main gui
 
@@ -56,6 +54,7 @@ public class RestaurantPanel extends JPanel // implements KeyListener
         
         //Hack for adding Markets
         
+        cook.setAnimationPanel(gui.animationPanel);
         target.startThread();
         walmart.startThread();
         costco.startThread();

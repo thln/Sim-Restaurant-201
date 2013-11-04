@@ -619,6 +619,7 @@ public class WaiterAgent extends Agent implements Waiter
 		//print ("At Kitchen " + atTable.toString());
 		///Do we need to carry the order
 		waiterGui.DoDeliver(mc.choice);
+		cook.PickedUpOrder(mc.choice);
 		DoGoToTable(mc.c);
 		try 
 		{

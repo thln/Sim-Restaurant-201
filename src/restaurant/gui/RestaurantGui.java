@@ -37,7 +37,7 @@ public class RestaurantGui extends JFrame implements ActionListener { //, KeyLis
     private JCheckBox waiterBreakCB; // part of infoLabel
 
     //Numbers used
-    private int WINDOWX = 1100; //450; 1.8 multiplier
+    private int WINDOWX = 1300; //450; 1.8 multiplier *****
     private int WINDOWY = 600; //350; 1.8 multiplier
     private int height = 50;
     private int width = 50;

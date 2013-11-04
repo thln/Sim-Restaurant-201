@@ -18,8 +18,8 @@ public class WaiterGui implements Gui {
 	private int yCordCustomerLobby = 25;
 	private int xCordHomePosition = 20;
 	private int yCordHomePosition = 20;
-	private static final int xCordKitchen = 540;
-	private static final int yCordKitchen = 600;
+	private static final int xCordKitchen = 475;
+	private static final int yCordKitchen = 500;
 	private static final int xCordBreakRoom = 100;
 	private static final int yCordBreakRoom = 400;
 	private static final int xCordCashier = 400;
