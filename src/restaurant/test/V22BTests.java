@@ -341,7 +341,6 @@ public class V22BTests extends TestCase
 				+ market1.log.toString(), 1, market1.log.size());
 		assertEquals("The Cashier should still have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
 		assertEquals("The Check should still be in the 'CustomerHere' state. It isn't." + cashier.AllChecks.get(0).s, cashier.AllChecks.get(0).s, CheckState.CustomerHere);
-		assertEquals("The Cashier should still have $35 in profits. It doesn't.", cashier.profits, 35.00);
 		assertEquals("Customer should still have an empty event log before Cashier's scheduler is called. Instead, the Customer's event log reads: " 
 				+ customer.log.toString(), 0, customer.log.size());
 		
@@ -350,9 +349,9 @@ public class V22BTests extends TestCase
 		assertEquals("The Cashier should still have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
         assertTrue("CashierBill should contain a bill with state == PaidOff. It doesn't." + cashier.AllChecks.get(0).s,
                 cashier.AllChecks.get(0).s == CheckState.PaidOff);
-		assertEquals("The Cashier should have $42.98 in profits. It doesn't.", cashier.profits, 42.98);
+		assertEquals("The Cashier should have $22.98 in profits. It doesn't.", cashier.profits, 22.98);
 		assertEquals("The Cashier should have $42.98 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 42.98);
-		assertEquals("The Cashier should still have $0 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 0.0);
+		assertEquals("The Cashier should still have $20 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 20.00);
 		assertEquals("Customer should still have logged two events. Instead, the Customer's event log reads: " 
 				+ customer.log.toString(), 2, customer.log.size());	
 	}
@@ -364,6 +363,110 @@ public class V22BTests extends TestCase
      */
 	public void testScenarioSix()
 	{
-	
+		customer.cashier = cashier;
+		waiter.cashier = cashier;
+		
+		assertEquals("The Cashier should have $35 in profits. It doesn't.", cashier.profits, 35.00);
+		assertEquals("The Cashier should have $35 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 35.00);
+		assertEquals("The Cashier should still have $0 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 0.0);
+		assertEquals("Waiter should have an empty event log before Cashier's scheduler is called. Instead, the Waiter's event log reads: " 
+				+ waiter.log.toString(), 0, waiter.log.size());
+		assertEquals("Customer should have an empty event log before Cashier's scheduler is called. Instead, the Customer's event log reads: " 
+				+ customer.log.toString(), 0, customer.log.size());
+		assertEquals("MockMarket should have an empty event log before Cashier's scheduler is called. Instead, the MockMarket's event log reads: " 
+				+ market1.log.toString(), 0, market1.log.size());
+		assertEquals("The Cashier should have no market bills at the moment. It does.", cashier.MarketBills.size(), 0);
+		assertEquals("The Cashier should have no checks at the moment. It does.", cashier.AllChecks.size(), 0);
+		
+        cashier.GiveMeCheck("7.98", customer, waiter);
+        
+		assertEquals("The Cashier should have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
+		assertEquals("The Check should be in the 'Created' state. It isn't." + cashier.AllChecks.get(0).s, cashier.AllChecks.get(0).s, CheckState.Created);
+		assertEquals("The Check should be for 7.98. It isn't.", cashier.AllChecks.get(0).cost, 7.98);
+		assertEquals("The Check should be for the Mock Customer. It isn't.", cashier.AllChecks.get(0).c, customer);
+		assertEquals("The Check should be for the Mock Waiter. It isn't.", cashier.AllChecks.get(0).w, waiter);
+		assertEquals("The Cashier should still have $35 in profits. It doesn't.", cashier.profits, 35.00);
+		assertEquals("The Cashier should still have $35 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 35.00);
+		assertEquals("The Cashier should still have $0 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 0.0);
+		assertEquals("Waiter should still have an empty event log before Cashier's scheduler is called. Instead, the Waiter's event log reads: " 
+				+ waiter.log.toString(), 0, waiter.log.size());
+		assertEquals("Customer should still have an empty event log before Cashier's scheduler is called. Instead, the Customer's event log reads: " 
+				+ customer.log.toString(), 0, customer.log.size());
+		assertEquals("MockMarket should have an empty event log before Cashier's scheduler is called. Instead, the MockMarket's event log reads: " 
+				+ market1.log.toString(), 0, market1.log.size());
+		assertEquals("The Cashier should have no market bills at the moment. It does.", cashier.MarketBills.size(), 0);
+		
+		assertTrue("Cashier's PickAndExecuteAction should have returned true. It didn't.", cashier.pickAndExecuteAnAction());
+		
+		assertEquals("The Cashier should still have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
+		assertEquals("The Check should be in the 'Pending' state. It isn't." + cashier.AllChecks.get(0).s, cashier.AllChecks.get(0).s, CheckState.Pending);
+		assertEquals("The Cashier should still have $35 in profits. It doesn't.", cashier.profits, 35.00);
+		assertEquals("The Cashier should still have $35 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 35.00);
+		assertEquals("The Cashier should still have $0 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 0.0);
+		assertEquals("Waiter should still have an event logged. Instead, the Waiter's event log reads: " 
+				+ waiter.log.toString(), 1, waiter.log.size());
+		assertEquals("Customer should still have an empty event log before Cashier's scheduler is called. Instead, the Customer's event log reads: " 
+				+ customer.log.toString(), 0, customer.log.size());
+		assertEquals("MockMarket should have an empty event log before Cashier's scheduler is called. Instead, the MockMarket's event log reads: " 
+				+ market1.log.toString(), 0, market1.log.size());
+		assertEquals("The Cashier should have no market bills at the moment. It does.", cashier.MarketBills.size(), 0);
+		
+		customer.cashier.HereIsPayment(cashier.AllChecks.get(0), 7.98);
+
+		assertEquals("The Cashier should still have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
+		assertEquals("The Check should be in the 'CustomerHere' state. It isn't." + cashier.AllChecks.get(0).s, cashier.AllChecks.get(0).s, CheckState.CustomerHere);
+		assertEquals("The Cashier should still have $35 in profits. It doesn't.", cashier.profits, 35.00);
+		assertEquals("The Cashier should still have $35 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 35.00);
+		assertEquals("The Cashier should still have $0 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 0.0);
+		assertEquals("Customer should still have an empty event log before Cashier's scheduler is called. Instead, the Customer's event log reads: " 
+				+ customer.log.toString(), 0, customer.log.size());
+		assertEquals("MockMarket should have an empty event log before Cashier's scheduler is called. Instead, the MockMarket's event log reads: " 
+				+ market1.log.toString(), 0, market1.log.size());
+		assertEquals("The Cashier should have no market bills at the moment. It does.", cashier.MarketBills.size(), 0);
+		
+		cashier.MarketCost("Steak", 40.00, market1);
+		
+		assertEquals("The Cashier should have one market bill at the moment. It doesn't.", cashier.MarketBills.size(), 1);
+		assertEquals("The Cashier should have the one market bill from the Mock Market. It doesn't.", cashier.MarketBills.get(0).market, market1);
+		assertEquals("The Cashier should have the one market bill for Steak. It doesn't.", cashier.MarketBills.get(0).foodItem, "Steak");
+		assertEquals("The Cashier should have the one market bill of $40.00. It doesn't.", cashier.MarketBills.get(0).finalTotal, 40.00);
+		assertEquals("The Cashier should still have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
+		assertEquals("The Check should still be in the 'CustomerHere' state. It isn't." + cashier.AllChecks.get(0).s, cashier.AllChecks.get(0).s, CheckState.CustomerHere);
+		assertEquals("The Cashier should still have $35 in profits. It doesn't.", cashier.profits, 35.00);
+		assertEquals("The Cashier should still have $35 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 35.00);
+		assertEquals("The Cashier should still have $0 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 0.0);
+		assertEquals("Customer should still have an empty event log before Cashier's scheduler is called. Instead, the Customer's event log reads: " 
+				+ customer.log.toString(), 0, customer.log.size());
+		assertEquals("MockMarket should have an empty event log before Cashier's scheduler is called. Instead, the MockMarket's event log reads: " 
+				+ market1.log.toString(), 0, market1.log.size());
+		
+		assertTrue("Cashier's PickAndExecuteAction should have returned true. It didn't.", cashier.pickAndExecuteAnAction());
+		
+		assertEquals("The Cashier should still have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
+		assertEquals("The Cashier should have one market bill at the moment. It doesn't.", cashier.MarketBills.size(), 1);
+		assertEquals("The Cashier should have the one market bill from the Mock Market. It doesn't.", cashier.MarketBills.get(0).market, market1);
+		assertEquals("The Cashier should have the one market bill for Steak. It doesn't.", cashier.MarketBills.get(0).foodItem, "Steak");
+		assertEquals("The Cashier should have the one market bill of $40.00. It doesn't.", cashier.MarketBills.get(0).finalTotal, 40.00);
+		assertTrue("CashierBill should contain a bill with state == PaidOff. It doesn't." + cashier.AllChecks.get(0).s,
+                cashier.AllChecks.get(0).s == CheckState.PaidOff);
+		assertEquals("The Cashier should have $42.98 in profits. It doesn't.", cashier.profits, 42.98);
+		assertEquals("The Cashier should have $42.98 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 42.98);
+		assertEquals("The Cashier should still have $0 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 0.0);
+		assertEquals("Customer should still have logged two events. Instead, the Customer's event log reads: " 
+				+ customer.log.toString(), 2, customer.log.size());
+		assertEquals("MockMarket should have an empty event log before Cashier's scheduler is called. Instead, the MockMarket's event log reads: " 
+				+ market1.log.toString(), 0, market1.log.size());
+		
+		assertTrue("Cashier's PickAndExecuteAction should have returned true. It didn't.", cashier.pickAndExecuteAnAction());
+		
+		assertEquals("The Cashier should have no market bills at the moment. It does.", cashier.MarketBills.size(), 0);
+		assertEquals("The Cashier should have $2.98 in profits. It doesn't.", cashier.profits, 2.98);
+		assertEquals("The Cashier should have $40 in accumulated Costs. It doesn't.", cashier.accumulatedCosts, 40.00);
+		assertEquals("The Cashier should still have $42.98 in accumulated Revenue. It doesn't.", cashier.accumulatedRevenue, 42.98);
+		assertEquals("MockMarket should have logged one event. Instead, the MockMarket's event log reads: " 
+				+ market1.log.toString(), 1, market1.log.size());
+		assertEquals("The Cashier should still have one check at the moment. It doesn't.", cashier.AllChecks.size(), 1);
+		assertEquals("The Check should still be in the 'PaidOff' state. It isn't." + cashier.AllChecks.get(0).s, cashier.AllChecks.get(0).s, CheckState.PaidOff);		
+		
 	}
 }

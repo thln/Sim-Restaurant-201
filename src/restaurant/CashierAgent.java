@@ -222,8 +222,11 @@ public class CashierAgent extends Agent implements Cashier
 		print("PayMarket runs.");
 		print("I am paying for the bill " + mb.finalTotal + " and I have " + profits);
 		mb.market.Paid(mb.finalTotal);
+		mb.finalTotal = Double.parseDouble(df.format(mb.finalTotal));
 		accumulatedCosts += mb.finalTotal;
 		profits -= mb.finalTotal;
+		accumulatedCosts = Double.parseDouble(df.format(accumulatedCosts ));
+		profits = Double.parseDouble(df.format(profits));
 		print("I now have " + profits);
 		
 	}
